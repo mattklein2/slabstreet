@@ -1,443 +1,158 @@
-import type { Metadata } from "next";
+"use client";
+import { useEffect } from "react";
 
-export const metadata: Metadata = {
-  title: "SlabStreet — The Bloomberg Terminal for Card Collectors",
-  description: "Real-time market intelligence and investment ratings for sports card collectors.",
-};
-
-const pillars = [
-  { label: "Market", weight: 30, score: 72 },
-  { label: "Scarcity", weight: 25, score: 65 },
-  { label: "Momentum", weight: 20, score: 81 },
-  { label: "Performance", weight: 15, score: 78 },
-  { label: "Risk", weight: 10, score: 88 },
+const tickerItems = [
+  { label: "WEMBY AUTO /25", val: "$2,840", change: "+8.4%", dir: "up" },
+  { label: "WEMBY LOGOMAN 1/1", val: "UNACCOUNTED", change: "⚡ SIGNAL", dir: "up" },
+  { label: "WEMBY RC PSA 10", val: "$480", change: "-2.1%", dir: "down" },
+  { label: "MVP ODDS", val: "-320", change: "+DK", dir: "up" },
+  { label: "WEMBY PRIZM SILVER", val: "$220", change: "+12.7%", dir: "up" },
+  { label: "POP REPORT PSA 10", val: "847", change: "+23 NEW", dir: "up" },
 ];
 
+const cardRows = [
+  { name: "2023 Prizm Silver Auto /25", detail: "PSA 10 · Serial #14/25", price: "$2,840", change: "▲ +8.4% 7d", dir: "up" },
+  { name: "2023 Prizm RC Base PSA 10", detail: "Pop: 847 · /10 variant avail", price: "$480", change: "▼ -2.1% 7d", dir: "down" },
+  { name: "NT Logoman Auto 1/1", detail: "Status: UNACCOUNTED ⚡", price: "~$150K", change: "▲ BUY SIGNAL", dir: "up" },
+  { name: "2024 Hoops Prizm Gold /10", detail: "Serial #03/10 · BGS 9.5", price: "$1,200", change: "▲ +12.7% 7d", dir: "up" },
+];
+
+const features = [
+  { num: "01", icon: "📈", title: "Card Tracker", desc: "Price charts, trend signals, volume spikes, and edge alerts per card. Every eBay sale feeds directly into your dashboard in real time.", tag: "Live", live: true },
+  { num: "02", icon: "🧠", title: "Player Intel", desc: "MVP odds, game logs, stats, news feed, and card correlation tables. Know how performance moves card prices before the market does.", tag: "Live", live: true },
+  { num: "03", icon: "⚡", title: "Pull Tracker", desc: "Confirmed vs unaccounted 1/1 registry. The most powerful trading signal in the hobby — know the moment a key card surfaces publicly.", tag: "Live", live: true },
+  { num: "04", icon: "💼", title: "Portfolio Tracker", desc: "Cost basis, unrealized P&L, buy/sell signals, and year-end tax summary. Your entire collection valued in real time.", tag: "Coming Soon", live: false },
+  { num: "05", icon: "🔬", title: "Grade Decision Tool", desc: "Should you grade this card? ROI calculator weighs grading fees against pop report data and comparable sales. No more guessing.", tag: "Coming Soon", live: false },
+];
+
+const chartHeights = [30,35,28,40,38,45,42,50,47,55,52,48,58,62,60,68,65,72,70,75,73,80,78,85,82,88,90,87,92,96];
+
 export default function Home() {
+  useEffect(() => {
+    const bars = document.getElementById("chartBars");
+    if (!bars) return;
+    chartHeights.forEach((h, i) => {
+      const bar = document.createElement("div");
+      const isLast = i === chartHeights.length - 1;
+      const isActive = i > chartHeights.length - 8;
+      bar.className = "bar" + (isLast ? " highlight" : isActive ? " active" : "");
+      bar.style.height = h + "%";
+      bars.appendChild(bar);
+    });
+  }, []);
+
   return (
-    <main
-      style={{
-        background: "#020202",
-        minHeight: "100vh",
-        fontFamily: "'Courier New', Courier, monospace",
-        color: "#E4FDE1",
-        overflowX: "hidden",
-      }}
-    >
-      {/* NAV */}
-      <nav
-        style={{
-          borderBottom: "1px solid #0D2B0D",
-          padding: "0 48px",
-          height: "56px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          position: "sticky",
-          top: 0,
-          background: "rgba(2,2,2,0.95)",
-          backdropFilter: "blur(12px)",
-          zIndex: 100,
-        }}
-      >
-        <span
-          style={{
-            fontSize: "15px",
-            fontWeight: 700,
-            letterSpacing: "0.2em",
-            color: "#39FF14",
-            textTransform: "uppercase",
-          }}
-        >
-          SLAB<span style={{ color: "#1A6B1A" }}>STREET</span>
-        </span>
-        <span
-          style={{
-            fontSize: "11px",
-            letterSpacing: "0.15em",
-            color: "#1A6B1A",
-            textTransform: "uppercase",
-          }}
-        >
-          PRIVATE BETA
-        </span>
-      </nav>
+    <>
+      <div className="ticker-wrap">
+        <div className="ticker">
+          {[...tickerItems, ...tickerItems].map((item, i) => (
+            <div className="ticker-item" key={i}>
+              <span className="label">{item.label}</span>
+              <span className="val">{item.val}</span>
+              <span className={item.dir}>{item.change}</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
-      {/* HERO */}
-      <section
-        style={{
-          padding: "120px 48px 80px",
-          maxWidth: "1100px",
-          margin: "0 auto",
-          position: "relative",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(57,255,20,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(57,255,20,0.03) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-            pointerEvents: "none",
-          }}
-        />
-
-        <div style={{ position: "relative" }}>
-          <div
-            style={{
-              display: "inline-block",
-              border: "1px solid #0D2B0D",
-              padding: "4px 12px",
-              fontSize: "10px",
-              letterSpacing: "0.2em",
-              color: "#1A6B1A",
-              textTransform: "uppercase",
-              marginBottom: "32px",
-            }}
-          >
-            MARKET INTELLIGENCE PLATFORM
-          </div>
-
-          <h1
-            style={{
-              fontSize: "clamp(42px, 7vw, 88px)",
-              fontWeight: 900,
-              lineHeight: 0.95,
-              letterSpacing: "-0.03em",
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              marginBottom: "32px",
-              color: "#E4FDE1",
-            }}
-          >
-            The Bloomberg
-            <br />
-            <span
-              style={{
-                WebkitTextStroke: "1px #1A6B1A",
-                color: "transparent",
-              }}
-            >
-              Terminal
-            </span>{" "}
-            for
-            <br />
-            Card Collectors.
-          </h1>
-
-          <p
-            style={{
-              fontSize: "16px",
-              lineHeight: 1.7,
-              color: "#1A6B1A",
-              maxWidth: "480px",
-              marginBottom: "48px",
-              fontFamily: "'Courier New', monospace",
-            }}
-          >
-            Real-time market data, scarcity analysis, and proprietary investment
-            ratings for every slab in your portfolio.
-          </p>
-
-          <button
-            style={{
-              background: "#39FF14",
-              color: "#020202",
-              border: "none",
-              padding: "14px 36px",
-              fontSize: "12px",
-              fontWeight: 700,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              cursor: "pointer",
-              fontFamily: "'Courier New', monospace",
-            }}
-          >
-            REQUEST ACCESS
+      <nav>
+        <div>
+          <div className="logo">SLAB<span>STREET</span></div>
+          <div className="nav-tag">Market Intelligence</div>
+        </div>
+        <div className="nav-right">
+          <a href="#features" className="nav-link">Features</a>
+          <button className="btn-early" onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}>
+            Join Waitlist
           </button>
         </div>
-      </section>
+      </nav>
 
-      {/* SLAB SCORE SHOWCASE */}
-      <section
-        style={{
-          padding: "80px 48px",
-          maxWidth: "1100px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "10px",
-            letterSpacing: "0.2em",
-            color: "#1A6B1A",
-            textTransform: "uppercase",
-            marginBottom: "48px",
-            borderBottom: "1px solid #0D2B0D",
-            paddingBottom: "16px",
-          }}
-        >
-          SLAB SCORE™ — COMPOSITE INVESTMENT RATING
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "2px",
-            background: "#0D2B0D",
-            border: "1px solid #0D2B0D",
-          }}
-        >
-          {/* Score panel */}
-          <div
-            style={{
-              background: "#020202",
-              padding: "48px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "11px",
-                letterSpacing: "0.2em",
-                color: "#1A6B1A",
-                textTransform: "uppercase",
-                marginBottom: "8px",
-              }}
-            >
-              LUKA DONCIC — PRIZM BASE PSA 10
-            </div>
-            <div
-              style={{
-                fontSize: "11px",
-                letterSpacing: "0.15em",
-                color: "#0D2B0D",
-                marginBottom: "40px",
-              }}
-            >
-              2023-24 SEASON · COMMON TIER
-            </div>
-
-            <div
-              style={{
-                fontSize: "120px",
-                fontWeight: 900,
-                lineHeight: 1,
-                fontFamily: "Georgia, serif",
-                color: "#39FF14",
-                marginBottom: "8px",
-                textShadow: "0 0 40px rgba(57,255,20,0.3)",
-              }}
-            >
-              74
-            </div>
-
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                marginBottom: "40px",
-              }}
-            >
-              <div
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  background: "#39FF14",
-                  borderRadius: "50%",
-                  boxShadow: "0 0 8px #39FF14",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: "13px",
-                  letterSpacing: "0.25em",
-                  fontWeight: 700,
-                  color: "#39FF14",
-                }}
-              >
-                BUY
-              </span>
-            </div>
-
-            <div style={{ fontSize: "11px", color: "#0D2B0D", letterSpacing: "0.1em" }}>
-              SCORE RANGE: 70–100 BUY · 40–69 HOLD · 0–39 SELL
+      <section style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        <div className="hero">
+          <div>
+            <div className="hero-eyebrow fade-in">Card Market Intelligence</div>
+            <h1 className="fade-in">
+              THE <span className="accent">EDGE</span> SERIOUS TRADERS NEED
+            </h1>
+            <p className="hero-sub fade-in">
+              Bloomberg Terminal meets card collecting. Real-time eBay comps, graded card signals, 1/1 pull tracking, and MVP odds — all in one platform built for collectors who trade to win.
+            </p>
+            <div className="hero-cta fade-in">
+              <button className="btn-primary" onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}>
+                Get Early Access
+              </button>
+              <button className="btn-secondary">View Features →</button>
             </div>
           </div>
 
-          {/* Pillars panel */}
-          <div style={{ background: "#020202", padding: "48px" }}>
-            <div
-              style={{
-                fontSize: "10px",
-                letterSpacing: "0.2em",
-                color: "#1A6B1A",
-                textTransform: "uppercase",
-                marginBottom: "32px",
-              }}
-            >
-              PILLAR BREAKDOWN
-            </div>
-
-            {pillars.map((p) => (
-              <div key={p.label} style={{ marginBottom: "24px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "6px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.15em",
-                      color: "#39FF14",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {p.label}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      letterSpacing: "0.1em",
-                      color: "#1A6B1A",
-                    }}
-                  >
-                    {p.weight}% · {p.score}/100
-                  </span>
-                </div>
-                <div
-                  style={{
-                    height: "2px",
-                    background: "#0D2B0D",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "2px",
-                      background: "#39FF14",
-                      width: `${p.score}%`,
-                      boxShadow: "0 0 6px rgba(57,255,20,0.5)",
-                    }}
-                  />
-                </div>
+          <div className="hero-visual">
+            <div className="card-terminal">
+              <div className="terminal-header">
+                <div className="terminal-title">Wemby Card Tracker · Live Feed</div>
+                <div className="live-dot">LIVE</div>
               </div>
-            ))}
+              {cardRows.map((row, i) => (
+                <div className="card-row" key={i}>
+                  <div>
+                    <div className="card-name">{row.name}</div>
+                    <div className="card-detail">{row.detail}</div>
+                  </div>
+                  <div className="card-price">
+                    <div className="price">{row.price}</div>
+                    <div className={`change ${row.dir}`}>{row.change}</div>
+                  </div>
+                </div>
+              ))}
+              <div className="mini-chart">
+                <div className="chart-label">30-Day Price Index · Wemby Portfolio</div>
+                <div className="chart-bars" id="chartBars"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section
-        style={{
-          padding: "80px 48px",
-          maxWidth: "1100px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "2px",
-            background: "#0D2B0D",
-            border: "1px solid #0D2B0D",
-          }}
-        >
-          {[
-            {
-              num: "01",
-              title: "Real-Time Market Data",
-              body: "Live eBay sales feed and price history across every player, set, and grade. No more guessing what a card is worth.",
-            },
-            {
-              num: "02",
-              title: "Portfolio Intelligence",
-              body: "Track your entire collection with cost basis, current market value, and gain/loss on every card you own.",
-            },
-            {
-              num: "03",
-              title: "Edge Detection",
-              body: "Proprietary algorithms surface mispriced cards before the market corrects. Find the edge before everyone else.",
-            },
-          ].map((f) => (
-            <div
-              key={f.num}
-              style={{
-                background: "#020202",
-                padding: "40px 32px",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "10px",
-                  letterSpacing: "0.2em",
-                  color: "#0D2B0D",
-                  marginBottom: "20px",
-                }}
-              >
-                {f.num}
-              </div>
-              <div
-                style={{
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  letterSpacing: "0.05em",
-                  color: "#39FF14",
-                  marginBottom: "12px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {f.title}
-              </div>
-              <div
-                style={{
-                  fontSize: "13px",
-                  lineHeight: 1.7,
-                  color: "#1A6B1A",
-                }}
-              >
-                {f.body}
-              </div>
+      <div className="stats-section">
+        <div className="stat-box"><div className="stat-num">500<span>K+</span></div><div className="stat-label">Cards Tracked</div></div>
+        <div className="stat-box"><div className="stat-num"><span>$</span>2.4M</div><div className="stat-label">Sales Indexed Daily</div></div>
+        <div className="stat-box"><div className="stat-num">1<span>/1</span></div><div className="stat-label">Pull Registry Active</div></div>
+        <div className="stat-box"><div className="stat-num">RT<span>+</span></div><div className="stat-label">Real-Time eBay Feed</div></div>
+      </div>
+
+      <section className="features-section" id="features">
+        <div className="section-header">
+          <div>
+            <div className="section-eyebrow">Platform Features</div>
+            <div className="section-title">BUILT FOR<br />TRADERS</div>
+          </div>
+        </div>
+        <div className="feature-grid">
+          {features.map((f) => (
+            <div className="feature-card" key={f.num}>
+              <div className="feature-num">{f.num}</div>
+              <div className="feature-icon">{f.icon}</div>
+              <div className="feature-title">{f.title}</div>
+              <div className="feature-desc">{f.desc}</div>
+              <div className={`feature-tag${f.live ? " live" : ""}`}>{f.tag}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer
-        style={{
-          borderTop: "1px solid #0D2B0D",
-          padding: "32px 48px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          maxWidth: "1100px",
-          margin: "0 auto",
-        }}
-      >
-        <span
-          style={{
-            fontSize: "13px",
-            fontWeight: 700,
-            letterSpacing: "0.2em",
-            color: "#39FF14",
-            textTransform: "uppercase",
-          }}
-        >
-          SLAB<span style={{ color: "#1A6B1A" }}>STREET</span>
-        </span>
-        <span style={{ fontSize: "11px", color: "#0D2B0D", letterSpacing: "0.1em" }}>
-          © 2026 SLABSTREET. ALL RIGHTS RESERVED.
-        </span>
+      <section className="waitlist-section" id="waitlist">
+        <div className="waitlist-title">GET EARLY ACCESS</div>
+        <div className="waitlist-sub">Be first on the platform when we launch.</div>
+        <div className="waitlist-form">
+          <input className="waitlist-input" type="email" placeholder="your@email.com" />
+          <button className="waitlist-btn">Join Waitlist</button>
+        </div>
+      </section>
+
+      <footer>
+        <div className="footer-logo">SLAB<span>STREET</span></div>
+        <div className="footer-copy">© 2026 Slab Street · slabstreet.io · All rights reserved</div>
       </footer>
-    </main>
+    </>
   );
 }

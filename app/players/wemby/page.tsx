@@ -95,11 +95,24 @@ export default function WembyPage() {
               VICTOR<br />WEMBANYAMA
             </div>
           </div>
+
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--muted)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
-              SLAB SCORE™
+            <div style={{
+              fontFamily: "var(--display)",
+              fontSize: "clamp(28px, 3vw, 42px)",
+              letterSpacing: "0.08em",
+              color: "var(--text)",
+              marginBottom: "4px",
+            }}>
+              SLAB SCORE<span style={{ color: "var(--green)" }}>™</span>
             </div>
-            <div style={{ fontFamily: "var(--display)", fontSize: "112px", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
+            <div style={{
+              fontFamily: "var(--display)",
+              fontSize: "112px",
+              lineHeight: 1,
+              color: "var(--green)",
+              textShadow: "0 0 40px rgba(0,255,135,0.3)",
+            }}>
               {slabScore}
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>

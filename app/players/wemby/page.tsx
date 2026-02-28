@@ -97,21 +97,32 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
   const padB = 32;
   const chartW = W - padL - padR;
   const chartH = H - padT - padB;
+
+  const scores = data.map(d => d.score);
+  const dataMin = Math.min(...scores);
+  const dataMax = Math.max(...scores);
+  const buffer = 8;
+  const yMin = Math.max(0, dataMin - buffer);
+  const yMax = Math.min(100, dataMax + buffer);
+  const yRange = yMax - yMin;
+
   const xStep = chartW / (data.length - 1);
   const points = data.map((d, i) => ({
     x: padL + i * xStep,
-    y: padT + chartH - (d.score / 100) * chartH,
+    y: padT + chartH - ((d.score - yMin) / yRange) * chartH,
     ...d,
   }));
+
   const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
   const areaD = `${pathD} L ${points[points.length - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
-  const yLabels = [0, 25, 50, 75, 100];
+
+  const yLabels = Array.from({ length: 5 }, (_, i) => Math.round(yMin + (yRange / 4) * i));
   const showEvery = data.length > 12 ? Math.ceil(data.length / 8) : 1;
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
       {yLabels.map(v => {
-        const y = padT + chartH - (v / 100) * chartH;
+        const y = padT + chartH - ((v - yMin) / yRange) * chartH;
         return (
           <g key={v}>
             <line x1={padL} x2={W - padR} y1={y} y2={y} stroke="#1e2530" strokeWidth="1" />
@@ -121,12 +132,12 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
       })}
       <defs>
         <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#00ff87" stopOpacity="0.15" />
+          <stop offset="0%" stopColor="#00ff87" stopOpacity="0.2" />
           <stop offset="100%" stopColor="#00ff87" stopOpacity="0" />
         </linearGradient>
       </defs>
       <path d={areaD} fill="url(#areaGrad)" />
-      <path d={pathD} fill="none" stroke="#00ff87" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      <path d={pathD} fill="none" stroke="#00ff87" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
       {points.map((p, i) => (
         i % showEvery === 0 && (
           <g key={i}>
@@ -140,7 +151,6 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
   );
 }
 
-const section = { marginBottom: "40px" };
 const sectionLabel = {
   fontFamily: "var(--mono)",
   fontSize: "11px",
@@ -201,7 +211,6 @@ export default function WembyPage() {
             </div>
           </div>
 
-          {/* CHART */}
           <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "clamp(16px, 3vw, 24px)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
               <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
@@ -234,7 +243,6 @@ export default function WembyPage() {
             <SlabScoreChart drill={drill} />
           </div>
 
-          {/* PILLARS */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
             {pillars.map(p => (
               <div key={p.label}>
@@ -251,7 +259,6 @@ export default function WembyPage() {
         </div>
       </div>
 
-      {/* STATS BAR */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", borderBottom: "1px solid var(--border)" }}>
         {stats.map((s, i) => (
           <div key={s.label} style={{
@@ -265,11 +272,10 @@ export default function WembyPage() {
         ))}
       </div>
 
-      {/* MAIN CONTENT */}
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "clamp(24px, 5vw, 48px)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "40px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
 
-          <div style={section}>
+          <div>
             <div style={sectionLabel}>CARD LISTINGS</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {cards.map((c, i) => (
@@ -295,7 +301,7 @@ export default function WembyPage() {
             </div>
           </div>
 
-          <div style={section}>
+          <div>
             <div style={sectionLabel}>RECENT SALES</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {recentSales.map((s, i) => (
@@ -311,7 +317,7 @@ export default function WembyPage() {
             </div>
           </div>
 
-          <div style={section}>
+          <div>
             <div style={sectionLabel}>BETTING ODDS · MOMENTUM SIGNALS</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {odds.map((o, i) => (
@@ -326,7 +332,7 @@ export default function WembyPage() {
             </div>
           </div>
 
-          <div style={section}>
+          <div>
             <div style={sectionLabel}>RECENT NEWS</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {news.map((n, i) => (

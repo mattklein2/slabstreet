@@ -80,8 +80,8 @@ export default function Home() {
         </div>
         <div className="nav-right">
           <a href="#features" className="nav-link">Features</a>
-          <button className="btn-early" onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}>
-            Join Waitlist
+          <button className="btn-early" onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}>
+            Learn More
           </button>
         </div>
       </nav>
@@ -104,12 +104,7 @@ export default function Home() {
             padding: "10px 16px",
             transition: "border-color 0.2s",
           }}>
-            <span style={{
-              fontFamily: "var(--mono)",
-              fontSize: "14px",
-              color: "var(--muted)",
-              flexShrink: 0,
-            }}>⌕</span>
+            <span style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--muted)", flexShrink: 0 }}>⌕</span>
             <input
               type="text"
               value={query}
@@ -131,29 +126,9 @@ export default function Home() {
             {query.length > 0 && (
               <button
                 onClick={() => setQuery("")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "var(--muted)",
-                  cursor: "pointer",
-                  fontFamily: "var(--mono)",
-                  fontSize: "16px",
-                  padding: "0 4px",
-                  flexShrink: 0,
-                }}
+                style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", fontFamily: "var(--mono)", fontSize: "16px", padding: "0 4px", flexShrink: 0 }}
               >×</button>
             )}
-            <span style={{
-              fontFamily: "var(--mono)",
-              fontSize: "9px",
-              color: "var(--muted)",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              flexShrink: 0,
-              display: "none",
-            }}
-              className="search-hint"
-            >PLAYER / TEAM / CARD</span>
           </div>
 
           {results.length > 0 && (
@@ -185,38 +160,12 @@ export default function Home() {
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
-                    <span style={{
-                      fontFamily: "var(--mono)",
-                      fontSize: "10px",
-                      color: "var(--muted)",
-                      letterSpacing: "0.1em",
-                      flexShrink: 0,
-                    }}>{p.team}</span>
-                    <span style={{
-                      fontFamily: "var(--display)",
-                      fontSize: "clamp(16px, 4vw, 22px)",
-                      color: "var(--text)",
-                      letterSpacing: "0.05em",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}>{p.name.toUpperCase()}</span>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.1em", flexShrink: 0 }}>{p.team}</span>
+                    <span style={{ fontFamily: "var(--display)", fontSize: "clamp(16px, 4vw, 22px)", color: "var(--text)", letterSpacing: "0.05em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name.toUpperCase()}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-                    <span style={{
-                      fontFamily: "var(--mono)",
-                      fontSize: "11px",
-                      color: "var(--green)",
-                      letterSpacing: "0.1em",
-                    }}>SS {p.score}</span>
-                    <span style={{
-                      fontFamily: "var(--mono)",
-                      fontSize: "10px",
-                      letterSpacing: "0.15em",
-                      padding: "3px 10px",
-                      border: "1px solid var(--green)",
-                      color: "var(--green)",
-                    }}>{p.signal}</span>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--green)", letterSpacing: "0.1em" }}>SS {p.score}</span>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.15em", padding: "3px 10px", border: "1px solid var(--green)", color: "var(--green)" }}>{p.signal}</span>
                   </div>
                 </div>
               ))}
@@ -236,10 +185,12 @@ export default function Home() {
               Bloomberg Terminal meets card collecting. Real-time eBay comps, graded card signals, 1/1 pull tracking, and MVP odds — all in one platform built for collectors who trade to win.
             </p>
             <div className="hero-cta fade-in">
-              <button className="btn-primary" onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}>
-                Get Early Access
+              <button className="btn-primary" onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}>
+                See Features
               </button>
-              <button className="btn-secondary">View Features →</button>
+              <button className="btn-secondary" onClick={() => (document.querySelector("input") as HTMLInputElement)?.focus()}>
+                Search Players →
+              </button>
             </div>
           </div>
 
@@ -294,15 +245,6 @@ export default function Home() {
               <div className={`feature-tag${f.live ? " live" : ""}`}>{f.tag}</div>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="waitlist-section" id="waitlist">
-        <div className="waitlist-title">GET EARLY ACCESS</div>
-        <div className="waitlist-sub">Be first on the platform when we launch.</div>
-        <div className="waitlist-form">
-          <input className="waitlist-input" type="email" placeholder="your@email.com" />
-          <button className="waitlist-btn">Join Waitlist</button>
         </div>
       </section>
 

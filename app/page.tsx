@@ -1,5 +1,6 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const tickerItems = [
   { label: "WEMBY AUTO /25", val: "$2,840", change: "+8.4%", dir: "up" },
@@ -27,7 +28,15 @@ const features = [
 
 const chartHeights = [30,35,28,40,38,45,42,50,47,55,52,48,58,62,60,68,65,72,70,75,73,80,78,85,82,88,90,87,92,96];
 
+const PLAYERS = [
+  { name: "Victor Wembanyama", team: "SAS", slug: "wemby", score: 74, signal: "BUY" },
+];
+
 export default function Home() {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<typeof PLAYERS>([]);
+
   useEffect(() => {
     const bars = document.getElementById("chartBars");
     if (!bars) return;
@@ -40,6 +49,14 @@ export default function Home() {
       bars.appendChild(bar);
     });
   }, []);
+
+  useEffect(() => {
+    if (query.trim().length < 2) { setResults([]); return; }
+    const q = query.toLowerCase();
+    setResults(PLAYERS.filter(p =>
+      p.name.toLowerCase().includes(q) || p.slug.includes(q) || p.team.toLowerCase().includes(q)
+    ));
+  }, [query]);
 
   return (
     <>
@@ -67,6 +84,114 @@ export default function Home() {
           </button>
         </div>
       </nav>
+
+      {/* SEARCH BAR */}
+      <div style={{
+        borderBottom: "1px solid var(--border)",
+        background: "var(--surface)",
+        padding: "12px 48px",
+        position: "relative",
+        zIndex: 50,
+      }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{
+              fontFamily: "var(--mono)",
+              fontSize: "10px",
+              letterSpacing: "0.15em",
+              color: "var(--muted)",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+            }}>
+              SEARCH PLAYER / TEAM / CARD
+            </span>
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="e.g. Wembanyama, SAS, Prizm Silver..."
+              style={{
+                flex: 1,
+                background: "transparent",
+                border: "none",
+                borderBottom: "1px solid var(--border)",
+                padding: "6px 0",
+                fontFamily: "var(--mono)",
+                fontSize: "13px",
+                color: "var(--text)",
+                outline: "none",
+              }}
+            />
+            <span style={{
+              fontFamily: "var(--mono)",
+              fontSize: "10px",
+              color: "var(--muted)",
+            }}>⌕</span>
+          </div>
+
+          {results.length > 0 && (
+            <div style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderTop: "none",
+              zIndex: 200,
+            }}>
+              {results.map(p => (
+                <div
+                  key={p.slug}
+                  onClick={() => router.push(`/players/${p.slug}`)}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 20px",
+                    cursor: "pointer",
+                    borderBottom: "1px solid var(--border)",
+                    transition: "background 0.15s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#0f1318")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                    <span style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: "10px",
+                      color: "var(--muted)",
+                      letterSpacing: "0.1em",
+                    }}>{p.team}</span>
+                    <span style={{
+                      fontFamily: "var(--display)",
+                      fontSize: "18px",
+                      color: "var(--text)",
+                      letterSpacing: "0.05em",
+                    }}>{p.name.toUpperCase()}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                    <span style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: "11px",
+                      color: "var(--green)",
+                      letterSpacing: "0.1em",
+                    }}>SLAB SCORE {p.score}</span>
+                    <span style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: "10px",
+                      letterSpacing: "0.15em",
+                      padding: "3px 10px",
+                      border: "1px solid var(--green)",
+                      color: "var(--green)",
+                    }}>{p.signal}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       <section style={{ maxWidth: "1400px", margin: "0 auto" }}>
         <div className="hero">

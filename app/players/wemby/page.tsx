@@ -71,7 +71,7 @@ export default function WembyPage() {
             onClick={() => router.push("/")}
             style={{
               fontFamily: "var(--mono)",
-              fontSize: "11px",
+              fontSize: "13px",
               color: "var(--muted)",
               background: "none",
               border: "none",
@@ -88,23 +88,23 @@ export default function WembyPage() {
       <div style={{ borderBottom: "1px solid var(--border)", padding: "48px", maxWidth: "1400px", margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "12px" }}>
               SAS · CENTER · #1
             </div>
-            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(48px, 6vw, 80px)", lineHeight: 0.95, letterSpacing: "0.02em", color: "var(--text)" }}>
+            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(56px, 7vw, 96px)", lineHeight: 0.95, letterSpacing: "0.02em", color: "var(--text)" }}>
               VICTOR<br />WEMBANYAMA
             </div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--muted)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
               SLAB SCORE™
             </div>
-            <div style={{ fontFamily: "var(--display)", fontSize: "96px", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
+            <div style={{ fontFamily: "var(--display)", fontSize: "112px", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
               {slabScore}
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
-              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--green)", boxShadow: "0 0 8px var(--green)" }} />
-              <span style={{ fontFamily: "var(--mono)", fontSize: "13px", letterSpacing: "0.25em", color: "var(--green)", fontWeight: 700 }}>{signal}</span>
+              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--green)", boxShadow: "0 0 8px var(--green)" }} />
+              <span style={{ fontFamily: "var(--mono)", fontSize: "16px", letterSpacing: "0.25em", color: "var(--green)", fontWeight: 700 }}>{signal}</span>
             </div>
           </div>
         </div>
@@ -112,14 +112,13 @@ export default function WembyPage() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "24px", marginTop: "48px" }}>
           {pillars.map(p => (
             <div key={p.label}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{p.label}</span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)" }}>{p.score}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{p.label}</span>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--green)", fontWeight: 600 }}>{p.score}</span>
               </div>
               <div style={{ height: "2px", background: "var(--border)" }}>
                 <div style={{ height: "2px", background: "var(--green)", width: `${p.score}%`, boxShadow: "0 0 6px rgba(0,255,135,0.4)" }} />
               </div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--muted)", marginTop: "4px" }}>{p.weight}% WEIGHT</div>
             </div>
           ))}
         </div>
@@ -127,9 +126,9 @@ export default function WembyPage() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", borderBottom: "1px solid var(--border)" }}>
         {stats.map((s, i) => (
-          <div key={s.label} style={{ padding: "24px 32px", borderRight: i < stats.length - 1 ? "1px solid var(--border)" : "none" }}>
-            <div style={{ fontFamily: "var(--display)", fontSize: "36px", color: "var(--text)", marginBottom: "4px" }}>{s.val}</div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--muted)", letterSpacing: "0.15em" }}>{s.label} · 2024-25</div>
+          <div key={s.label} style={{ padding: "28px 32px", borderRight: i < stats.length - 1 ? "1px solid var(--border)" : "none" }}>
+            <div style={{ fontFamily: "var(--display)", fontSize: "44px", color: "var(--text)", marginBottom: "6px" }}>{s.val}</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em" }}>{s.label} · 2024-25</div>
           </div>
         ))}
       </div>
@@ -139,46 +138,46 @@ export default function WembyPage() {
 
           <div>
             <div style={{ marginBottom: "48px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
                 CARD LISTINGS
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
                 {cards.map((c, i) => (
                   <div key={i}
-                    style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", alignItems: "center", padding: "16px 20px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
+                    style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", alignItems: "center", padding: "18px 20px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
                     onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
                   >
                     <div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", marginBottom: "3px" }}>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--text)", marginBottom: "4px" }}>
                         {c.name} {c.serial && <span style={{ color: "var(--green)" }}>{c.serial}</span>}
                       </div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{c.grade} · Pop: {c.pop}</div>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--muted)" }}>{c.grade} · Pop: {c.pop}</div>
                     </div>
-                    <span style={{ fontFamily: "var(--mono)", fontSize: "9px", letterSpacing: "0.15em", padding: "2px 8px", border: "1px solid var(--border)", color: "var(--muted)", textTransform: "uppercase" }}>{c.tier}</span>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", fontWeight: 600, textAlign: "right" }}>{c.price}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: c.dir === "up" ? "var(--green)" : "var(--red)", textAlign: "right", minWidth: "100px" }}>{c.change}</div>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.15em", padding: "3px 10px", border: "1px solid var(--border)", color: "var(--muted)", textTransform: "uppercase" }}>{c.tier}</span>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "15px", color: "var(--text)", fontWeight: 600, textAlign: "right" }}>{c.price}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: c.dir === "up" ? "var(--green)" : "var(--red)", textAlign: "right", minWidth: "110px" }}>{c.change}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
                 RECENT SALES
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", padding: "10px 20px", background: "var(--surface)" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", padding: "12px 20px", background: "var(--surface)" }}>
                   {["CARD", "GRADE", "PRICE", "DATE"].map(h => (
-                    <div key={h} style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--muted)", letterSpacing: "0.15em" }}>{h}</div>
+                    <div key={h} style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em" }}>{h}</div>
                   ))}
                 </div>
                 {recentSales.map((s, i) => (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", alignItems: "center", padding: "14px 20px", background: "var(--bg)" }}>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--text)" }}>{s.card}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{s.grade}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", fontWeight: 600 }}>{s.price}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{s.date}</div>
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", alignItems: "center", padding: "16px 20px", background: "var(--bg)" }}>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)" }}>{s.card}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--muted)" }}>{s.grade}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--green)", fontWeight: 600 }}>{s.price}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--muted)" }}>{s.date}</div>
                   </div>
                 ))}
               </div>
@@ -187,37 +186,37 @@ export default function WembyPage() {
 
           <div>
             <div style={{ marginBottom: "32px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
                 BETTING ODDS · MOMENTUM SIGNALS
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
                 {odds.map((o, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 16px", background: "var(--bg)" }}>
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px", background: "var(--bg)" }}>
                     <div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--text)", marginBottom: "2px" }}>{o.market}</div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--muted)" }}>{o.book}</div>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>{o.market}</div>
+                      <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{o.book}</div>
                     </div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "14px", fontWeight: 600, color: o.dir === "up" ? "var(--green)" : "var(--text)" }}>{o.odds}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "18px", fontWeight: 600, color: o.dir === "up" ? "var(--green)" : "var(--text)" }}>{o.odds}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
                 RECENT NEWS
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
                 {news.map((n, i) => (
                   <div key={i}
-                    style={{ padding: "16px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
+                    style={{ padding: "18px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
                     onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
                   >
-                    <div style={{ fontFamily: "var(--body)", fontSize: "12px", color: "var(--text)", lineHeight: 1.5, marginBottom: "6px" }}>{n.headline}</div>
+                    <div style={{ fontFamily: "var(--body)", fontSize: "14px", color: "var(--text)", lineHeight: 1.5, marginBottom: "8px" }}>{n.headline}</div>
                     <div style={{ display: "flex", gap: "12px" }}>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--green)", letterSpacing: "0.1em" }}>{n.source}</span>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: "9px", color: "var(--muted)" }}>{n.time}</span>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--green)", letterSpacing: "0.1em" }}>{n.source}</span>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{n.time}</span>
                     </div>
                   </div>
                 ))}

@@ -36,6 +36,7 @@ export default function Home() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<typeof PLAYERS>([]);
+  const [focused, setFocused] = useState(false);
 
   useEffect(() => {
     const bars = document.getElementById("chartBars");
@@ -89,44 +90,70 @@ export default function Home() {
       <div style={{
         borderBottom: "1px solid var(--border)",
         background: "var(--surface)",
-        padding: "12px 48px",
+        padding: "12px 24px",
         position: "relative",
         zIndex: 50,
       }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            background: "var(--bg)",
+            border: `1px solid ${focused ? "var(--green)" : "var(--border)"}`,
+            padding: "10px 16px",
+            transition: "border-color 0.2s",
+          }}>
             <span style={{
               fontFamily: "var(--mono)",
-              fontSize: "10px",
-              letterSpacing: "0.15em",
+              fontSize: "14px",
               color: "var(--muted)",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-            }}>
-              SEARCH PLAYER / TEAM / CARD
-            </span>
+              flexShrink: 0,
+            }}>⌕</span>
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="e.g. Wembanyama, SAS, Prizm Silver..."
+              onFocus={() => setFocused(true)}
+              onBlur={() => setTimeout(() => setFocused(false), 150)}
+              placeholder="Search player, team, or card..."
               style={{
                 flex: 1,
                 background: "transparent",
                 border: "none",
-                borderBottom: "1px solid var(--border)",
-                padding: "6px 0",
                 fontFamily: "var(--mono)",
-                fontSize: "13px",
+                fontSize: "14px",
                 color: "var(--text)",
                 outline: "none",
+                minWidth: 0,
               }}
             />
+            {query.length > 0 && (
+              <button
+                onClick={() => setQuery("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--muted)",
+                  cursor: "pointer",
+                  fontFamily: "var(--mono)",
+                  fontSize: "16px",
+                  padding: "0 4px",
+                  flexShrink: 0,
+                }}
+              >×</button>
+            )}
             <span style={{
               fontFamily: "var(--mono)",
-              fontSize: "10px",
+              fontSize: "9px",
               color: "var(--muted)",
-            }}>⌕</span>
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              flexShrink: 0,
+              display: "none",
+            }}
+              className="search-hint"
+            >PLAYER / TEAM / CARD</span>
           </div>
 
           {results.length > 0 && (
@@ -136,7 +163,7 @@ export default function Home() {
               left: 0,
               right: 0,
               background: "var(--surface)",
-              border: "1px solid var(--border)",
+              border: "1px solid var(--green)",
               borderTop: "none",
               zIndex: 200,
             }}>
@@ -148,35 +175,40 @@ export default function Home() {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: "14px 20px",
+                    padding: "16px",
                     cursor: "pointer",
                     borderBottom: "1px solid var(--border)",
                     transition: "background 0.15s",
+                    gap: "12px",
                   }}
                   onMouseEnter={e => (e.currentTarget.style.background = "#0f1318")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0 }}>
                     <span style={{
                       fontFamily: "var(--mono)",
                       fontSize: "10px",
                       color: "var(--muted)",
                       letterSpacing: "0.1em",
+                      flexShrink: 0,
                     }}>{p.team}</span>
                     <span style={{
                       fontFamily: "var(--display)",
-                      fontSize: "18px",
+                      fontSize: "clamp(16px, 4vw, 22px)",
                       color: "var(--text)",
                       letterSpacing: "0.05em",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
                     }}>{p.name.toUpperCase()}</span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
                     <span style={{
                       fontFamily: "var(--mono)",
                       fontSize: "11px",
                       color: "var(--green)",
                       letterSpacing: "0.1em",
-                    }}>SLAB SCORE {p.score}</span>
+                    }}>SS {p.score}</span>
                     <span style={{
                       fontFamily: "var(--mono)",
                       fontSize: "10px",

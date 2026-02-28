@@ -97,17 +97,14 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
   const padB = 32;
   const chartW = W - padL - padR;
   const chartH = H - padT - padB;
-
   const xStep = chartW / (data.length - 1);
   const points = data.map((d, i) => ({
     x: padL + i * xStep,
     y: padT + chartH - (d.score / 100) * chartH,
     ...d,
   }));
-
   const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
   const areaD = `${pathD} L ${points[points.length - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
-
   const yLabels = [0, 25, 50, 75, 100];
   const showEvery = data.length > 12 ? Math.ceil(data.length / 8) : 1;
 
@@ -118,7 +115,7 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
         return (
           <g key={v}>
             <line x1={padL} x2={W - padR} y1={y} y2={y} stroke="#1e2530" strokeWidth="1" />
-            <text x={padL - 6} y={y + 4} textAnchor="end" fill="#4a5568" fontSize="10" fontFamily="IBM Plex Mono">{v}</text>
+            <text x={padL - 6} y={y + 4} textAnchor="end" fill="#8899aa" fontSize="10" fontFamily="IBM Plex Mono">{v}</text>
           </g>
         );
       })}
@@ -134,7 +131,7 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
         i % showEvery === 0 && (
           <g key={i}>
             <circle cx={p.x} cy={p.y} r="3" fill="#00ff87" />
-            <text x={p.x} y={padT + chartH + 20} textAnchor="middle" fill="#4a5568" fontSize="9" fontFamily="IBM Plex Mono">{p.label}</text>
+            <text x={p.x} y={padT + chartH + 20} textAnchor="middle" fill="#8899aa" fontSize="9" fontFamily="IBM Plex Mono">{p.label}</text>
           </g>
         )
       ))}
@@ -142,6 +139,18 @@ function SlabScoreChart({ drill }: { drill: DrillDown }) {
     </svg>
   );
 }
+
+const section = { marginBottom: "40px" };
+const sectionLabel = {
+  fontFamily: "var(--mono)",
+  fontSize: "11px",
+  color: "var(--green)",
+  letterSpacing: "0.2em",
+  textTransform: "uppercase" as const,
+  marginBottom: "16px",
+  paddingBottom: "12px",
+  borderBottom: "1px solid var(--border)",
+};
 
 export default function WembyPage() {
   const router = useRouter();
@@ -159,186 +168,227 @@ export default function WembyPage() {
         <div className="nav-right">
           <button
             onClick={() => router.push("/")}
-            style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--muted)", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", textTransform: "uppercase" }}
+            style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--muted)", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", textTransform: "uppercase" }}
           >
             ← BACK
           </button>
         </div>
       </nav>
 
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "48px", maxWidth: "1400px", margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "12px" }}>
-              SAS · CENTER · #1
-            </div>
-            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(56px, 7vw, 96px)", lineHeight: 0.95, letterSpacing: "0.02em", color: "var(--text)" }}>
-              VICTOR<br />WEMBANYAMA
-            </div>
-          </div>
+      {/* PLAYER HEADER */}
+      <div style={{ borderBottom: "1px solid var(--border)", padding: "clamp(24px, 5vw, 48px)", maxWidth: "1400px", margin: "0 auto" }}>
 
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(28px, 3vw, 42px)", letterSpacing: "0.08em", color: "var(--text)", marginBottom: "4px" }}>
-              SLAB SCORE<span style={{ color: "var(--green)" }}>™</span>
-            </div>
-            <div style={{ fontFamily: "var(--display)", fontSize: "112px", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
-              {slabScore}
-            </div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
-              <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--green)", boxShadow: "0 0 8px var(--green)" }} />
-              <span style={{ fontFamily: "var(--mono)", fontSize: "16px", letterSpacing: "0.25em", color: "var(--green)", fontWeight: 700 }}>{signal}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* HISTORICAL CHART */}
-        <div style={{ marginTop: "40px", background: "var(--surface)", border: "1px solid var(--border)", padding: "24px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-              SLAB SCORE HISTORY
-            </div>
-            <div style={{ display: "flex", gap: "2px" }}>
-              {(["daily", "weekly", "monthly", "yearly"] as DrillDown[]).map(d => (
-                <button
-                  key={d}
-                  onClick={() => setDrill(d)}
-                  style={{
-                    fontFamily: "var(--mono)",
-                    fontSize: "10px",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    padding: "6px 14px",
-                    background: drill === d ? "var(--green)" : "transparent",
-                    color: drill === d ? "var(--bg)" : "var(--muted)",
-                    border: "1px solid",
-                    borderColor: drill === d ? "var(--green)" : "var(--border)",
-                    cursor: "pointer",
-                    transition: "all 0.15s",
-                  }}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-          </div>
-          <SlabScoreChart drill={drill} />
-        </div>
-
-        {/* PILLARS */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "24px", marginTop: "32px" }}>
-          {pillars.map(p => (
-            <div key={p.label}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{p.label}</span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--green)", fontWeight: 600 }}>{p.score}</span>
+        {/* NAME + SCORE — stacks on mobile, side by side on desktop */}
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "24px",
+        }}>
+          <div style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            gap: "24px",
+          }}>
+            <div>
+              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px" }}>
+                SAS · CENTER · #1
               </div>
-              <div style={{ height: "2px", background: "var(--border)" }}>
-                <div style={{ height: "2px", background: "var(--green)", width: `${p.score}%`, boxShadow: "0 0 6px rgba(0,255,135,0.4)" }} />
+              <div style={{ fontFamily: "var(--display)", fontSize: "clamp(44px, 9vw, 96px)", lineHeight: 0.95, letterSpacing: "0.02em", color: "var(--text)" }}>
+                VICTOR<br />WEMBANYAMA
               </div>
             </div>
-          ))}
+
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontFamily: "var(--display)", fontSize: "clamp(22px, 3.5vw, 42px)", letterSpacing: "0.08em", color: "var(--text)", marginBottom: "4px" }}>
+                SLAB SCORE<span style={{ color: "var(--green)" }}>™</span>
+              </div>
+              <div style={{ fontFamily: "var(--display)", fontSize: "clamp(72px, 14vw, 112px)", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
+                {slabScore}
+              </div>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "6px" }}>
+                <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--green)", boxShadow: "0 0 8px var(--green)" }} />
+                <span style={{ fontFamily: "var(--mono)", fontSize: "15px", letterSpacing: "0.25em", color: "var(--green)", fontWeight: 700 }}>{signal}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* CHART */}
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "clamp(16px, 3vw, 24px)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+              <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                SLAB SCORE HISTORY
+              </div>
+              <div style={{ display: "flex", gap: "2px", flexWrap: "wrap" }}>
+                {(["daily", "weekly", "monthly", "yearly"] as DrillDown[]).map(d => (
+                  <button
+                    key={d}
+                    onClick={() => setDrill(d)}
+                    style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: "10px",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      padding: "6px 12px",
+                      background: drill === d ? "var(--green)" : "transparent",
+                      color: drill === d ? "var(--bg)" : "var(--muted)",
+                      border: "1px solid",
+                      borderColor: drill === d ? "var(--green)" : "var(--border)",
+                      cursor: "pointer",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <SlabScoreChart drill={drill} />
+          </div>
+
+          {/* PILLARS */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
+            {pillars.map(p => (
+              <div key={p.label} style={{ gridColumn: window?.innerWidth > 640 ? "auto" : "auto" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{p.label}</span>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", fontWeight: 600 }}>{p.score}</span>
+                </div>
+                <div style={{ height: "2px", background: "var(--border)" }}>
+                  <div style={{ height: "2px", background: "var(--green)", width: `${p.score}%`, boxShadow: "0 0 6px rgba(0,255,135,0.4)" }} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", borderBottom: "1px solid var(--border)" }}>
+      {/* STATS BAR */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", borderBottom: "1px solid var(--border)" }}>
         {stats.map((s, i) => (
-          <div key={s.label} style={{ padding: "28px 32px", borderRight: i < stats.length - 1 ? "1px solid var(--border)" : "none" }}>
-            <div style={{ fontFamily: "var(--display)", fontSize: "44px", color: "var(--text)", marginBottom: "6px" }}>{s.val}</div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em" }}>{s.label} · 2024-25</div>
+          <div key={s.label} style={{
+            padding: "20px 16px",
+            borderRight: (i + 1) % 3 !== 0 ? "1px solid var(--border)" : "none",
+            borderBottom: i < 3 ? "1px solid var(--border)" : "none",
+          }}>
+            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(28px, 5vw, 44px)", color: "var(--text)", marginBottom: "4px" }}>{s.val}</div>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.12em" }}>{s.label} · 2024-25</div>
           </div>
         ))}
       </div>
 
-      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "48px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: "48px" }}>
+      {/* MAIN CONTENT */}
+      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "clamp(24px, 5vw, 48px)" }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: "40px",
+        }}>
 
-          <div>
-            <div style={{ marginBottom: "48px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
-                CARD LISTINGS
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-                {cards.map((c, i) => (
-                  <div key={i}
-                    style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", alignItems: "center", padding: "18px 20px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
-                    onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
-                  >
-                    <div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--text)", marginBottom: "4px" }}>
-                        {c.name} {c.serial && <span style={{ color: "var(--green)" }}>{c.serial}</span>}
-                      </div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--muted)" }}>{c.grade} · Pop: {c.pop}</div>
+          {/* CARD LISTINGS */}
+          <div style={section}>
+            <div style={sectionLabel}>CARD LISTINGS</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
+              {cards.map((c, i) => (
+                <div key={i}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr auto",
+                    gap: "12px",
+                    alignItems: "center",
+                    padding: "16px",
+                    background: "var(--bg)",
+                    cursor: "pointer",
+                    transition: "background 0.15s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
+                >
+                  <div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>
+                      {c.name} {c.serial && <span style={{ color: "var(--green)" }}>{c.serial}</span>}
                     </div>
-                    <span style={{ fontFamily: "var(--mono)", fontSize: "11px", letterSpacing: "0.15em", padding: "3px 10px", border: "1px solid var(--border)", color: "var(--muted)", textTransform: "uppercase" }}>{c.tier}</span>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "15px", color: "var(--text)", fontWeight: 600, textAlign: "right" }}>{c.price}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: c.dir === "up" ? "var(--green)" : "var(--red)", textAlign: "right", minWidth: "110px" }}>{c.change}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>
+                      {c.grade} · Pop: {c.pop} ·{" "}
+                      <span style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase" }}>{c.tier}</span>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
-                RECENT SALES
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", padding: "12px 20px", background: "var(--surface)" }}>
-                  {["CARD", "GRADE", "PRICE", "DATE"].map(h => (
-                    <div key={h} style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em" }}>{h}</div>
-                  ))}
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--text)", fontWeight: 600, marginBottom: "4px" }}>{c.price}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: c.dir === "up" ? "var(--green)" : "var(--red)" }}>{c.change}</div>
+                  </div>
                 </div>
-                {recentSales.map((s, i) => (
-                  <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: "24px", alignItems: "center", padding: "16px 20px", background: "var(--bg)" }}>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)" }}>{s.card}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--muted)" }}>{s.grade}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--green)", fontWeight: 600 }}>{s.price}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--muted)" }}>{s.date}</div>
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
 
-          <div>
-            <div style={{ marginBottom: "32px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
-                BETTING ODDS · MOMENTUM SIGNALS
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-                {odds.map((o, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px", background: "var(--bg)" }}>
-                    <div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>{o.market}</div>
-                      <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{o.book}</div>
-                    </div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "18px", fontWeight: 600, color: o.dir === "up" ? "var(--green)" : "var(--text)" }}>{o.odds}</div>
+          {/* RECENT SALES */}
+          <div style={section}>
+            <div style={sectionLabel}>RECENT SALES</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
+              {recentSales.map((s, i) => (
+                <div key={i} style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto auto",
+                  gap: "12px",
+                  alignItems: "center",
+                  padding: "14px 16px",
+                  background: "var(--bg)",
+                }}>
+                  <div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", marginBottom: "3px" }}>{s.card}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{s.grade}</div>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "20px", paddingBottom: "12px", borderBottom: "1px solid var(--border)" }}>
-                RECENT NEWS
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-                {news.map((n, i) => (
-                  <div key={i}
-                    style={{ padding: "18px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
-                    onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
-                  >
-                    <div style={{ fontFamily: "var(--body)", fontSize: "14px", color: "var(--text)", lineHeight: 1.5, marginBottom: "8px" }}>{n.headline}</div>
-                    <div style={{ display: "flex", gap: "12px" }}>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--green)", letterSpacing: "0.1em" }}>{n.source}</span>
-                      <span style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{n.time}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--green)", fontWeight: 600 }}>{s.price}</div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{s.date}</div>
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* BETTING ODDS */}
+          <div style={section}>
+            <div style={sectionLabel}>BETTING ODDS · MOMENTUM SIGNALS</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
+              {odds.map((o, i) => (
+                <div key={i} style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "16px",
+                  background: "var(--bg)",
+                }}>
+                  <div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>{o.market}</div>
+                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{o.book}</div>
+                  </div>
+                  <div style={{ fontFamily: "var(--mono)", fontSize: "18px", fontWeight: 600, color: o.dir === "up" ? "var(--green)" : "var(--text)" }}>{o.odds}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* NEWS */}
+          <div style={section}>
+            <div style={sectionLabel}>RECENT NEWS</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
+              {news.map((n, i) => (
+                <div key={i}
+                  style={{ padding: "16px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
+                >
+                  <div style={{ fontFamily: "var(--body)", fontSize: "14px", color: "var(--text)", lineHeight: 1.5, marginBottom: "8px" }}>{n.headline}</div>
+                  <div style={{ display: "flex", gap: "12px" }}>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.1em" }}>{n.source}</span>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{n.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
 

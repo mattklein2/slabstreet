@@ -1,166 +1,479 @@
-"use client";
-import { useEffect } from "react";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
-const tickerItems = [
-  { label: "WEMBY AUTO /25", val: "$2,840", change: "+8.4%", dir: "up" },
-  { label: "WEMBY LOGOMAN 1/1", val: "UNACCOUNTED", change: "⚡ SIGNAL", dir: "up" },
-  { label: "WEMBY RC PSA 10", val: "$480", change: "-2.1%", dir: "down" },
-  { label: "MVP ODDS", val: "-320", change: "+DK", dir: "up" },
-  { label: "WEMBY PRIZM SILVER", val: "$220", change: "+12.7%", dir: "up" },
-  { label: "POP REPORT PSA 10", val: "847", change: "+23 NEW", dir: "up" },
-];
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-const cardRows = [
-  { name: "2023 Prizm Silver Auto /25", detail: "PSA 10 · Serial #14/25", price: "$2,840", change: "▲ +8.4% 7d", dir: "up" },
-  { name: "2023 Prizm RC Base PSA 10", detail: "Pop: 847 · /10 variant avail", price: "$480", change: "▼ -2.1% 7d", dir: "down" },
-  { name: "NT Logoman Auto 1/1", detail: "Status: UNACCOUNTED ⚡", price: "~$150K", change: "▲ BUY SIGNAL", dir: "up" },
-  { name: "2024 Hoops Prizm Gold /10", detail: "Serial #03/10 · BGS 9.5", price: "$1,200", change: "▲ +12.7% 7d", dir: "up" },
-];
-
-const features = [
-  { num: "01", icon: "📈", title: "Card Tracker", desc: "Price charts, trend signals, volume spikes, and edge alerts per card. Every eBay sale feeds directly into your dashboard in real time.", tag: "Live", live: true },
-  { num: "02", icon: "🧠", title: "Player Intel", desc: "MVP odds, game logs, stats, news feed, and card correlation tables. Know how performance moves card prices before the market does.", tag: "Live", live: true },
-  { num: "03", icon: "⚡", title: "Pull Tracker", desc: "Confirmed vs unaccounted 1/1 registry. The most powerful trading signal in the hobby — know the moment a key card surfaces publicly.", tag: "Live", live: true },
-  { num: "04", icon: "💼", title: "Portfolio Tracker", desc: "Cost basis, unrealized P&L, buy/sell signals, and year-end tax summary. Your entire collection valued in real time.", tag: "Coming Soon", live: false },
-  { num: "05", icon: "🔬", title: "Grade Decision Tool", desc: "Should you grade this card? ROI calculator weighs grading fees against pop report data and comparable sales. No more guessing.", tag: "Coming Soon", live: false },
-];
-
-const chartHeights = [30,35,28,40,38,45,42,50,47,55,52,48,58,62,60,68,65,72,70,75,73,80,78,85,82,88,90,87,92,96];
-
-export default function Home() {
-  useEffect(() => {
-    const bars = document.getElementById("chartBars");
-    if (!bars) return;
-    chartHeights.forEach((h, i) => {
-      const bar = document.createElement("div");
-      const isLast = i === chartHeights.length - 1;
-      const isActive = i > chartHeights.length - 8;
-      bar.className = "bar" + (isLast ? " highlight" : isActive ? " active" : "");
-      bar.style.height = h + "%";
-      bars.appendChild(bar);
-    });
-  }, []);
-
-  return (
-    <>
-      {/* TICKER */}
-      <div className="ticker-wrap">
-        <div className="ticker">
-          {[...tickerItems, ...tickerItems].map((item, i) => (
-            <div className="ticker-item" key={i}>
-              <span className="label">{item.label}</span>
-              <span className="val">{item.val}</span>
-              <span className={item.dir}>{item.change}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* NAV */}
-      <nav>
-        <div>
-          <div className="logo">SLAB<span>STREET</span></div>
-          <div className="nav-tag">Market Intelligence</div>
-        </div>
-        <div className="nav-right">
-          <a href="#features" className="nav-link">Features</a>
-          <button className="btn-early" onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}>
-            Join Waitlist
-          </button>
-        </div>
-      </nav>
-
-      {/* HERO */}
-      <section style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        <div className="hero">
-          <div>
-            <div className="hero-eyebrow fade-in">Card Market Intelligence</div>
-            <h1 className="fade-in">
-              THE <span className="accent">EDGE</span> SERIOUS TRADERS NEED
-            </h1>
-            <p className="hero-sub fade-in">
-              Bloomberg Terminal meets card collecting. Real-time eBay comps, graded card signals, 1/1 pull tracking, and MVP odds — all in one platform built for collectors who trade to win.
-            </p>
-            <div className="hero-cta fade-in">
-              <button className="btn-primary" onClick={() => document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })}>
-                Get Early Access
-              </button>
-              <button className="btn-secondary">View Features →</button>
-            </div>
-          </div>
-
-          {/* TERMINAL MOCKUP */}
-          <div className="hero-visual">
-            <div className="card-terminal">
-              <div className="terminal-header">
-                <div className="terminal-title">Wemby Card Tracker · Live Feed</div>
-                <div className="live-dot">LIVE</div>
-              </div>
-              {cardRows.map((row, i) => (
-                <div className="card-row" key={i}>
-                  <div>
-                    <div className="card-name">{row.name}</div>
-                    <div className="card-detail">{row.detail}</div>
-                  </div>
-                  <div className="card-price">
-                    <div className="price">{row.price}</div>
-                    <div className={`change ${row.dir}`}>{row.change}</div>
-                  </div>
-                </div>
-              ))}
-              <div className="mini-chart">
-                <div className="chart-label">30-Day Price Index · Wemby Portfolio</div>
-                <div className="chart-bars" id="chartBars"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <div className="stats-section">
-        <div className="stat-box"><div className="stat-num">500<span>K+</span></div><div className="stat-label">Cards Tracked</div></div>
-        <div className="stat-box"><div className="stat-num"><span>$</span>2.4M</div><div className="stat-label">Sales Indexed Daily</div></div>
-        <div className="stat-box"><div className="stat-num">1<span>/1</span></div><div className="stat-label">Pull Registry Active</div></div>
-        <div className="stat-box"><div className="stat-num">RT<span>+</span></div><div className="stat-label">Real-Time eBay Feed</div></div>
-      </div>
-
-      {/* FEATURES */}
-      <section className="features-section" id="features">
-        <div className="section-header">
-          <div>
-            <div className="section-eyebrow">Platform Features</div>
-            <div className="section-title">BUILT FOR<br />TRADERS</div>
-          </div>
-        </div>
-        <div className="feature-grid">
-          {features.map((f) => (
-            <div className="feature-card" key={f.num}>
-              <div className="feature-num">{f.num}</div>
-              <div className="feature-icon">{f.icon}</div>
-              <div className="feature-title">{f.title}</div>
-              <div className="feature-desc">{f.desc}</div>
-              <div className={`feature-tag${f.live ? " live" : ""}`}>{f.tag}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* WAITLIST */}
-      <section className="waitlist-section" id="waitlist">
-        <div className="waitlist-title">GET EARLY ACCESS</div>
-        <div className="waitlist-sub">Be first on the platform when we launch.</div>
-        <div className="waitlist-form">
-          <input className="waitlist-input" type="email" placeholder="your@email.com" />
-          <button className="waitlist-btn">Join Waitlist</button>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer>
-        <div className="footer-logo">SLAB<span>STREET</span></div>
-        <div className="footer-copy">© 2026 Slab Street · slabstreet.io · All rights reserved</div>
-      </footer>
-    </>
-  );
+:root {
+  --bg: #090b0f;
+  --surface: #0f1318;
+  --border: #1e2530;
+  --green: #00ff87;
+  --green-dim: #00c96a;
+  --red: #ff3b5c;
+  --gold: #f0b429;
+  --text: #e8edf5;
+  --muted: #4a5568;
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body: 'IBM Plex Sans', sans-serif;
 }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  overflow-x: hidden;
+}
+
+.ticker-wrap {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  padding: 8px 0;
+}
+.ticker {
+  display: flex;
+  gap: 48px;
+  animation: ticker 30s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.ticker-item .label { color: var(--muted); }
+.ticker-item .val { color: var(--text); }
+.ticker-item .up { color: var(--green); }
+.ticker-item .down { color: var(--red); }
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 48px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(9,11,15,0.95);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.logo {
+  font-family: var(--display);
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+.logo span { color: var(--green); }
+.nav-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--text); }
+.btn-early {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border: 1px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-early:hover { background: var(--green); color: var(--bg); }
+
+.hero {
+  padding: 100px 48px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--green);
+}
+h1 {
+  font-family: var(--display);
+  font-size: clamp(64px, 7vw, 110px);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  margin-bottom: 24px;
+}
+h1 .accent { color: var(--green); }
+.hero-sub {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #8899aa;
+  max-width: 480px;
+  margin-bottom: 40px;
+}
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.btn-primary {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  background: var(--green);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--green-dim); }
+.btn-secondary {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.btn-secondary:hover { color: var(--text); }
+
+.hero-visual { position: relative; }
+.card-terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 24px;
+  position: relative;
+}
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.terminal-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.live-dot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+}
+.live-dot::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.card-row:last-of-type { border-bottom: none; }
+.card-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.card-detail {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+.card-price { text-align: right; }
+.price {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.change {
+  font-family: var(--mono);
+  font-size: 10px;
+}
+.change.up { color: var(--green); }
+.change.down { color: var(--red); }
+
+.mini-chart {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.chart-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 60px;
+}
+.bar {
+  flex: 1;
+  background: var(--border);
+  transition: background 0.2s;
+}
+.bar.active { background: #1a4a35; }
+.bar.highlight { background: var(--green); }
+
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat-box {
+  padding: 40px 48px;
+  border-right: 1px solid var(--border);
+}
+.stat-box:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--display);
+  font-size: 48px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.stat-num span { color: var(--green); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.features-section {
+  padding: 100px 48px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--display);
+  font-size: 56px;
+  line-height: 0.95;
+  color: var(--text);
+}
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+}
+.feature-card {
+  background: var(--bg);
+  padding: 40px 32px;
+  position: relative;
+  transition: background 0.2s;
+}
+.feature-card:hover { background: var(--surface); }
+.feature-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--border);
+  letter-spacing: 0.2em;
+  margin-bottom: 20px;
+}
+.feature-icon {
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+.feature-title {
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.feature-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.feature-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.feature-tag.live {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.waitlist-section {
+  padding: 100px 48px;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+.waitlist-title {
+  font-family: var(--display);
+  font-size: clamp(48px, 6vw, 80px);
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.waitlist-sub {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  letter-spacing: 0.05em;
+}
+.waitlist-form {
+  display: flex;
+  gap: 0;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.waitlist-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-right: none;
+  padding: 14px 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.waitlist-input:focus { border-color: var(--green); }
+.waitlist-input::placeholder { color: var(--muted); }
+.waitlist-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  background: var(--green);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.waitlist-btn:hover { background: var(--green-dim); }
+
+footer {
+  padding: 32px 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  font-family: var(--display);
+  font-size: 20px;
+  letter-spacing: 0.08em;
+}
+.footer-logo span { color: var(--green); }
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.8s ease forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in:nth-child(2) { animation-delay: 0.1s; }
+.fade-in:nth-child(3) { animation-delay: 0.2s; }

@@ -175,22 +175,9 @@ export default function WembyPage() {
         </div>
       </nav>
 
-      {/* PLAYER HEADER */}
       <div style={{ borderBottom: "1px solid var(--border)", padding: "clamp(24px, 5vw, 48px)", maxWidth: "1400px", margin: "0 auto" }}>
-
-        {/* NAME + SCORE — stacks on mobile, side by side on desktop */}
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "24px",
-        }}>
-          <div style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            gap: "24px",
-          }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: "24px" }}>
             <div>
               <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px" }}>
                 SAS · CENTER · #1
@@ -250,7 +237,7 @@ export default function WembyPage() {
           {/* PILLARS */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
             {pillars.map(p => (
-              <div key={p.label} style={{ gridColumn: window?.innerWidth > 640 ? "auto" : "auto" }}>
+              <div key={p.label}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                   <span style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{p.label}</span>
                   <span style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", fontWeight: 600 }}>{p.score}</span>
@@ -280,28 +267,14 @@ export default function WembyPage() {
 
       {/* MAIN CONTENT */}
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "clamp(24px, 5vw, 48px)" }}>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gap: "40px",
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "40px" }}>
 
-          {/* CARD LISTINGS */}
           <div style={section}>
             <div style={sectionLabel}>CARD LISTINGS</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {cards.map((c, i) => (
                 <div key={i}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr auto",
-                    gap: "12px",
-                    alignItems: "center",
-                    padding: "16px",
-                    background: "var(--bg)",
-                    cursor: "pointer",
-                    transition: "background 0.15s",
-                  }}
+                  style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "12px", alignItems: "center", padding: "16px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
                 >
@@ -310,8 +283,7 @@ export default function WembyPage() {
                       {c.name} {c.serial && <span style={{ color: "var(--green)" }}>{c.serial}</span>}
                     </div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>
-                      {c.grade} · Pop: {c.pop} ·{" "}
-                      <span style={{ fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.1em", color: "var(--muted)", textTransform: "uppercase" }}>{c.tier}</span>
+                      {c.grade} · Pop: {c.pop} · <span style={{ textTransform: "uppercase" }}>{c.tier}</span>
                     </div>
                   </div>
                   <div style={{ textAlign: "right" }}>
@@ -323,19 +295,11 @@ export default function WembyPage() {
             </div>
           </div>
 
-          {/* RECENT SALES */}
           <div style={section}>
             <div style={sectionLabel}>RECENT SALES</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {recentSales.map((s, i) => (
-                <div key={i} style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr auto auto",
-                  gap: "12px",
-                  alignItems: "center",
-                  padding: "14px 16px",
-                  background: "var(--bg)",
-                }}>
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "12px", alignItems: "center", padding: "14px 16px", background: "var(--bg)" }}>
                   <div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", marginBottom: "3px" }}>{s.card}</div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{s.grade}</div>
@@ -347,18 +311,11 @@ export default function WembyPage() {
             </div>
           </div>
 
-          {/* BETTING ODDS */}
           <div style={section}>
             <div style={sectionLabel}>BETTING ODDS · MOMENTUM SIGNALS</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
               {odds.map((o, i) => (
-                <div key={i} style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "16px",
-                  background: "var(--bg)",
-                }}>
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px", background: "var(--bg)" }}>
                   <div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>{o.market}</div>
                     <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{o.book}</div>
@@ -369,7 +326,6 @@ export default function WembyPage() {
             </div>
           </div>
 
-          {/* NEWS */}
           <div style={section}>
             <div style={sectionLabel}>RECENT NEWS</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>

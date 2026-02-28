@@ -1,363 +1,490 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+'use client';
 
-const slabScore = 74;
-const signal = "BUY";
+import { useState } from 'react';
 
-const pillars = [
-  { label: "Market", weight: 30, score: 72 },
-  { label: "Scarcity", weight: 25, score: 65 },
-  { label: "Momentum", weight: 20, score: 81 },
-  { label: "Performance", weight: 15, score: 78 },
-  { label: "Risk", weight: 10, score: 88 },
-];
-
-const cards = [
-  { name: "2023-24 Prizm Base", grade: "PSA 10", pop: "26,000", tier: "COMMON", price: "$480", change: "▼ -2.1% 7d", dir: "down", serial: null },
-  { name: "2023-24 Prizm Silver", grade: "PSA 10", pop: "2,000", tier: "MID", price: "$1,240", change: "▲ +5.3% 7d", dir: "up", serial: null },
-  { name: "2023-24 Prizm Silver Auto /25", grade: "PSA 10", pop: "142", tier: "MID", price: "$2,840", change: "▲ +8.4% 7d", dir: "up", serial: "/25" },
-  { name: "2023-24 National Treasures RPA", grade: "PSA 10", pop: "28", tier: "RARE", price: "$18,500", change: "▲ +3.2% 7d", dir: "up", serial: "/99" },
-  { name: "NT Logoman Auto", grade: "PSA 10", pop: "1", tier: "RARE", price: "~$150K", change: "▲ UNACCOUNTED", dir: "up", serial: "1/1" },
-  { name: "2024-25 Hoops Prizm Gold", grade: "BGS 9.5", pop: "34", tier: "MID", price: "$1,200", change: "▲ +12.7% 7d", dir: "up", serial: "/10" },
-];
-
-const recentSales = [
-  { card: "2023-24 Prizm Silver Auto /25", grade: "PSA 10", price: "$2,840", date: "Feb 27" },
-  { card: "2023-24 Prizm Base", grade: "PSA 10", price: "$472", date: "Feb 27" },
-  { card: "NT RPA /99", grade: "PSA 10", price: "$18,200", date: "Feb 26" },
-  { card: "2023-24 Prizm Silver", grade: "PSA 10", price: "$1,190", date: "Feb 26" },
-  { card: "2024-25 Hoops Prizm Gold /10", grade: "BGS 9.5", price: "$1,155", date: "Feb 25" },
-  { card: "2023-24 Prizm Base", grade: "PSA 9", price: "$210", date: "Feb 25" },
-];
-
-const news = [
-  { headline: "Wembanyama drops 40-point triple-double in Spurs win over Lakers", source: "ESPN", time: "2h ago" },
-  { headline: "Wemby MVP odds tighten as Spurs surge to .500 record", source: "Bleacher Report", time: "5h ago" },
-  { headline: "Victor Wembanyama named Western Conference Player of the Week", source: "NBA.com", time: "1d ago" },
-  { headline: "Spurs front office signals long-term commitment around Wembanyama", source: "The Athletic", time: "2d ago" },
-  { headline: "Wemby card market surges following historic 5-block performance", source: "CBS Sports", time: "3d ago" },
-];
-
-const odds = [
-  { market: "NBA MVP", odds: "-320", book: "DraftKings", dir: "up" },
-  { market: "Defensive Player of Year", odds: "-450", book: "FanDuel", dir: "up" },
-  { market: "NBA Champion", odds: "+2800", book: "BetMGM", dir: "neutral" },
-  { market: "All-NBA First Team", odds: "-900", book: "DraftKings", dir: "up" },
-];
-
-const stats = [
-  { label: "PPG", val: "24.8" },
-  { label: "RPG", val: "10.6" },
-  { label: "APG", val: "3.9" },
-  { label: "BPG", val: "3.7" },
-  { label: "FG%", val: "49.2" },
-  { label: "GP", val: "54" },
-];
-
-const historyData = {
-  daily: [
-    { label: "Feb 21", score: 70 }, { label: "Feb 22", score: 71 }, { label: "Feb 23", score: 69 },
-    { label: "Feb 24", score: 72 }, { label: "Feb 25", score: 73 }, { label: "Feb 26", score: 72 },
-    { label: "Feb 27", score: 74 }, { label: "Feb 28", score: 74 },
-  ],
-  weekly: [
-    { label: "Nov W1", score: 58 }, { label: "Nov W2", score: 61 }, { label: "Nov W3", score: 60 },
-    { label: "Nov W4", score: 63 }, { label: "Dec W1", score: 62 }, { label: "Dec W2", score: 65 },
-    { label: "Dec W3", score: 63 }, { label: "Dec W4", score: 64 }, { label: "Jan W1", score: 66 },
-    { label: "Jan W2", score: 68 }, { label: "Jan W3", score: 67 }, { label: "Jan W4", score: 70 },
-    { label: "Feb W1", score: 71 }, { label: "Feb W2", score: 72 }, { label: "Feb W3", score: 73 },
-    { label: "Feb W4", score: 74 },
-  ],
-  monthly: [
-    { label: "Mar 23", score: 48 }, { label: "Apr 23", score: 50 }, { label: "May 23", score: 51 },
-    { label: "Jun 23", score: 52 }, { label: "Jul 23", score: 53 }, { label: "Aug 23", score: 54 },
-    { label: "Sep 23", score: 54 }, { label: "Oct 23", score: 56 }, { label: "Nov 23", score: 58 },
-    { label: "Dec 23", score: 57 }, { label: "Jan 24", score: 60 }, { label: "Feb 24", score: 62 },
-    { label: "Mar 24", score: 63 }, { label: "Apr 24", score: 64 }, { label: "May 24", score: 63 },
-    { label: "Oct 24", score: 65 }, { label: "Nov 24", score: 67 }, { label: "Dec 24", score: 66 },
-    { label: "Jan 25", score: 70 }, { label: "Feb 25", score: 74 },
-  ],
-  yearly: [
-    { label: "2023", score: 52 },
-    { label: "2024", score: 63 },
-    { label: "2025", score: 74 },
-  ],
+const scoreHistory: Record<string, { labels: string[]; scores: number[] }> = {
+  daily: {
+    labels: ['Feb 22','Feb 23','Feb 24','Feb 25','Feb 26','Feb 27','Feb 28'],
+    scores: [71, 72, 70, 73, 72, 74, 74],
+  },
+  weekly: {
+    labels: ['Dec 30','Jan 6','Jan 13','Jan 20','Jan 27','Feb 3','Feb 10','Feb 17','Feb 24'],
+    scores: [63, 65, 66, 68, 67, 70, 71, 73, 74],
+  },
+  monthly: {
+    labels: ['Jun 23','Sep 23','Dec 23','Mar 24','Jun 24','Sep 24','Dec 24','Mar 25'],
+    scores: [48, 52, 55, 58, 61, 65, 70, 74],
+  },
+  yearly: {
+    labels: ['2022','2023','2024','2025','2026'],
+    scores: [40, 51, 62, 72, 74],
+  },
 };
 
-type DrillDown = "daily" | "weekly" | "monthly" | "yearly";
-
-function SlabScoreChart({ drill }: { drill: DrillDown }) {
-  const data = historyData[drill];
-  const W = 700;
-  const H = 200;
-  const padL = 48;
-  const padR = 16;
-  const padT = 16;
-  const padB = 32;
-  const chartW = W - padL - padR;
-  const chartH = H - padT - padB;
-
-  const scores = data.map(d => d.score);
-  const dataMin = Math.min(...scores);
-  const dataMax = Math.max(...scores);
-  const buffer = 8;
-  const yMin = Math.max(0, dataMin - buffer);
-  const yMax = Math.min(100, dataMax + buffer);
-  const yRange = yMax - yMin;
-
-  const xStep = chartW / (data.length - 1);
-  const points = data.map((d, i) => ({
-    x: padL + i * xStep,
-    y: padT + chartH - ((d.score - yMin) / yRange) * chartH,
-    ...d,
-  }));
-
-  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
-  const areaD = `${pathD} L ${points[points.length - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
-
-  const yLabels = Array.from({ length: 5 }, (_, i) => Math.round(yMin + (yRange / 4) * i));
-  const showEvery = data.length > 12 ? Math.ceil(data.length / 8) : 1;
+function ScoreChart({ period }: { period: string }) {
+  const data = scoreHistory[period];
+  const w = 600;
+  const h = 160;
+  const pad = { top: 16, right: 16, bottom: 32, left: 36 };
+  const innerW = w - pad.left - pad.right;
+  const innerH = h - pad.top - pad.bottom;
+  const min = Math.min(...data.scores) - 8;
+  const max = Math.max(...data.scores) + 8;
+  const xStep = innerW / (data.scores.length - 1);
+  const yScale = (v: number) => innerH - ((v - min) / (max - min)) * innerH;
+  const points = data.scores.map((s, i) => `${pad.left + i * xStep},${pad.top + yScale(s)}`).join(' ');
+  const areaPoints = `${pad.left},${pad.top + innerH} ${points} ${pad.left + (data.scores.length - 1) * xStep},${pad.top + innerH}`;
+  const labelStep = Math.ceil(data.labels.length / 5);
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
-      {yLabels.map(v => {
-        const y = padT + chartH - ((v - yMin) / yRange) * chartH;
-        return (
-          <g key={v}>
-            <line x1={padL} x2={W - padR} y1={y} y2={y} stroke="#1e2530" strokeWidth="1" />
-            <text x={padL - 6} y={y + 4} textAnchor="end" fill="#8899aa" fontSize="10" fontFamily="IBM Plex Mono">{v}</text>
-          </g>
-        );
-      })}
+    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
       <defs>
-        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#00ff87" stopOpacity="0.2" />
+        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#00ff87" stopOpacity="0.18" />
           <stop offset="100%" stopColor="#00ff87" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={areaD} fill="url(#areaGrad)" />
-      <path d={pathD} fill="none" stroke="#00ff87" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
-      {points.map((p, i) => (
-        i % showEvery === 0 && (
-          <g key={i}>
-            <circle cx={p.x} cy={p.y} r="3" fill="#00ff87" />
-            <text x={p.x} y={padT + chartH + 20} textAnchor="middle" fill="#8899aa" fontSize="9" fontFamily="IBM Plex Mono">{p.label}</text>
+      {[0, 0.25, 0.5, 0.75, 1].map((t) => {
+        const y = pad.top + t * innerH;
+        const val = Math.round(max - t * (max - min));
+        return (
+          <g key={t}>
+            <line x1={pad.left} y1={y} x2={w - pad.right} y2={y} stroke="#1e2530" strokeWidth="1" />
+            <text x={pad.left - 6} y={y + 4} fill="#8899aa" fontSize="9" textAnchor="end" fontFamily="IBM Plex Mono">{val}</text>
           </g>
-        )
+        );
+      })}
+      <polygon points={areaPoints} fill="url(#chartGrad)" />
+      <polyline points={points} fill="none" stroke="#00ff87" strokeWidth="2" strokeLinejoin="round" />
+      {data.scores.map((s, i) => (
+        <circle key={i} cx={pad.left + i * xStep} cy={pad.top + yScale(s)} r="3" fill="#00ff87" />
       ))}
-      <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#00ff87" style={{ filter: "drop-shadow(0 0 6px #00ff87)" }} />
+      {data.labels.map((l, i) => {
+        if (i % labelStep !== 0 && i !== data.labels.length - 1) return null;
+        return (
+          <text key={i} x={pad.left + i * xStep} y={h - 6} fill="#8899aa" fontSize="9" textAnchor="middle" fontFamily="IBM Plex Mono">{l}</text>
+        );
+      })}
     </svg>
   );
 }
 
-const sectionLabel = {
-  fontFamily: "var(--mono)",
-  fontSize: "11px",
-  color: "var(--green)",
-  letterSpacing: "0.2em",
-  textTransform: "uppercase" as const,
-  marginBottom: "16px",
-  paddingBottom: "12px",
-  borderBottom: "1px solid var(--border)",
+const pillars = [
+  { label: 'Market',      score: 72, color: '#00ff87' },
+  { label: 'Scarcity',    score: 65, color: '#38bdf8' },
+  { label: 'Momentum',    score: 81, color: '#a78bfa' },
+  { label: 'Performance', score: 78, color: '#fb923c' },
+  { label: 'Risk',        score: 88, color: '#4ade80' },
+];
+
+const cardListings = [
+  { name: '2023-24 Prizm Base',            grade: 'PSA 10', pop: '26,000', tier: 'COMMON', price: '$480',    change: '▼ -2.1%', up: false },
+  { name: '2023-24 Prizm Silver',          grade: 'PSA 10', pop: '2,000',  tier: 'MID',    price: '$1,240',  change: '▲ +5.3%', up: true  },
+  { name: '2023-24 Prizm Silver Auto /25', grade: 'PSA 10', pop: '142',    tier: 'MID',    price: '$2,840',  change: '▲ +8.4%', up: true  },
+  { name: '2023-24 NT RPA /99',            grade: 'PSA 10', pop: '28',     tier: 'RARE',   price: '$18,500', change: '▲ +3.2%', up: true  },
+  { name: 'NT Logoman Auto 1/1',           grade: 'PSA 10', pop: '1',      tier: 'RARE',   price: '~$150K',  change: '▲ UNACCOUNTED', up: true },
+  { name: '2024-25 Hoops Prizm Gold /10',  grade: 'BGS 9.5',pop: '34',     tier: 'MID',    price: '$1,200',  change: '▲ +12.7%', up: true },
+];
+
+const tierBorder: Record<string, string> = {
+  COMMON: '#8899aa',
+  MID:    '#38bdf8',
+  RARE:   '#f59e0b',
 };
 
+const recentSales = [
+  { card: '2023-24 Prizm Silver Auto /25', grade: 'PSA 10', price: '$2,840', date: 'Feb 27' },
+  { card: '2023-24 Prizm Base',            grade: 'PSA 10', price: '$472',   date: 'Feb 27' },
+  { card: 'NT RPA /99',                    grade: 'PSA 10', price: '$18,200',date: 'Feb 26' },
+  { card: '2023-24 Prizm Silver',          grade: 'PSA 10', price: '$1,190', date: 'Feb 26' },
+  { card: '2024-25 Hoops Prizm Gold /10',  grade: 'BGS 9.5',price: '$1,155', date: 'Feb 25' },
+  { card: '2023-24 Prizm Base',            grade: 'PSA 9',  price: '$210',   date: 'Feb 25' },
+];
+
+const bettingOdds = [
+  { market: 'NBA MVP',             book: 'DraftKings', odds: '-320' },
+  { market: 'Defensive Player of Year', book: 'FanDuel', odds: '-450' },
+  { market: 'NBA Champion',        book: 'BetMGM',    odds: '+2800' },
+  { market: 'All-NBA First Team',  book: 'DraftKings', odds: '-900' },
+];
+
+const news = [
+  { headline: 'Wembanyama drops 40-point triple-double in Spurs win over Lakers', source: 'ESPN',           time: '2h ago' },
+  { headline: 'Wemby MVP odds tighten as Spurs surge to .500 record',             source: 'Bleacher Report', time: '5h ago' },
+  { headline: 'Victor Wembanyama named Western Conference Player of the Week',    source: 'NBA.com',        time: '1d ago' },
+  { headline: 'Spurs front office signals long-term commitment around Wembanyama',source: 'The Athletic',   time: '2d ago' },
+  { headline: 'Wemby card market surges following historic 5-block performance',  source: 'CBS Sports',     time: '3d ago' },
+];
+
 export default function WembyPage() {
-  const router = useRouter();
-  const [drill, setDrill] = useState<DrillDown>("monthly");
+  const [period, setPeriod] = useState<string>('weekly');
 
   return (
-    <>
-      <nav>
-        <div>
-          <div className="logo" style={{ cursor: "pointer" }} onClick={() => router.push("/")}>
-            SLAB<span>STREET</span>
-          </div>
-          <div className="nav-tag">Market Intelligence</div>
-        </div>
-        <div className="nav-right">
-          <button
-            onClick={() => router.push("/")}
-            style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--muted)", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", textTransform: "uppercase" }}
-          >
-            ← BACK
-          </button>
-        </div>
+    <div style={{ background: '#090b0f', minHeight: '100vh', color: '#e8edf5', fontFamily: 'IBM Plex Sans, sans-serif' }}>
+
+      {/* NAV */}
+      <nav style={{ borderBottom: '1px solid #1e2530', padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#090b0f', zIndex: 100 }}>
+        <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: '#00ff87', textDecoration: 'none' }}>SLABSTREET</a>
+        <a href="/" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#8899aa', textDecoration: 'none', letterSpacing: 1 }}>← BACK</a>
       </nav>
 
-      <div style={{ borderBottom: "1px solid var(--border)", padding: "clamp(24px, 5vw, 48px)", maxWidth: "1400px", margin: "0 auto" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: "24px" }}>
-            <div>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px" }}>
-                SAS · CENTER · #1
-              </div>
-              <div style={{ fontFamily: "var(--display)", fontSize: "clamp(44px, 9vw, 96px)", lineHeight: 0.95, letterSpacing: "0.02em", color: "var(--text)" }}>
-                VICTOR<br />WEMBANYAMA
-              </div>
-            </div>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 20px' }}>
 
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontFamily: "var(--display)", fontSize: "clamp(22px, 3.5vw, 42px)", letterSpacing: "0.08em", color: "var(--text)", marginBottom: "4px" }}>
-                SLAB SCORE<span style={{ color: "var(--green)" }}>™</span>
-              </div>
-              <div style={{ fontFamily: "var(--display)", fontSize: "clamp(72px, 14vw, 112px)", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
-                {slabScore}
-              </div>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "6px" }}>
-                <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--green)", boxShadow: "0 0 8px var(--green)" }} />
-                <span style={{ fontFamily: "var(--mono)", fontSize: "15px", letterSpacing: "0.25em", color: "var(--green)", fontWeight: 700 }}>{signal}</span>
-              </div>
+        {/* ═══════════════════════════════════════════════
+            PLAYER HEADER — name + trading card back stats
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderTop: '3px solid #00ff87',
+          borderRadius: 4,
+          padding: '24px 28px',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: 24,
+          flexWrap: 'wrap',
+          marginBottom: 20,
+        }}>
+          {/* Left: team tag + name */}
+          <div>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#8899aa', letterSpacing: 2, marginBottom: 8 }}>
+              SAS · CENTER · #1
+            </div>
+            <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 56, lineHeight: 1, letterSpacing: 2, color: '#e8edf5' }}>
+              VICTOR
+            </div>
+            <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 56, lineHeight: 1, letterSpacing: 2, color: '#00ff87' }}>
+              WEMBANYAMA
             </div>
           </div>
 
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "clamp(16px, 3vw, 24px)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
-              <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                SLAB SCORE HISTORY
-              </div>
-              <div style={{ display: "flex", gap: "2px", flexWrap: "wrap" }}>
-                {(["daily", "weekly", "monthly", "yearly"] as DrillDown[]).map(d => (
-                  <button
-                    key={d}
-                    onClick={() => setDrill(d)}
-                    style={{
-                      fontFamily: "var(--mono)",
-                      fontSize: "10px",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      padding: "6px 12px",
-                      background: drill === d ? "var(--green)" : "transparent",
-                      color: drill === d ? "var(--bg)" : "var(--muted)",
-                      border: "1px solid",
-                      borderColor: drill === d ? "var(--green)" : "var(--border)",
-                      cursor: "pointer",
-                      transition: "all 0.15s",
-                    }}
-                  >
-                    {d}
-                  </button>
+          {/* Right: Trading card back stats */}
+          <div style={{
+            fontFamily: 'IBM Plex Mono, monospace',
+            border: '1px solid #1e2530',
+            borderRadius: 3,
+            overflow: 'hidden',
+            alignSelf: 'center',
+            minWidth: 220,
+          }}>
+            {/* Header strip */}
+            <div style={{ background: '#1e2530', padding: '5px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: 9, letterSpacing: 2, color: '#8899aa', textTransform: 'uppercase' }}>2024–25 Season Stats</span>
+              <span style={{ fontSize: 9, color: '#00ff87', letterSpacing: 1 }}>NBA</span>
+            </div>
+            {/* Stat rows — 3 per row */}
+            {[
+              [{ label: 'PPG', val: '24.8' }, { label: 'RPG', val: '10.6' }, { label: 'APG', val: '3.9' }],
+              [{ label: 'BPG', val: '3.7'  }, { label: 'FG%', val: '49.2' }, { label: 'GP',  val: '54'  }],
+            ].map((row, ri) => (
+              <div key={ri} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: ri === 0 ? '1px solid #1e2530' : 'none' }}>
+                {row.map((s, i) => (
+                  <div key={i} style={{
+                    padding: '8px 12px',
+                    borderRight: i < 2 ? '1px solid #1e2530' : 'none',
+                    textAlign: 'center',
+                  }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: '#e8edf5', lineHeight: 1 }}>{s.val}</div>
+                    <div style={{ fontSize: 8, color: '#8899aa', letterSpacing: 1, marginTop: 3 }}>{s.label}</div>
+                  </div>
                 ))}
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            SLAB SCORE
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderLeft: '4px solid #00ff87',
+          borderRadius: 4,
+          padding: '20px 28px',
+          marginBottom: 20,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 32,
+          flexWrap: 'wrap',
+        }}>
+          <div>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa', letterSpacing: 3, marginBottom: 6 }}>SLAB SCORE™</div>
+            <div style={{
+              fontFamily: 'Bebas Neue, sans-serif',
+              fontSize: 96,
+              lineHeight: 1,
+              color: '#00ff87',
+              textShadow: '0 0 40px rgba(0,255,135,0.5)',
+            }}>74</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{
+                width: 10, height: 10, borderRadius: '50%', background: '#00ff87',
+                boxShadow: '0 0 8px #00ff87',
+                animation: 'pulse 1.5s infinite',
+                display: 'inline-block',
+              }}></span>
+              <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 28, color: '#00ff87', letterSpacing: 3 }}>BUY</span>
             </div>
-            <SlabScoreChart drill={drill} />
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa' }}>SIGNAL THRESHOLD: 70+</div>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa' }}>UPDATED: FEB 28, 2026</div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
-            {pillars.map(p => (
-              <div key={p.label}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                  <span style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", letterSpacing: "0.15em", textTransform: "uppercase" }}>{p.label}</span>
-                  <span style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--green)", fontWeight: 600 }}>{p.score}</span>
+          {/* Score gauge strip */}
+          <div style={{ flex: 1, minWidth: 160 }}>
+            <div style={{ height: 6, borderRadius: 3, background: 'linear-gradient(to right, #ff3b5c 0%, #f59e0b 40%, #00ff87 70%)', marginBottom: 4, position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                left: '74%',
+                top: -4,
+                width: 2,
+                height: 14,
+                background: '#fff',
+                borderRadius: 1,
+              }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: '#8899aa' }}>
+              <span>SELL 0</span><span>HOLD 40</span><span>BUY 70</span><span>100</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            SLAB SCORE HISTORY
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderRadius: 4,
+          padding: '20px 28px',
+          marginBottom: 20,
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#00ff87', letterSpacing: 3, borderBottom: '1px solid #00ff87', paddingBottom: 4 }}>
+              SLAB SCORE HISTORY
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {['daily','weekly','monthly','yearly'].map(p => (
+                <button key={p} onClick={() => setPeriod(p)} style={{
+                  fontFamily: 'IBM Plex Mono, monospace',
+                  fontSize: 10,
+                  letterSpacing: 1,
+                  padding: '4px 10px',
+                  background: period === p ? '#00ff87' : 'transparent',
+                  color: period === p ? '#090b0f' : '#8899aa',
+                  border: `1px solid ${period === p ? '#00ff87' : '#1e2530'}`,
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  textTransform: 'uppercase',
+                }}>
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+          <ScoreChart period={period} />
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            PILLARS — each gets its own accent color
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderRadius: 4,
+          padding: '20px 28px',
+          marginBottom: 20,
+        }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#8899aa', letterSpacing: 3, marginBottom: 16 }}>
+            [ SCORE BREAKDOWN ]
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            {pillars.map((p) => (
+              <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#e8edf5', letterSpacing: 1, width: 110, flexShrink: 0 }}>
+                  {p.label.toUpperCase()}
                 </div>
-                <div style={{ height: "2px", background: "var(--border)" }}>
-                  <div style={{ height: "2px", background: "var(--green)", width: `${p.score}%`, boxShadow: "0 0 6px rgba(0,255,135,0.4)" }} />
+                <div style={{ flex: 1, height: 6, background: '#1e2530', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ width: `${p.score}%`, height: '100%', background: p.color, borderRadius: 3 }} />
+                </div>
+                <div style={{
+                  fontFamily: 'Bebas Neue, sans-serif',
+                  fontSize: 22,
+                  color: p.color,
+                  width: 36,
+                  textAlign: 'right',
+                  flexShrink: 0,
+                }}>
+                  {p.score}
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", borderBottom: "1px solid var(--border)" }}>
-        {stats.map((s, i) => (
-          <div key={s.label} style={{
-            padding: "20px 16px",
-            borderRight: (i + 1) % 3 !== 0 ? "1px solid var(--border)" : "none",
-            borderBottom: i < 3 ? "1px solid var(--border)" : "none",
-          }}>
-            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(28px, 5vw, 44px)", color: "var(--text)", marginBottom: "4px" }}>{s.val}</div>
-            <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)", letterSpacing: "0.12em" }}>{s.label} · 2024-25</div>
+        {/* ═══════════════════════════════════════════════
+            CARD LISTINGS — top border by tier
+        ════════════════════════════════════════════════ */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#e8edf5', letterSpacing: 3, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+            CARD LISTINGS
+            <span style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
+              {[['COMMON','#8899aa'],['MID','#38bdf8'],['RARE','#f59e0b']].map(([label, color]) => (
+                <span key={label} style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: color as string }}>
+                  <span style={{ width: 8, height: 2, background: color as string, display: 'inline-block', borderRadius: 1 }}></span>
+                  {label}
+                </span>
+              ))}
+            </span>
           </div>
-        ))}
-      </div>
-
-      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "clamp(24px, 5vw, 48px)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-
-          <div>
-            <div style={sectionLabel}>CARD LISTINGS</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-              {cards.map((c, i) => (
-                <div key={i}
-                  style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "12px", alignItems: "center", padding: "16px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
-                >
-                  <div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>
-                      {c.name} {c.serial && <span style={{ color: "var(--green)" }}>{c.serial}</span>}
-                    </div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>
-                      {c.grade} · Pop: {c.pop} · <span style={{ textTransform: "uppercase" }}>{c.tier}</span>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "14px", color: "var(--text)", fontWeight: 600, marginBottom: "4px" }}>{c.price}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: c.dir === "up" ? "var(--green)" : "var(--red)" }}>{c.change}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {cardListings.map((c, i) => (
+              <div key={i} style={{
+                background: '#0f1318',
+                border: '1px solid #1e2530',
+                borderTop: `3px solid ${tierBorder[c.tier]}`,
+                borderRadius: 4,
+                padding: '12px 18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 8,
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 13, color: '#e8edf5' }}>{c.name}</div>
+                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa' }}>
+                    {c.grade} · Pop: {c.pop} · <span style={{ color: tierBorder[c.tier] }}>{c.tier}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div style={sectionLabel}>RECENT SALES</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-              {recentSales.map((s, i) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "12px", alignItems: "center", padding: "14px 16px", background: "var(--bg)" }}>
-                  <div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "12px", color: "var(--text)", marginBottom: "3px" }}>{s.card}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{s.grade}</div>
-                  </div>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--green)", fontWeight: 600 }}>{s.price}</div>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{s.date}</div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 26, color: '#e8edf5', lineHeight: 1 }}>{c.price}</div>
+                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.up ? '#00ff87' : '#ff3b5c', marginTop: 2 }}>{c.change} 7D</div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-
-          <div>
-            <div style={sectionLabel}>BETTING ODDS · MOMENTUM SIGNALS</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-              {odds.map((o, i) => (
-                <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px", background: "var(--bg)" }}>
-                  <div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--text)", marginBottom: "4px" }}>{o.market}</div>
-                    <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)" }}>{o.book}</div>
-                  </div>
-                  <div style={{ fontFamily: "var(--mono)", fontSize: "18px", fontWeight: 600, color: o.dir === "up" ? "var(--green)" : "var(--text)" }}>{o.odds}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div style={sectionLabel}>RECENT NEWS</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px", background: "var(--border)" }}>
-              {news.map((n, i) => (
-                <div key={i}
-                  style={{ padding: "16px", background: "var(--bg)", cursor: "pointer", transition: "background 0.15s" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "var(--surface)")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "var(--bg)")}
-                >
-                  <div style={{ fontFamily: "var(--body)", fontSize: "14px", color: "var(--text)", lineHeight: 1.5, marginBottom: "8px" }}>{n.headline}</div>
-                  <div style={{ display: "flex", gap: "12px" }}>
-                    <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--green)", letterSpacing: "0.1em" }}>{n.source}</span>
-                    <span style={{ fontFamily: "var(--mono)", fontSize: "10px", color: "var(--muted)" }}>{n.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
+
+        {/* ═══════════════════════════════════════════════
+            RECENT SALES — cyan accent
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderLeft: '4px solid #38bdf8',
+          borderRadius: 4,
+          padding: '20px 28px',
+          marginBottom: 20,
+        }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#38bdf8', letterSpacing: 3, marginBottom: 14 }}>
+            RECENT SALES
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11 }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid #1e2530' }}>
+                {['CARD','GRADE','PRICE','DATE'].map(h => (
+                  <th key={h} style={{ textAlign: 'left', color: '#8899aa', fontSize: 9, letterSpacing: 2, paddingBottom: 8, paddingRight: 16 }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {recentSales.map((s, i) => (
+                <tr key={i} style={{ borderBottom: '1px solid #1a2030' }}>
+                  <td style={{ padding: '9px 16px 9px 0', color: '#e8edf5' }}>{s.card}</td>
+                  <td style={{ padding: '9px 16px 9px 0', color: '#8899aa' }}>{s.grade}</td>
+                  <td style={{ padding: '9px 16px 9px 0', color: '#00ff87', fontWeight: 700 }}>{s.price}</td>
+                  <td style={{ padding: '9px 0', color: '#8899aa' }}>{s.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            BETTING ODDS — amber accent
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderLeft: '4px solid #f59e0b',
+          borderRadius: 4,
+          padding: '20px 28px',
+          marginBottom: 20,
+        }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#f59e0b', letterSpacing: 3, marginBottom: 14 }}>
+            BETTING ODDS · MOMENTUM SIGNALS
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
+            {bettingOdds.map((b, i) => (
+              <div key={i} style={{
+                background: '#090b0f',
+                border: '1px solid #1e2530',
+                borderRadius: 3,
+                padding: '12px 14px',
+              }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa', marginBottom: 4 }}>{b.market}</div>
+                <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 30, color: '#f59e0b', lineHeight: 1 }}>{b.odds}</div>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: '#8899aa', marginTop: 4 }}>{b.book}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════
+            RECENT NEWS — red left border
+        ════════════════════════════════════════════════ */}
+        <div style={{
+          background: '#0f1318',
+          border: '1px solid #1e2530',
+          borderLeft: '4px solid #ff3b5c',
+          borderRadius: 4,
+          padding: '20px 28px',
+          marginBottom: 32,
+        }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#ff3b5c', letterSpacing: 3, marginBottom: 14 }}>
+            RECENT NEWS
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {news.map((n, i) => (
+              <div key={i} style={{
+                padding: '12px 0',
+                borderBottom: i < news.length - 1 ? '1px solid #1e2530' : 'none',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                gap: 16,
+              }}>
+                <div>
+                  <div style={{ fontSize: 13, color: '#e8edf5', lineHeight: 1.5, marginBottom: 4 }}>{n.headline}</div>
+                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#ff3b5c' }}>{n.source}</div>
+                </div>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa', whiteSpace: 'nowrap', flexShrink: 0 }}>{n.time}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
-      <footer>
-        <div className="footer-logo">SLAB<span>STREET</span></div>
-        <div className="footer-copy">© 2026 Slab Street · slabstreet.io · All rights reserved</div>
+      {/* FOOTER */}
+      <footer style={{ borderTop: '1px solid #1e2530', padding: '20px 24px', textAlign: 'center' }}>
+        <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 18, letterSpacing: 3, color: '#00ff87', marginBottom: 6 }}>SLABSTREET</div>
+        <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#8899aa' }}>© 2026 Slab Street · slabstreet.io · All rights reserved</div>
       </footer>
-    </>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.4; }
+        }
+        @media (max-width: 640px) {
+          .player-header { flex-direction: column !important; }
+        }
+      `}</style>
+    </div>
   );
 }

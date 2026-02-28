@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const slabScore = 74;
 const signal = "BUY";
@@ -54,8 +55,97 @@ const stats = [
   { label: "GP", val: "54" },
 ];
 
+const historyData = {
+  daily: [
+    { label: "Feb 21", score: 70 }, { label: "Feb 22", score: 71 }, { label: "Feb 23", score: 69 },
+    { label: "Feb 24", score: 72 }, { label: "Feb 25", score: 73 }, { label: "Feb 26", score: 72 },
+    { label: "Feb 27", score: 74 }, { label: "Feb 28", score: 74 },
+  ],
+  weekly: [
+    { label: "Nov W1", score: 58 }, { label: "Nov W2", score: 61 }, { label: "Nov W3", score: 60 },
+    { label: "Nov W4", score: 63 }, { label: "Dec W1", score: 62 }, { label: "Dec W2", score: 65 },
+    { label: "Dec W3", score: 63 }, { label: "Dec W4", score: 64 }, { label: "Jan W1", score: 66 },
+    { label: "Jan W2", score: 68 }, { label: "Jan W3", score: 67 }, { label: "Jan W4", score: 70 },
+    { label: "Feb W1", score: 71 }, { label: "Feb W2", score: 72 }, { label: "Feb W3", score: 73 },
+    { label: "Feb W4", score: 74 },
+  ],
+  monthly: [
+    { label: "Mar 23", score: 48 }, { label: "Apr 23", score: 50 }, { label: "May 23", score: 51 },
+    { label: "Jun 23", score: 52 }, { label: "Jul 23", score: 53 }, { label: "Aug 23", score: 54 },
+    { label: "Sep 23", score: 54 }, { label: "Oct 23", score: 56 }, { label: "Nov 23", score: 58 },
+    { label: "Dec 23", score: 57 }, { label: "Jan 24", score: 60 }, { label: "Feb 24", score: 62 },
+    { label: "Mar 24", score: 63 }, { label: "Apr 24", score: 64 }, { label: "May 24", score: 63 },
+    { label: "Oct 24", score: 65 }, { label: "Nov 24", score: 67 }, { label: "Dec 24", score: 66 },
+    { label: "Jan 25", score: 70 }, { label: "Feb 25", score: 74 },
+  ],
+  yearly: [
+    { label: "2023", score: 52 },
+    { label: "2024", score: 63 },
+    { label: "2025", score: 74 },
+  ],
+};
+
+type DrillDown = "daily" | "weekly" | "monthly" | "yearly";
+
+function SlabScoreChart({ drill }: { drill: DrillDown }) {
+  const data = historyData[drill];
+  const W = 700;
+  const H = 200;
+  const padL = 48;
+  const padR = 16;
+  const padT = 16;
+  const padB = 32;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  const xStep = chartW / (data.length - 1);
+  const points = data.map((d, i) => ({
+    x: padL + i * xStep,
+    y: padT + chartH - (d.score / 100) * chartH,
+    ...d,
+  }));
+
+  const pathD = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+  const areaD = `${pathD} L ${points[points.length - 1].x} ${padT + chartH} L ${points[0].x} ${padT + chartH} Z`;
+
+  const yLabels = [0, 25, 50, 75, 100];
+  const showEvery = data.length > 12 ? Math.ceil(data.length / 8) : 1;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      {yLabels.map(v => {
+        const y = padT + chartH - (v / 100) * chartH;
+        return (
+          <g key={v}>
+            <line x1={padL} x2={W - padR} y1={y} y2={y} stroke="#1e2530" strokeWidth="1" />
+            <text x={padL - 6} y={y + 4} textAnchor="end" fill="#4a5568" fontSize="10" fontFamily="IBM Plex Mono">{v}</text>
+          </g>
+        );
+      })}
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#00ff87" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#00ff87" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill="url(#areaGrad)" />
+      <path d={pathD} fill="none" stroke="#00ff87" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+      {points.map((p, i) => (
+        i % showEvery === 0 && (
+          <g key={i}>
+            <circle cx={p.x} cy={p.y} r="3" fill="#00ff87" />
+            <text x={p.x} y={padT + chartH + 20} textAnchor="middle" fill="#4a5568" fontSize="9" fontFamily="IBM Plex Mono">{p.label}</text>
+          </g>
+        )
+      ))}
+      <circle cx={points[points.length - 1].x} cy={points[points.length - 1].y} r="5" fill="#00ff87" style={{ filter: "drop-shadow(0 0 6px #00ff87)" }} />
+    </svg>
+  );
+}
+
 export default function WembyPage() {
   const router = useRouter();
+  const [drill, setDrill] = useState<DrillDown>("monthly");
 
   return (
     <>
@@ -69,16 +159,7 @@ export default function WembyPage() {
         <div className="nav-right">
           <button
             onClick={() => router.push("/")}
-            style={{
-              fontFamily: "var(--mono)",
-              fontSize: "13px",
-              color: "var(--muted)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-            }}
+            style={{ fontFamily: "var(--mono)", fontSize: "13px", color: "var(--muted)", background: "none", border: "none", cursor: "pointer", letterSpacing: "0.1em", textTransform: "uppercase" }}
           >
             ← BACK
           </button>
@@ -97,22 +178,10 @@ export default function WembyPage() {
           </div>
 
           <div style={{ textAlign: "right" }}>
-            <div style={{
-              fontFamily: "var(--display)",
-              fontSize: "clamp(28px, 3vw, 42px)",
-              letterSpacing: "0.08em",
-              color: "var(--text)",
-              marginBottom: "4px",
-            }}>
+            <div style={{ fontFamily: "var(--display)", fontSize: "clamp(28px, 3vw, 42px)", letterSpacing: "0.08em", color: "var(--text)", marginBottom: "4px" }}>
               SLAB SCORE<span style={{ color: "var(--green)" }}>™</span>
             </div>
-            <div style={{
-              fontFamily: "var(--display)",
-              fontSize: "112px",
-              lineHeight: 1,
-              color: "var(--green)",
-              textShadow: "0 0 40px rgba(0,255,135,0.3)",
-            }}>
+            <div style={{ fontFamily: "var(--display)", fontSize: "112px", lineHeight: 1, color: "var(--green)", textShadow: "0 0 40px rgba(0,255,135,0.3)" }}>
               {slabScore}
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", marginTop: "8px" }}>
@@ -122,7 +191,41 @@ export default function WembyPage() {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "24px", marginTop: "48px" }}>
+        {/* HISTORICAL CHART */}
+        <div style={{ marginTop: "40px", background: "var(--surface)", border: "1px solid var(--border)", padding: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <div style={{ fontFamily: "var(--mono)", fontSize: "11px", color: "var(--muted)", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+              SLAB SCORE HISTORY
+            </div>
+            <div style={{ display: "flex", gap: "2px" }}>
+              {(["daily", "weekly", "monthly", "yearly"] as DrillDown[]).map(d => (
+                <button
+                  key={d}
+                  onClick={() => setDrill(d)}
+                  style={{
+                    fontFamily: "var(--mono)",
+                    fontSize: "10px",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    padding: "6px 14px",
+                    background: drill === d ? "var(--green)" : "transparent",
+                    color: drill === d ? "var(--bg)" : "var(--muted)",
+                    border: "1px solid",
+                    borderColor: drill === d ? "var(--green)" : "var(--border)",
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                  }}
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
+          </div>
+          <SlabScoreChart drill={drill} />
+        </div>
+
+        {/* PILLARS */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "24px", marginTop: "32px" }}>
           {pillars.map(p => (
             <div key={p.label}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>

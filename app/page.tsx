@@ -6,28 +6,28 @@ export const metadata: Metadata = {
 };
 
 const pillars = [
-  { label: "Market", weight: 30, score: 72, color: "#E2E8F0" },
-  { label: "Scarcity", weight: 25, score: 65, color: "#CBD5E1" },
-  { label: "Momentum", weight: 20, score: 81, color: "#94A3B8" },
-  { label: "Performance", weight: 15, score: 78, color: "#64748B" },
-  { label: "Risk", weight: 10, score: 88, color: "#475569" },
+  { label: "Market", weight: 30, score: 72 },
+  { label: "Scarcity", weight: 25, score: 65 },
+  { label: "Momentum", weight: 20, score: 81 },
+  { label: "Performance", weight: 15, score: 78 },
+  { label: "Risk", weight: 10, score: 88 },
 ];
 
 export default function Home() {
   return (
     <main
       style={{
-        background: "#080808",
+        background: "#020202",
         minHeight: "100vh",
         fontFamily: "'Courier New', Courier, monospace",
-        color: "#F1F5F9",
+        color: "#E4FDE1",
         overflowX: "hidden",
       }}
     >
       {/* NAV */}
       <nav
         style={{
-          borderBottom: "1px solid #1E293B",
+          borderBottom: "1px solid #0D2B0D",
           padding: "0 48px",
           height: "56px",
           display: "flex",
@@ -35,7 +35,7 @@ export default function Home() {
           justifyContent: "space-between",
           position: "sticky",
           top: 0,
-          background: "rgba(8,8,8,0.92)",
+          background: "rgba(2,2,2,0.95)",
           backdropFilter: "blur(12px)",
           zIndex: 100,
         }}
@@ -45,17 +45,17 @@ export default function Home() {
             fontSize: "15px",
             fontWeight: 700,
             letterSpacing: "0.2em",
-            color: "#F8FAFC",
+            color: "#39FF14",
             textTransform: "uppercase",
           }}
         >
-          SLAB<span style={{ color: "#94A3B8" }}>STREET</span>
+          SLAB<span style={{ color: "#1A6B1A" }}>STREET</span>
         </span>
         <span
           style={{
             fontSize: "11px",
             letterSpacing: "0.15em",
-            color: "#475569",
+            color: "#1A6B1A",
             textTransform: "uppercase",
           }}
         >
@@ -72,13 +72,12 @@ export default function Home() {
           position: "relative",
         }}
       >
-        {/* Background grid lines */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
+              "linear-gradient(rgba(57,255,20,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(57,255,20,0.03) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
             pointerEvents: "none",
           }}
@@ -88,11 +87,11 @@ export default function Home() {
           <div
             style={{
               display: "inline-block",
-              border: "1px solid #1E293B",
+              border: "1px solid #0D2B0D",
               padding: "4px 12px",
               fontSize: "10px",
               letterSpacing: "0.2em",
-              color: "#64748B",
+              color: "#1A6B1A",
               textTransform: "uppercase",
               marginBottom: "32px",
             }}
@@ -108,14 +107,14 @@ export default function Home() {
               letterSpacing: "-0.03em",
               fontFamily: "Georgia, 'Times New Roman', serif",
               marginBottom: "32px",
-              color: "#F8FAFC",
+              color: "#E4FDE1",
             }}
           >
             The Bloomberg
             <br />
             <span
               style={{
-                WebkitTextStroke: "1px #475569",
+                WebkitTextStroke: "1px #1A6B1A",
                 color: "transparent",
               }}
             >
@@ -130,7 +129,7 @@ export default function Home() {
             style={{
               fontSize: "16px",
               lineHeight: 1.7,
-              color: "#64748B",
+              color: "#1A6B1A",
               maxWidth: "480px",
               marginBottom: "48px",
               fontFamily: "'Courier New', monospace",
@@ -142,8 +141,8 @@ export default function Home() {
 
           <button
             style={{
-              background: "#F1F5F9",
-              color: "#080808",
+              background: "#39FF14",
+              color: "#020202",
               border: "none",
               padding: "14px 36px",
               fontSize: "12px",
@@ -171,10 +170,10 @@ export default function Home() {
           style={{
             fontSize: "10px",
             letterSpacing: "0.2em",
-            color: "#475569",
+            color: "#1A6B1A",
             textTransform: "uppercase",
             marginBottom: "48px",
-            borderBottom: "1px solid #1E293B",
+            borderBottom: "1px solid #0D2B0D",
             paddingBottom: "16px",
           }}
         >
@@ -186,14 +185,14 @@ export default function Home() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "2px",
-            background: "#1E293B",
-            border: "1px solid #1E293B",
+            background: "#0D2B0D",
+            border: "1px solid #0D2B0D",
           }}
         >
           {/* Score panel */}
           <div
             style={{
-              background: "#0F172A",
+              background: "#020202",
               padding: "48px",
               display: "flex",
               flexDirection: "column",
@@ -204,7 +203,7 @@ export default function Home() {
               style={{
                 fontSize: "11px",
                 letterSpacing: "0.2em",
-                color: "#475569",
+                color: "#1A6B1A",
                 textTransform: "uppercase",
                 marginBottom: "8px",
               }}
@@ -215,7 +214,7 @@ export default function Home() {
               style={{
                 fontSize: "11px",
                 letterSpacing: "0.15em",
-                color: "#334155",
+                color: "#0D2B0D",
                 marginBottom: "40px",
               }}
             >
@@ -228,8 +227,9 @@ export default function Home() {
                 fontWeight: 900,
                 lineHeight: 1,
                 fontFamily: "Georgia, serif",
-                color: "#F8FAFC",
+                color: "#39FF14",
                 marginBottom: "8px",
+                textShadow: "0 0 40px rgba(57,255,20,0.3)",
               }}
             >
               74
@@ -247,8 +247,9 @@ export default function Home() {
                 style={{
                   width: "8px",
                   height: "8px",
-                  background: "#F1F5F9",
+                  background: "#39FF14",
                   borderRadius: "50%",
+                  boxShadow: "0 0 8px #39FF14",
                 }}
               />
               <span
@@ -256,25 +257,25 @@ export default function Home() {
                   fontSize: "13px",
                   letterSpacing: "0.25em",
                   fontWeight: 700,
-                  color: "#F1F5F9",
+                  color: "#39FF14",
                 }}
               >
                 BUY
               </span>
             </div>
 
-            <div style={{ fontSize: "11px", color: "#334155", letterSpacing: "0.1em" }}>
+            <div style={{ fontSize: "11px", color: "#0D2B0D", letterSpacing: "0.1em" }}>
               SCORE RANGE: 70–100 BUY · 40–69 HOLD · 0–39 SELL
             </div>
           </div>
 
           {/* Pillars panel */}
-          <div style={{ background: "#080808", padding: "48px" }}>
+          <div style={{ background: "#020202", padding: "48px" }}>
             <div
               style={{
                 fontSize: "10px",
                 letterSpacing: "0.2em",
-                color: "#475569",
+                color: "#1A6B1A",
                 textTransform: "uppercase",
                 marginBottom: "32px",
               }}
@@ -295,7 +296,7 @@ export default function Home() {
                     style={{
                       fontSize: "11px",
                       letterSpacing: "0.15em",
-                      color: "#94A3B8",
+                      color: "#39FF14",
                       textTransform: "uppercase",
                     }}
                   >
@@ -305,7 +306,7 @@ export default function Home() {
                     style={{
                       fontSize: "11px",
                       letterSpacing: "0.1em",
-                      color: "#64748B",
+                      color: "#1A6B1A",
                     }}
                   >
                     {p.weight}% · {p.score}/100
@@ -314,15 +315,16 @@ export default function Home() {
                 <div
                   style={{
                     height: "2px",
-                    background: "#1E293B",
+                    background: "#0D2B0D",
                     width: "100%",
                   }}
                 >
                   <div
                     style={{
                       height: "2px",
-                      background: p.color,
+                      background: "#39FF14",
                       width: `${p.score}%`,
+                      boxShadow: "0 0 6px rgba(57,255,20,0.5)",
                     }}
                   />
                 </div>
@@ -345,8 +347,8 @@ export default function Home() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "2px",
-            background: "#1E293B",
-            border: "1px solid #1E293B",
+            background: "#0D2B0D",
+            border: "1px solid #0D2B0D",
           }}
         >
           {[
@@ -369,7 +371,7 @@ export default function Home() {
             <div
               key={f.num}
               style={{
-                background: "#080808",
+                background: "#020202",
                 padding: "40px 32px",
               }}
             >
@@ -377,7 +379,7 @@ export default function Home() {
                 style={{
                   fontSize: "10px",
                   letterSpacing: "0.2em",
-                  color: "#334155",
+                  color: "#0D2B0D",
                   marginBottom: "20px",
                 }}
               >
@@ -388,7 +390,7 @@ export default function Home() {
                   fontSize: "14px",
                   fontWeight: 700,
                   letterSpacing: "0.05em",
-                  color: "#E2E8F0",
+                  color: "#39FF14",
                   marginBottom: "12px",
                   textTransform: "uppercase",
                 }}
@@ -399,7 +401,7 @@ export default function Home() {
                 style={{
                   fontSize: "13px",
                   lineHeight: 1.7,
-                  color: "#475569",
+                  color: "#1A6B1A",
                 }}
               >
                 {f.body}
@@ -412,7 +414,7 @@ export default function Home() {
       {/* FOOTER */}
       <footer
         style={{
-          borderTop: "1px solid #1E293B",
+          borderTop: "1px solid #0D2B0D",
           padding: "32px 48px",
           display: "flex",
           justifyContent: "space-between",
@@ -426,13 +428,13 @@ export default function Home() {
             fontSize: "13px",
             fontWeight: 700,
             letterSpacing: "0.2em",
-            color: "#334155",
+            color: "#39FF14",
             textTransform: "uppercase",
           }}
         >
-          SLAB<span style={{ color: "#1E293B" }}>STREET</span>
+          SLAB<span style={{ color: "#1A6B1A" }}>STREET</span>
         </span>
-        <span style={{ fontSize: "11px", color: "#1E293B", letterSpacing: "0.1em" }}>
+        <span style={{ fontSize: "11px", color: "#0D2B0D", letterSpacing: "0.1em" }}>
           © 2026 SLABSTREET. ALL RIGHTS RESERVED.
         </span>
       </footer>

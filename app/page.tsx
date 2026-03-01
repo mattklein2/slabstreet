@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const tickerItems = [
   { label: 'WEMBY AUTO /25',      value: '$2,840',       change: '+8.4%',    up: true  },
@@ -32,6 +32,20 @@ export default function HomePage() {
   const [query, setQuery]       = useState('');
   const [results, setResults]   = useState<typeof players>([]);
   const [searched, setSearched] = useState(false);
+  const searchRef               = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside the search container
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearched(false);
+        setQuery('');
+        setResults([]);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   function handleSearch(q: string) {
     setQuery(q);
@@ -73,7 +87,8 @@ export default function HomePage() {
 
       {/* SEARCH BAR */}
       <div style={{ borderBottom: '1px solid #1e2530', padding: '10px 24px', background: '#0f1318', position: 'relative', zIndex: 90 }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+        {/* searchRef wraps the input + dropdown so clicks inside don't close it */}
+        <div ref={searchRef} style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
           <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#8899aa', fontSize: 14, pointerEvents: 'none' }}>⌕</span>
           <input
             type="text"
@@ -84,11 +99,11 @@ export default function HomePage() {
               width: '100%',
               background: '#090b0f',
               border: '1px solid #1e2530',
-              borderRadius: 3,
+              borderRadius: searched ? '3px 3px 0 0' : 3,
               padding: '9px 12px 9px 32px',
               color: '#e8edf5',
               fontFamily: 'IBM Plex Mono, monospace',
-              fontSize: 16, /* iOS zoom fix — must be >= 16px */
+              fontSize: 16, /* iOS zoom fix */
               outline: 'none',
               boxSizing: 'border-box',
             }}

@@ -48,26 +48,34 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark');
+  const [mounted, setMounted] = useState(false);
 
-  // Load saved preference on mount
   useEffect(() => {
+    // Read the theme that the blocking script already applied to <html>
     const saved = localStorage.getItem('slabstreet-theme') as Theme | null;
-    if (saved === 'light' || saved === 'dark') setTheme(saved);
+    if (saved === 'light' || saved === 'dark') {
+      setTheme(saved);
+    }
+    setMounted(true);
   }, []);
 
   function toggle() {
     setTheme(prev => {
       const next = prev === 'dark' ? 'light' : 'dark';
       localStorage.setItem('slabstreet-theme', next);
+      document.documentElement.setAttribute('data-theme', next);
       return next;
     });
   }
 
-  const colors = theme === 'dark' ? darkColors : lightColors;
+  // Use dark colors until mounted to match server render — prevents flash
+  const colors = mounted
+    ? (theme === 'dark' ? darkColors : lightColors)
+    : darkColors;
 
   return (
     <ThemeContext.Provider value={{ theme, toggle, colors }}>
-      <div style={{ background: colors.bg, minHeight: '100vh', transition: 'background 0.2s, color 0.2s' }}>
+      <div style={{ background: colors.bg, minHeight: '100vh', transition: mounted ? 'background 0.2s, color 0.2s' : 'none' }}>
         {children}
       </div>
     </ThemeContext.Provider>

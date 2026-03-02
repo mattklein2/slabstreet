@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../components/ThemeProvider';
 
 const playerData: Record<string, any> = {
@@ -234,7 +234,8 @@ function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: num
 const tierBorder: Record<string, string> = { COMMON: '#8899aa', MID: '#38bdf8', RARE: '#f59e0b' };
 
 // ─── PAGE ─────────────────────────────────────────────────────
-export default function PlayerPage({ params }: { params: { slug: string } }) {
+export default function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const { theme, toggle, colors: c } = useTheme();
   const [period, setPeriod]   = useState('weekly');
   const [odds, setOdds]       = useState<any[] | null>(null);
@@ -242,7 +243,7 @@ export default function PlayerPage({ params }: { params: { slug: string } }) {
   const [momentum, setMomentum] = useState<any>(null);
   const [momentumLive, setMomentumLive] = useState(false);
 
-  const p = playerData[params.slug];
+  const p = playerData[slug];
   const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
   const xSignalColor: Record<string, string> = { rising: c.green, falling: c.red, stable: c.amber };
 
@@ -256,19 +257,19 @@ export default function PlayerPage({ params }: { params: { slug: string } }) {
         else setOdds(p.fallbackOdds);
       })
       .catch(() => setOdds(p.fallbackOdds));
-  }, [params.slug]);
+  }, [slug]);
 
   // Fetch live momentum from X API
   useEffect(() => {
     if (!p) return;
-    fetch(`/api/momentum?player=${encodeURIComponent(p.fullName)}&slug=${params.slug}`)
+    fetch(`/api/momentum?player=${encodeURIComponent(p.fullName)}&slug=${slug}`)
       .then(r => r.json())
       .then(data => {
         setMomentum(data);
         setMomentumLive(!data.tier_required);
       })
       .catch(() => setMomentum(null));
-  }, [params.slug]);
+  }, [slug]);
 
   // Merge live momentum score into pillars
   const pillars = p?.pillars.map((pl: any) => {

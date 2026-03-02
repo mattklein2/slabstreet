@@ -242,6 +242,8 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   const [oddsLive, setOddsLive] = useState(false);
   const [momentum, setMomentum] = useState<any>(null);
   const [momentumLive, setMomentumLive] = useState(false);
+  const [news, setNews] = useState<any[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
 
   const p = playerData[slug];
   const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
@@ -269,6 +271,21 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
         setMomentumLive(!data.tier_required);
       })
       .catch(() => setMomentum(null));
+  }, [slug]);
+
+  // Fetch live value-relevant news
+  useEffect(() => {
+    if (!p) return;
+    fetch(`/api/news?player=${encodeURIComponent(p.fullName)}`)
+      .then(r => r.json())
+      .then(data => {
+        setNews(data.news ?? []);
+        setNewsLoading(false);
+      })
+      .catch(() => {
+        setNews(p.news.map((n: any) => ({ headline: n.headline, source: n.source, time: n.time, sentiment: 'neutral', url: '#' })));
+        setNewsLoading(false);
+      });
   }, [slug]);
 
   // Merge live momentum score into pillars
@@ -509,19 +526,42 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
           </div>
         </div>
 
-        {/* NEWS */}
+        {/* NEWS - LIVE */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.red}`, borderRadius: 4, padding: '20px 28px', marginBottom: 32 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.red, letterSpacing: 3, marginBottom: 14 }}>RECENT NEWS</div>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.red, letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+            VALUE SIGNALS · NEWS
+            <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>INJURY · AWARDS · TRADES · CARDS</span>
+            {!newsLoading && news.length > 0 && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green, marginLeft: 'auto' }}>
+                <span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE
+              </span>
+            )}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {p.news.map((n: any, i: number) => (
-              <div key={i} style={{ padding: '12px 0', borderBottom: i < p.news.length - 1 ? `1px solid ${c.border}` : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
-                <div>
-                  <div style={{ fontSize: 13, color: c.text, lineHeight: 1.5, marginBottom: 4 }}>{n.headline}</div>
-                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.red }}>{n.source}</div>
+            {newsLoading ? (
+              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '12px 0' }}>Scanning feeds...</div>
+            ) : news.length === 0 ? (
+              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '12px 0' }}>No value-relevant news in the last 48 hours.</div>
+            ) : news.map((n: any, i: number) => {
+              const sentColor = n.sentiment === 'positive' ? c.green : n.sentiment === 'negative' ? c.red : c.muted;
+              return (
+                <div key={i} style={{ padding: '12px 0', borderBottom: i < news.length - 1 ? `1px solid ${c.border}` : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: sentColor, display: 'inline-block', flexShrink: 0 }}></span>
+                      <a href={n.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: c.text, lineHeight: 1.5, textDecoration: 'none' }}>{n.headline}</a>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 14 }}>
+                      <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: sentColor }}>{n.source}</span>
+                      {n.keywords?.length > 0 && n.keywords.map((k: string, ki: number) => (
+                        <span key={ki} style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, background: c.bg, border: `1px solid ${c.border}`, padding: '1px 5px', borderRadius: 2 }}>{k}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, whiteSpace: 'nowrap', flexShrink: 0 }}>{n.time}</div>
                 </div>
-                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, whiteSpace: 'nowrap', flexShrink: 0 }}>{n.time}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

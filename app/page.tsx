@@ -39,14 +39,31 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* NAV */}
-      <nav style={{ borderBottom: `1px solid ${c.border}`, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: c.navBg, zIndex: 100, boxShadow: theme === 'light' ? '0 1px 8px rgba(0,0,0,0.06)' : 'none' }}>
+      {/* NAV — 3 column: logo | search (center) | controls */}
+      <nav style={{
+        borderBottom: `1px solid ${c.border}`,
+        padding: '0 24px',
+        height: 58,
+        display: 'grid',
+        gridTemplateColumns: '1fr auto 1fr',
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        background: c.navBg,
+        zIndex: 100,
+        boxShadow: theme === 'light' ? '0 1px 8px rgba(0,0,0,0.06)' : 'none',
+        gap: 16,
+      }}>
+        {/* Left: logo */}
         <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: c.green }}>SLABSTREET</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <NavSearch />
-          <a href="#features" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, textDecoration: 'none', letterSpacing: 1 }}>[Features]</a>
-          {/* THEME TOGGLE */}
-          <button onClick={toggle} title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s' }}>
+
+        {/* Center: search */}
+        <NavSearch />
+
+        {/* Right: links + toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'flex-end' }}>
+          <a href="#features" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, textDecoration: 'none', letterSpacing: 1, whiteSpace: 'nowrap' }}>[Features]</a>
+          <button onClick={toggle} title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s', flexShrink: 0 }}>
             <div style={{ width: 18, height: 18, borderRadius: '50%', background: c.green, transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>
               {theme === 'dark' ? '🌙' : '☀️'}
             </div>
@@ -76,10 +93,10 @@ export default function HomePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: 12 }}>
             {[
-              { name: '2023 Prizm Silver Auto /25', sub: 'PSA 10 · Serial #14/25',      price: '$2,840', change: '▲ +8.4% 7d',   up: true  },
+              { name: '2023 Prizm Silver Auto /25', sub: 'PSA 10 · Serial #14/25',       price: '$2,840', change: '▲ +8.4% 7d',   up: true  },
               { name: '2023 Prizm RC Base PSA 10',  sub: 'Pop: 847 · /10 variant avail', price: '$480',   change: '▼ -2.1% 7d',   up: false },
-              { name: 'NT Logoman Auto 1/1',        sub: 'Status: UNACCOUNTED ⚡',        price: '~$150K', change: '▲ BUY SIGNAL', up: true  },
-              { name: '2024 Hoops Prizm Gold /10',  sub: 'Serial #03/10 · BGS 9.5',      price: '$1,200', change: '▲ +12.7% 7d',  up: true  },
+              { name: 'NT Logoman Auto 1/1',        sub: 'Status: UNACCOUNTED ⚡',         price: '~$150K', change: '▲ BUY SIGNAL', up: true  },
+              { name: '2024 Hoops Prizm Gold /10',  sub: 'Serial #03/10 · BGS 9.5',       price: '$1,200', change: '▲ +12.7% 7d',  up: true  },
             ].map((card, i) => (
               <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
                 <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, marginBottom: 4 }}>{card.name}</div>

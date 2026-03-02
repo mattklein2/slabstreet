@@ -12,32 +12,25 @@ const players = [
 
 export default function NavSearch() {
   const { colors: c } = useTheme();
-  const [query, setQuery]       = useState('');
-  const [results, setResults]   = useState<typeof players>([]);
-  const [open, setOpen]         = useState(false);
+  const [query, setQuery]             = useState('');
+  const [results, setResults]         = useState<typeof players>([]);
+  const [open, setOpen]               = useState(false);
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
-  const searchRef               = useRef<HTMLDivElement>(null);
+  const searchRef                     = useRef<HTMLDivElement>(null);
 
   const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
 
-  // Close on click outside
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        close();
-      }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) close();
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close on browser back button
   useEffect(() => {
-    function handlePopState() {
-      close();
-    }
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', close);
+    return () => window.removeEventListener('popstate', close);
   }, []);
 
   function close() {
@@ -49,44 +42,40 @@ export default function NavSearch() {
 
   function handleSearch(q: string) {
     setQuery(q);
-    if (q.trim().length < 1) {
-      setResults([]);
-      setOpen(false);
-      return;
-    }
+    if (q.trim().length < 1) { setResults([]); setOpen(false); return; }
     const lower = q.toLowerCase();
-    const filtered = players.filter(p =>
+    setResults(players.filter(p =>
       p.name.toLowerCase().includes(lower) ||
       p.slug.includes(lower) ||
       p.team.toLowerCase().includes(lower)
-    );
-    setResults(filtered);
+    ));
     setOpen(true);
   }
 
   return (
-    <div ref={searchRef} style={{ position: 'relative', width: 280 }}>
+    <div ref={searchRef} style={{ position: 'relative', width: '100%', maxWidth: 480 }}>
       <span style={{
-        position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
-        color: c.muted, fontSize: 14, pointerEvents: 'none', zIndex: 1,
+        position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
+        color: c.green, fontSize: 17, pointerEvents: 'none', zIndex: 1,
       }}>⌕</span>
       <input
         type="text"
         value={query}
         onChange={e => handleSearch(e.target.value)}
-        placeholder="Search players..."
+        placeholder="Search players, teams, cards..."
         style={{
           width: '100%',
           background: c.surface,
           border: `1px solid ${open ? c.green : c.border}`,
-          borderRadius: open && results.length > 0 ? '3px 3px 0 0' : 3,
-          padding: '7px 10px 7px 30px',
+          borderRadius: open && results.length > 0 ? '4px 4px 0 0' : 4,
+          padding: '10px 14px 10px 40px',
           color: c.text,
           fontFamily: 'IBM Plex Mono, monospace',
-          fontSize: 12,
+          fontSize: 13,
           outline: 'none',
           boxSizing: 'border-box',
-          transition: 'border-color 0.15s',
+          transition: 'border-color 0.15s, box-shadow 0.15s',
+          boxShadow: open ? `0 0 0 2px ${c.green}22` : 'none',
         }}
       />
       {open && (
@@ -98,17 +87,12 @@ export default function NavSearch() {
           background: c.surface,
           border: `1px solid ${c.green}`,
           borderTop: 'none',
-          borderRadius: '0 0 3px 3px',
+          borderRadius: '0 0 4px 4px',
           zIndex: 999,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+          boxShadow: '0 12px 32px rgba(0,0,0,0.35)',
         }}>
           {results.length === 0 ? (
-            <div style={{
-              padding: '10px 14px',
-              fontFamily: 'IBM Plex Mono, monospace',
-              fontSize: 11,
-              color: c.muted,
-            }}>
+            <div style={{ padding: '12px 16px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted }}>
               No players found.
             </div>
           ) : results.map(p => (
@@ -121,60 +105,32 @@ export default function NavSearch() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '10px 14px',
+                padding: '12px 16px',
                 borderBottom: `1px solid ${c.border}`,
                 textDecoration: 'none',
-                background: hoveredSlug === p.slug ? c.border : 'transparent',
-                transition: 'background 0.1s',
+                background: hoveredSlug === p.slug ? `${c.green}12` : 'transparent',
+                borderLeft: hoveredSlug === p.slug ? `3px solid ${c.green}` : '3px solid transparent',
+                transition: 'background 0.1s, border-left 0.1s',
                 cursor: 'pointer',
               }}
             >
               <div>
-                <div style={{
-                  fontFamily: 'IBM Plex Mono, monospace',
-                  fontSize: 12,
-                  color: hoveredSlug === p.slug ? c.green : c.text,
-                  transition: 'color 0.1s',
-                }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 13, color: hoveredSlug === p.slug ? c.green : c.text, transition: 'color 0.1s' }}>
                   {p.name}
                 </div>
-                <div style={{
-                  fontFamily: 'IBM Plex Mono, monospace',
-                  fontSize: 10,
-                  color: c.muted,
-                  marginTop: 2,
-                }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginTop: 2 }}>
                   {p.team}
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{
-                  fontFamily: 'Bebas Neue, sans-serif',
-                  fontSize: 22,
-                  color: c.text,
-                  lineHeight: 1,
-                }}>
-                  {p.score}
-                </span>
-                <span style={{
-                  fontFamily: 'IBM Plex Mono, monospace',
-                  fontSize: 9,
-                  color: signalColor[p.signal],
-                  border: `1px solid ${signalColor[p.signal]}`,
-                  padding: '2px 5px',
-                  borderRadius: 2,
-                  letterSpacing: 1,
-                }}>
-                  {p.signal}
-                </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 24, color: c.text, lineHeight: 1 }}>{p.score}</span>
+                <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: signalColor[p.signal], border: `1px solid ${signalColor[p.signal]}`, padding: '2px 6px', borderRadius: 2, letterSpacing: 1 }}>{p.signal}</span>
               </div>
             </a>
           ))}
         </div>
       )}
-      <style>{`
-        input::placeholder { color: ${c.muted}; }
-      `}</style>
+      <style>{`input::placeholder { color: ${c.muted}; }`}</style>
     </div>
   );
 }

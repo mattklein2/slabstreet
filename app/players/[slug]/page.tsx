@@ -5,14 +5,15 @@ import { useTheme } from '../../components/ThemeProvider';
 
 const playerData: Record<string, any> = {
   wemby: {
-    name: 'Victor Wembanyama', firstName: 'VICTOR', lastName: 'WEMBANYAMA', lastNameSearch: 'wembanyama',
+    name: 'Victor Wembanyama', firstName: 'VICTOR', lastName: 'WEMBANYAMA',
+    lastNameSearch: 'wembanyama', fullName: 'Victor Wembanyama',
     team: 'SAS', position: 'CENTER', number: '1', score: 74, signal: 'BUY',
     pillars: [
-      { label: 'Market',      score: 72, color: '#00ff87' },
-      { label: 'Scarcity',    score: 65, color: '#38bdf8' },
-      { label: 'Momentum',    score: 81, color: '#a78bfa' },
-      { label: 'Performance', score: 78, color: '#fb923c' },
-      { label: 'Risk',        score: 88, color: '#4ade80' },
+      { label: 'Market',      score: 72, color: '#00ff87', key: 'market'      },
+      { label: 'Scarcity',    score: 65, color: '#38bdf8', key: 'scarcity'    },
+      { label: 'Momentum',    score: 81, color: '#a78bfa', key: 'momentum'    },
+      { label: 'Performance', score: 78, color: '#fb923c', key: 'performance' },
+      { label: 'Risk',        score: 88, color: '#4ade80', key: 'risk'        },
     ],
     stats: [
       { label: 'PPG', val: '24.8' }, { label: 'RPG', val: '10.6' }, { label: 'APG', val: '3.9' },
@@ -55,14 +56,15 @@ const playerData: Record<string, any> = {
     ],
   },
   luka: {
-    name: 'Luka Doncic', firstName: 'LUKA', lastName: 'DONCIC', lastNameSearch: 'doncic',
+    name: 'Luka Doncic', firstName: 'LUKA', lastName: 'DONCIC',
+    lastNameSearch: 'doncic', fullName: 'Luka Doncic',
     team: 'LAL', position: 'GUARD', number: '77', score: 61, signal: 'HOLD',
     pillars: [
-      { label: 'Market',      score: 58, color: '#00ff87' },
-      { label: 'Scarcity',    score: 52, color: '#38bdf8' },
-      { label: 'Momentum',    score: 64, color: '#a78bfa' },
-      { label: 'Performance', score: 71, color: '#fb923c' },
-      { label: 'Risk',        score: 60, color: '#4ade80' },
+      { label: 'Market',      score: 58, color: '#00ff87', key: 'market'      },
+      { label: 'Scarcity',    score: 52, color: '#38bdf8', key: 'scarcity'    },
+      { label: 'Momentum',    score: 64, color: '#a78bfa', key: 'momentum'    },
+      { label: 'Performance', score: 71, color: '#fb923c', key: 'performance' },
+      { label: 'Risk',        score: 60, color: '#4ade80', key: 'risk'        },
     ],
     stats: [
       { label: 'PPG', val: '27.1' }, { label: 'RPG', val: '8.4'  }, { label: 'APG', val: '7.8' },
@@ -75,10 +77,10 @@ const playerData: Record<string, any> = {
       yearly:  { labels: ['2021','2022','2023','2024','2025','2026'], scores: [78,76,74,70,65,61] },
     },
     cards: [
-      { name: '2018-19 Prizm Base RC',     grade: 'PSA 10', pop: '8,400', tier: 'COMMON', price: '$620',    change: '▼ -1.8%', up: false },
-      { name: '2018-19 Prizm Silver RC',   grade: 'PSA 10', pop: '1,100', tier: 'MID',    price: '$2,100',  change: '▼ -3.2%', up: false },
-      { name: '2018-19 Prizm RC Auto /125',grade: 'PSA 10', pop: '210',   tier: 'MID',    price: '$4,800',  change: '▲ +1.4%', up: true  },
-      { name: '2018-19 NT RPA /99',        grade: 'PSA 10', pop: '44',    tier: 'RARE',   price: '$22,000', change: '▼ -2.1%', up: false },
+      { name: '2018-19 Prizm Base RC',      grade: 'PSA 10', pop: '8,400', tier: 'COMMON', price: '$620',    change: '▼ -1.8%', up: false },
+      { name: '2018-19 Prizm Silver RC',    grade: 'PSA 10', pop: '1,100', tier: 'MID',    price: '$2,100',  change: '▼ -3.2%', up: false },
+      { name: '2018-19 Prizm RC Auto /125', grade: 'PSA 10', pop: '210',   tier: 'MID',    price: '$4,800',  change: '▲ +1.4%', up: true  },
+      { name: '2018-19 NT RPA /99',         grade: 'PSA 10', pop: '44',    tier: 'RARE',   price: '$22,000', change: '▼ -2.1%', up: false },
     ],
     sales: [
       { card: '2018-19 Prizm Silver RC',    grade: 'PSA 10', price: '$2,050',  date: 'Feb 27' },
@@ -99,14 +101,15 @@ const playerData: Record<string, any> = {
     ],
   },
   ja: {
-    name: 'Ja Morant', firstName: 'JA', lastName: 'MORANT', lastNameSearch: 'morant',
+    name: 'Ja Morant', firstName: 'JA', lastName: 'MORANT',
+    lastNameSearch: 'morant', fullName: 'Ja Morant',
     team: 'MEM', position: 'GUARD', number: '12', score: 55, signal: 'HOLD',
     pillars: [
-      { label: 'Market',      score: 50, color: '#00ff87' },
-      { label: 'Scarcity',    score: 58, color: '#38bdf8' },
-      { label: 'Momentum',    score: 52, color: '#a78bfa' },
-      { label: 'Performance', score: 66, color: '#fb923c' },
-      { label: 'Risk',        score: 42, color: '#4ade80' },
+      { label: 'Market',      score: 50, color: '#00ff87', key: 'market'      },
+      { label: 'Scarcity',    score: 58, color: '#38bdf8', key: 'scarcity'    },
+      { label: 'Momentum',    score: 52, color: '#a78bfa', key: 'momentum'    },
+      { label: 'Performance', score: 66, color: '#fb923c', key: 'performance' },
+      { label: 'Risk',        score: 42, color: '#4ade80', key: 'risk'        },
     ],
     stats: [
       { label: 'PPG', val: '22.4' }, { label: 'RPG', val: '5.8'  }, { label: 'APG', val: '8.1' },
@@ -119,10 +122,10 @@ const playerData: Record<string, any> = {
       yearly:  { labels: ['2021','2022','2023','2024','2025','2026'], scores: [74,80,62,48,51,55] },
     },
     cards: [
-      { name: '2019-20 Prizm Base RC',     grade: 'PSA 10', pop: '12,000', tier: 'COMMON', price: '$320',   change: '▲ +2.1%', up: true  },
-      { name: '2019-20 Prizm Silver RC',   grade: 'PSA 10', pop: '2,400',  tier: 'MID',    price: '$980',   change: '▲ +3.4%', up: true  },
-      { name: '2019-20 Prizm RC Auto /149',grade: 'PSA 10', pop: '180',    tier: 'MID',    price: '$2,200', change: '▲ +1.9%', up: true  },
-      { name: '2019-20 NT RPA /99',        grade: 'PSA 10', pop: '36',     tier: 'RARE',   price: '$8,400', change: '▼ -4.2%', up: false },
+      { name: '2019-20 Prizm Base RC',      grade: 'PSA 10', pop: '12,000', tier: 'COMMON', price: '$320',   change: '▲ +2.1%', up: true  },
+      { name: '2019-20 Prizm Silver RC',    grade: 'PSA 10', pop: '2,400',  tier: 'MID',    price: '$980',   change: '▲ +3.4%', up: true  },
+      { name: '2019-20 Prizm RC Auto /149', grade: 'PSA 10', pop: '180',    tier: 'MID',    price: '$2,200', change: '▲ +1.9%', up: true  },
+      { name: '2019-20 NT RPA /99',         grade: 'PSA 10', pop: '36',     tier: 'RARE',   price: '$8,400', change: '▼ -4.2%', up: false },
     ],
     sales: [
       { card: '2019-20 Prizm Silver RC',    grade: 'PSA 10', price: '$960',   date: 'Feb 27' },
@@ -136,20 +139,21 @@ const playerData: Record<string, any> = {
       { market: 'NBA Champion',  book: 'DraftKings', odds: '+6000' },
     ],
     news: [
-      { headline: 'Ja Morant returns from injury, drops 28 points in Grizzlies comeback', source: 'ESPN',            time: '6h ago' },
-      { headline: 'Morant card prices tick up on return but risk score remains elevated',   source: 'CBS Sports',      time: '1d ago' },
-      { headline: 'Grizzlies cautious with Ja as playoffs approach — minutes restriction',  source: 'The Athletic',    time: '2d ago' },
+      { headline: 'Ja Morant returns from injury, drops 28 points in Grizzlies comeback', source: 'ESPN',       time: '6h ago' },
+      { headline: 'Morant card prices tick up on return but risk score remains elevated',   source: 'CBS Sports', time: '1d ago' },
+      { headline: 'Grizzlies cautious with Ja as playoffs approach — minutes restriction',  source: 'The Athletic', time: '2d ago' },
     ],
   },
   ant: {
-    name: 'Anthony Edwards', firstName: 'ANTHONY', lastName: 'EDWARDS', lastNameSearch: 'edwards',
+    name: 'Anthony Edwards', firstName: 'ANTHONY', lastName: 'EDWARDS',
+    lastNameSearch: 'edwards', fullName: 'Anthony Edwards',
     team: 'MIN', position: 'GUARD', number: '5', score: 67, signal: 'HOLD',
     pillars: [
-      { label: 'Market',      score: 64, color: '#00ff87' },
-      { label: 'Scarcity',    score: 70, color: '#38bdf8' },
-      { label: 'Momentum',    score: 72, color: '#a78bfa' },
-      { label: 'Performance', score: 74, color: '#fb923c' },
-      { label: 'Risk',        score: 80, color: '#4ade80' },
+      { label: 'Market',      score: 64, color: '#00ff87', key: 'market'      },
+      { label: 'Scarcity',    score: 70, color: '#38bdf8', key: 'scarcity'    },
+      { label: 'Momentum',    score: 72, color: '#a78bfa', key: 'momentum'    },
+      { label: 'Performance', score: 74, color: '#fb923c', key: 'performance' },
+      { label: 'Risk',        score: 80, color: '#4ade80', key: 'risk'        },
     ],
     stats: [
       { label: 'PPG', val: '26.3' }, { label: 'RPG', val: '5.4'  }, { label: 'APG', val: '5.1' },
@@ -162,10 +166,10 @@ const playerData: Record<string, any> = {
       yearly:  { labels: ['2021','2022','2023','2024','2025','2026'], scores: [38,44,52,58,63,67] },
     },
     cards: [
-      { name: '2020-21 Prizm Base RC',     grade: 'PSA 10', pop: '18,000', tier: 'COMMON', price: '$280',   change: '▲ +4.2%', up: true },
-      { name: '2020-21 Prizm Silver RC',   grade: 'PSA 10', pop: '3,200',  tier: 'MID',    price: '$860',   change: '▲ +6.8%', up: true },
-      { name: '2020-21 Prizm RC Auto /149',grade: 'PSA 10', pop: '220',    tier: 'MID',    price: '$1,900', change: '▲ +5.1%', up: true },
-      { name: '2020-21 NT RPA /99',        grade: 'PSA 10', pop: '40',     tier: 'RARE',   price: '$7,200', change: '▲ +2.8%', up: true },
+      { name: '2020-21 Prizm Base RC',      grade: 'PSA 10', pop: '18,000', tier: 'COMMON', price: '$280',   change: '▲ +4.2%', up: true },
+      { name: '2020-21 Prizm Silver RC',    grade: 'PSA 10', pop: '3,200',  tier: 'MID',    price: '$860',   change: '▲ +6.8%', up: true },
+      { name: '2020-21 Prizm RC Auto /149', grade: 'PSA 10', pop: '220',    tier: 'MID',    price: '$1,900', change: '▲ +5.1%', up: true },
+      { name: '2020-21 NT RPA /99',         grade: 'PSA 10', pop: '40',     tier: 'RARE',   price: '$7,200', change: '▲ +2.8%', up: true },
     ],
     sales: [
       { card: '2020-21 Prizm Silver RC',    grade: 'PSA 10', price: '$840',   date: 'Feb 27' },
@@ -186,6 +190,7 @@ const playerData: Record<string, any> = {
   },
 };
 
+// ─── CHART ────────────────────────────────────────────────────
 function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: number[] }; lineColor: string }) {
   const w = 600, h = 160;
   const pad = { top: 16, right: 16, bottom: 32, left: 36 };
@@ -198,30 +203,26 @@ function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: num
   const points = data.scores.map((s, i) => `${pad.left + i * xStep},${pad.top + yScale(s)}`).join(' ');
   const areaPoints = `${pad.left},${pad.top + innerH} ${points} ${pad.left + (data.scores.length - 1) * xStep},${pad.top + innerH}`;
   const labelStep = Math.ceil(data.labels.length / 5);
-
   return (
     <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
       <defs>
-        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={lineColor} stopOpacity="0.18" />
           <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
         </linearGradient>
       </defs>
-      {[0, 0.25, 0.5, 0.75, 1].map((t) => {
+      {[0,.25,.5,.75,1].map(t => {
         const y = pad.top + t * innerH;
-        const val = Math.round(max - t * (max - min));
         return (
           <g key={t}>
             <line x1={pad.left} y1={y} x2={w - pad.right} y2={y} stroke="#1e2530" strokeWidth="1" />
-            <text x={pad.left - 6} y={y + 4} fill="#8899aa" fontSize="9" textAnchor="end" fontFamily="IBM Plex Mono">{val}</text>
+            <text x={pad.left - 6} y={y + 4} fill="#8899aa" fontSize="9" textAnchor="end" fontFamily="IBM Plex Mono">{Math.round(max - t * (max - min))}</text>
           </g>
         );
       })}
-      <polygon points={areaPoints} fill="url(#chartGrad)" />
+      <polygon points={areaPoints} fill="url(#cg)" />
       <polyline points={points} fill="none" stroke={lineColor} strokeWidth="2" strokeLinejoin="round" />
-      {data.scores.map((s, i) => (
-        <circle key={i} cx={pad.left + i * xStep} cy={pad.top + yScale(s)} r="3" fill={lineColor} />
-      ))}
+      {data.scores.map((s, i) => <circle key={i} cx={pad.left + i * xStep} cy={pad.top + yScale(s)} r="3" fill={lineColor} />)}
       {data.labels.map((l, i) => {
         if (i % labelStep !== 0 && i !== data.labels.length - 1) return null;
         return <text key={i} x={pad.left + i * xStep} y={h - 6} fill="#8899aa" fontSize="9" textAnchor="middle" fontFamily="IBM Plex Mono">{l}</text>;
@@ -232,26 +233,50 @@ function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: num
 
 const tierBorder: Record<string, string> = { COMMON: '#8899aa', MID: '#38bdf8', RARE: '#f59e0b' };
 
+// ─── PAGE ─────────────────────────────────────────────────────
 export default function PlayerPage({ params }: { params: { slug: string } }) {
   const { theme, toggle, colors: c } = useTheme();
-  const [period, setPeriod] = useState('weekly');
-  const [odds, setOdds]     = useState<any[] | null>(null);
+  const [period, setPeriod]   = useState('weekly');
+  const [odds, setOdds]       = useState<any[] | null>(null);
   const [oddsLive, setOddsLive] = useState(false);
+  const [momentum, setMomentum] = useState<any>(null);
+  const [momentumLive, setMomentumLive] = useState(false);
 
   const p = playerData[params.slug];
-
   const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
+  const xSignalColor: Record<string, string> = { rising: c.green, falling: c.red, stable: c.amber };
 
+  // Fetch live odds
   useEffect(() => {
     if (!p) return;
     fetch(`/api/odds?player=${p.lastNameSearch}`)
       .then(r => r.json())
       .then(data => {
-        if (data.odds && data.odds.length > 0) { setOdds(data.odds); setOddsLive(true); }
-        else { setOdds(p.fallbackOdds); setOddsLive(false); }
+        if (data.odds?.length > 0) { setOdds(data.odds); setOddsLive(true); }
+        else setOdds(p.fallbackOdds);
       })
-      .catch(() => { setOdds(p.fallbackOdds); setOddsLive(false); });
+      .catch(() => setOdds(p.fallbackOdds));
   }, [params.slug]);
+
+  // Fetch live momentum from X API
+  useEffect(() => {
+    if (!p) return;
+    fetch(`/api/momentum?player=${encodeURIComponent(p.fullName)}&slug=${params.slug}`)
+      .then(r => r.json())
+      .then(data => {
+        setMomentum(data);
+        setMomentumLive(!data.tier_required);
+      })
+      .catch(() => setMomentum(null));
+  }, [params.slug]);
+
+  // Merge live momentum score into pillars
+  const pillars = p?.pillars.map((pl: any) => {
+    if (pl.key === 'momentum' && momentum && !momentum.tier_required) {
+      return { ...pl, score: momentum.momentum_score, live: true };
+    }
+    return pl;
+  });
 
   const displayOdds = odds ?? p?.fallbackOdds ?? [];
 
@@ -273,7 +298,7 @@ export default function PlayerPage({ params }: { params: { slug: string } }) {
         <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: c.green, textDecoration: 'none' }}>SLABSTREET</a>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <a href="/" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, textDecoration: 'none', letterSpacing: 1 }}>← BACK</a>
-          <button onClick={toggle} title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s' }}>
+          <button onClick={toggle} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s' }}>
             <div style={{ width: 18, height: 18, borderRadius: '50%', background: c.green, transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>
               {theme === 'dark' ? '🌙' : '☀️'}
             </div>
@@ -349,16 +374,69 @@ export default function PlayerPage({ params }: { params: { slug: string } }) {
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, letterSpacing: 3, marginBottom: 16 }}>[ SCORE BREAKDOWN ]</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {p.pillars.map((pl: any) => (
+            {pillars.map((pl: any) => (
               <div key={pl.label} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, letterSpacing: 1, width: 110, flexShrink: 0 }}>{pl.label.toUpperCase()}</div>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, letterSpacing: 1, width: 110, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  {pl.label.toUpperCase()}
+                  {pl.live && (
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block', boxShadow: `0 0 6px ${c.green}` }} title="Live data" />
+                  )}
+                </div>
                 <div style={{ flex: 1, height: 6, background: c.border, borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ width: `${pl.score}%`, height: '100%', background: pl.color, borderRadius: 3 }} />
+                  <div style={{ width: `${pl.score}%`, height: '100%', background: pl.color, borderRadius: 3, transition: 'width 0.6s ease' }} />
                 </div>
                 <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, color: pl.color, width: 36, textAlign: 'right', flexShrink: 0 }}>{pl.score}</div>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* X MOMENTUM SIGNAL */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid #a78bfa`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#a78bfa', letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+            X · SOCIAL MOMENTUM
+            {momentumLive
+              ? <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>
+              : <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>BASIC TIER REQUIRED</span>
+            }
+          </div>
+          {momentum ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
+              <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 4 }}>MOMENTUM SCORE</div>
+                <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 36, color: '#a78bfa', lineHeight: 1 }}>{momentum.momentum_score}</div>
+              </div>
+              <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 4 }}>SIGNAL</div>
+                <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 28, color: xSignalColor[momentum.signal] || c.amber, lineHeight: 1, textTransform: 'uppercase' }}>{momentum.signal}</div>
+              </div>
+              <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 4 }}>MENTIONS 7D</div>
+                <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 36, color: c.text, lineHeight: 1 }}>{momentum.mention_count}</div>
+              </div>
+              <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 6 }}>SENTIMENT MIX</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10 }}>
+                    <span style={{ color: c.green }}>POS</span><span style={{ color: c.green }}>{momentum.sentiment?.positive ?? 0}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10 }}>
+                    <span style={{ color: c.muted }}>NEU</span><span style={{ color: c.muted }}>{momentum.sentiment?.neutral ?? 0}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10 }}>
+                    <span style={{ color: c.red }}>NEG</span><span style={{ color: c.red }}>{momentum.sentiment?.negative ?? 0}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted }}>Loading momentum data...</div>
+          )}
+          {momentum?.note && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginTop: 12, padding: '8px 12px', background: c.bg, border: `1px solid ${c.border}`, borderRadius: 2 }}>
+              ℹ️ {momentum.note}
+            </div>
+          )}
         </div>
 
         {/* CARD LISTINGS */}

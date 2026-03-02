@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 
 const players = [
@@ -28,10 +29,11 @@ export default function NavSearch() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Close on any route change (catches Next.js client-side navigation + back button)
+  const pathname = usePathname();
   useEffect(() => {
-    window.addEventListener('popstate', close);
-    return () => window.removeEventListener('popstate', close);
-  }, []);
+    close();
+  }, [pathname]);
 
   function close() {
     setOpen(false);

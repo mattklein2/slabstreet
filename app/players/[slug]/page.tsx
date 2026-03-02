@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../components/ThemeProvider';
+import NavSearch from '../../components/NavSearch';
 
 const playerData: Record<string, any> = {
   wemby: {
@@ -314,8 +315,8 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
       {/* NAV */}
       <nav style={{ borderBottom: `1px solid ${c.border}`, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: c.navBg, zIndex: 100, boxShadow: theme === 'light' ? '0 1px 8px rgba(0,0,0,0.06)' : 'none' }}>
         <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: c.green, textDecoration: 'none' }}>SLABSTREET</a>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <a href="/" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, textDecoration: 'none', letterSpacing: 1 }}>← BACK</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <NavSearch />
           <button onClick={toggle} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s' }}>
             <div style={{ width: 18, height: 18, borderRadius: '50%', background: c.green, transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>
               {theme === 'dark' ? '🌙' : '☀️'}

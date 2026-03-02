@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import { useTheme } from './components/ThemeProvider';
+import NavSearch from './components/NavSearch';
 
 const tickerItems = [
   { label: 'WEMBY AUTO /25',      value: '$2,840',       change: '+8.4%',    up: true  },
@@ -10,13 +10,6 @@ const tickerItems = [
   { label: 'MVP ODDS',            value: '-320',         change: '+DK',      up: true  },
   { label: 'WEMBY PRIZM SILVER',  value: '$220',         change: '+12.7%',   up: true  },
   { label: 'POP REPORT PSA 10',   value: '847',          change: '+23 NEW',  up: true  },
-];
-
-const players = [
-  { name: 'Victor Wembanyama', slug: 'wemby', team: 'SAS', score: 74, signal: 'BUY'  },
-  { name: 'Luka Doncic',       slug: 'luka',  team: 'LAL', score: 61, signal: 'HOLD' },
-  { name: 'Ja Morant',         slug: 'ja',    team: 'MEM', score: 55, signal: 'HOLD' },
-  { name: 'Anthony Edwards',   slug: 'ant',   team: 'MIN', score: 67, signal: 'HOLD' },
 ];
 
 const features = [
@@ -29,32 +22,6 @@ const features = [
 
 export default function HomePage() {
   const { theme, toggle, colors: c } = useTheme();
-  const [query, setQuery]       = useState('');
-  const [results, setResults]   = useState<typeof players>([]);
-  const [searched, setSearched] = useState(false);
-  const searchRef               = useRef<HTMLDivElement>(null);
-
-  const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSearched(false); setQuery(''); setResults([]);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  function handleSearch(q: string) {
-    setQuery(q);
-    if (q.trim().length < 1) { setResults([]); setSearched(false); return; }
-    const lower = q.toLowerCase();
-    setResults(players.filter(p =>
-      p.name.toLowerCase().includes(lower) || p.slug.includes(lower) || p.team.toLowerCase().includes(lower)
-    ));
-    setSearched(true);
-  }
 
   return (
     <div style={{ color: c.text, fontFamily: 'IBM Plex Sans, sans-serif', overflowX: 'hidden' }}>
@@ -75,9 +42,9 @@ export default function HomePage() {
       {/* NAV */}
       <nav style={{ borderBottom: `1px solid ${c.border}`, padding: '0 24px', height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: c.navBg, zIndex: 100, boxShadow: theme === 'light' ? '0 1px 8px rgba(0,0,0,0.06)' : 'none' }}>
         <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: c.green }}>SLABSTREET</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <NavSearch />
           <a href="#features" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, textDecoration: 'none', letterSpacing: 1 }}>[Features]</a>
-          <a href="#features" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, textDecoration: 'none', letterSpacing: 1 }}>Learn More</a>
           {/* THEME TOGGLE */}
           <button onClick={toggle} title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s' }}>
             <div style={{ width: 18, height: 18, borderRadius: '50%', background: c.green, transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>
@@ -87,35 +54,6 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* SEARCH */}
-      <div style={{ borderBottom: `1px solid ${c.border}`, padding: '10px 24px', background: c.surface, position: 'relative', zIndex: 90 }}>
-        <div ref={searchRef} style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
-          <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: c.muted, fontSize: 14, pointerEvents: 'none' }}>⌕</span>
-          <input type="text" value={query} onChange={e => handleSearch(e.target.value)} placeholder="Search players, teams, cards..."
-            style={{ width: '100%', background: c.bg, border: `1px solid ${c.border}`, borderRadius: searched ? '3px 3px 0 0' : 3, padding: '9px 12px 9px 32px', color: c.text, fontFamily: 'IBM Plex Mono, monospace', fontSize: 16, outline: 'none', boxSizing: 'border-box', transition: 'background 0.2s' }}
-          />
-          {searched && (
-            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: c.surface, border: `1px solid ${c.border}`, borderTop: 'none', borderRadius: '0 0 3px 3px', zIndex: 200 }}>
-              {results.length === 0
-                ? <div style={{ padding: '12px 16px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, color: c.muted }}>No players found.</div>
-                : results.map(p => (
-                  <a key={p.slug} href={`/players/${p.slug}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: `1px solid ${c.border}`, textDecoration: 'none' }}>
-                    <div>
-                      <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 13, color: c.text }}>{p.name}</div>
-                      <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginTop: 2 }}>{p.team}</div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 24, color: c.text }}>{p.score}</span>
-                      <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: signalColor[p.signal], border: `1px solid ${signalColor[p.signal]}`, padding: '2px 6px', borderRadius: 2, letterSpacing: 1 }}>{p.signal}</span>
-                    </div>
-                  </a>
-                ))
-              }
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* HERO */}
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '64px 24px 48px' }}>
         <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.green, letterSpacing: 3, marginBottom: 16 }}>Card Market Intelligence</div>
@@ -123,7 +61,7 @@ export default function HomePage() {
         <p style={{ fontSize: 16, color: c.muted, maxWidth: 560, lineHeight: 1.7, margin: '0 0 32px' }}>Bloomberg Terminal meets card collecting. Real-time eBay comps, graded card signals, 1/1 pull tracking, and MVP odds — all in one platform built for collectors who trade to win.</p>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <a href="#features" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, letterSpacing: 2, padding: '12px 24px', background: c.green, color: '#090b0f', borderRadius: 3, textDecoration: 'none', fontWeight: 700 }}>See Features</a>
-          <a href="/players/wemby" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, letterSpacing: 2, padding: '12px 24px', background: 'transparent', color: c.green, border: `1px solid ${c.green}`, borderRadius: 3, textDecoration: 'none' }}>Search Players →</a>
+          <a href="/players/wemby" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, letterSpacing: 2, padding: '12px 24px', background: 'transparent', color: c.green, border: `1px solid ${c.green}`, borderRadius: 3, textDecoration: 'none' }}>View Players →</a>
         </div>
       </div>
 
@@ -193,8 +131,6 @@ export default function HomePage() {
 
       <style>{`
         @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        input::placeholder { color: ${c.muted}; }
-        input:focus { border-color: ${c.green} !important; }
       `}</style>
     </div>
   );

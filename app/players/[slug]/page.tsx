@@ -63,6 +63,11 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   const [momentumLive, setMomentumLive] = useState(false);
   const [news, setNews]             = useState<any[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
+  const [liveStats, setLiveStats]   = useState<any[] | null>(null);
+  const [statsLive, setStatsLive]   = useState(false);
+  const [psaData, setPsaData]       = useState<any>(null);
+  const [ebayListings, setEbayListings] = useState<any>(null);
+  const [ebayLoading, setEbayLoading] = useState(true);
 
   const signalColor: Record<string, string>  = { BUY: c.green, HOLD: c.amber, SELL: c.red };
   const xSignalColor: Record<string, string> = { rising: c.green, falling: c.red, stable: c.amber };
@@ -134,6 +139,36 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
       });
   }, [p]);
 
+  // Fetch live stats
+  useEffect(() => {
+    if (!p) return;
+    fetch(`/api/stats?player=${encodeURIComponent(p.fullName)}&league=${playerLeague}&team=${p.team}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.stats?.length > 0) { setLiveStats(data.stats); setStatsLive(true); }
+      })
+      .catch(() => {});
+  }, [p]);
+
+  // Fetch PSA population data
+  useEffect(() => {
+    if (!p) return;
+    fetch(`/api/psa?subject=${encodeURIComponent(p.fullName)}`)
+      .then(r => r.json())
+      .then(data => { if (data.population) setPsaData(data.population); })
+      .catch(() => {});
+  }, [p]);
+
+  // Fetch eBay listings
+  useEffect(() => {
+    if (!p) return;
+    setEbayLoading(true);
+    fetch(`/api/ebay?player=${encodeURIComponent(p.fullName)}&league=${playerLeague}`)
+      .then(r => r.json())
+      .then(data => { setEbayListings(data); setEbayLoading(false); })
+      .catch(() => setEbayLoading(false));
+  }, [p]);
+
   // Merge live momentum score into pillars
   const pillars = p?.pillars?.map((pl: any) => {
     if (pl.key === 'momentum' && momentum && !momentum.tier_required) {
@@ -193,14 +228,18 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
             <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 56, lineHeight: 1, letterSpacing: 2, color: c.green }}>{p.lastName}</div>
           </div>
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', border: `1px solid ${c.border}`, borderRadius: 3, overflow: 'hidden', alignSelf: 'center', minWidth: 220 }}>
-            <div style={{ background: c.border, padding: '5px 12px', display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ background: c.border, padding: '5px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: 9, letterSpacing: 2, color: c.muted, textTransform: 'uppercase' }}>{leagueConfig?.seasonLabel ?? '2024\u201325 Season Stats'}</span>
-              <span style={{ fontSize: 9, color: c.green, letterSpacing: 1 }}>{playerLeague}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {statsLive && <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>}
+                <span style={{ fontSize: 9, color: c.green, letterSpacing: 1 }}>{playerLeague}</span>
+              </span>
             </div>
             {(() => {
-              const cols = Math.min(3, p.stats?.length || 3);
+              const displayStats = (statsLive && liveStats?.length) ? liveStats : p.stats;
+              const cols = Math.min(3, displayStats?.length || 3);
               const rows: any[][] = [];
-              for (let i = 0; i < (p.stats?.length || 0); i += cols) rows.push(p.stats.slice(i, i + cols));
+              for (let i = 0; i < (displayStats?.length || 0); i += cols) rows.push(displayStats.slice(i, i + cols));
               return rows.map((row: any[], ri: number) => (
                 <div key={ri} style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, borderBottom: ri < rows.length - 1 ? `1px solid ${c.border}` : 'none', background: c.surface }}>
                   {row.map((s: any, i: number) => (
@@ -363,6 +402,75 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
             </tbody>
           </table>
         </div>
+
+        {/* PSA POPULATION */}
+        {psaData && (
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid #38bdf8`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#38bdf8', letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+              PSA · POPULATION DATA
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>
+            </div>
+            {(() => {
+              // PSA API returns items with grade counts
+              const items = Array.isArray(psaData) ? psaData : psaData?.PSACert ? [psaData] : [];
+              if (items.length === 0) return <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted }}>No PSA population data available.</div>;
+              // Show grade distribution from first few items
+              const topItems = items.slice(0, 8);
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
+                  {topItems.map((item: any, i: number) => (
+                    <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '10px 14px' }}>
+                      <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.text, marginBottom: 6, lineHeight: 1.3 }}>{item.SetName || item.Subject || 'Card'}</div>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {[10, 9, 8, 7].map(grade => {
+                          const count = item[`PSA${grade}`] || item[`Gem${grade}`] || 0;
+                          if (!count) return null;
+                          return (
+                            <div key={grade} style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: grade === 10 ? '#38bdf8' : c.muted, background: c.surface, border: `1px solid ${c.border}`, padding: '2px 6px', borderRadius: 2 }}>
+                              PSA {grade}: <span style={{ color: c.text }}>{count}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* EBAY MARKET LISTINGS */}
+        {!ebayLoading && ebayListings?.listings?.length > 0 && (
+          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid #f59e0b`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#f59e0b', letterSpacing: 3, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
+              MARKET · EBAY LISTINGS
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>
+              <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginLeft: 'auto' }}>{ebayListings.total} results</span>
+            </div>
+            {ebayListings.price_stats && (
+              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 14, display: 'flex', gap: 16 }}>
+                <span>LOW: <span style={{ color: c.text }}>${ebayListings.price_stats.low?.toFixed(2)}</span></span>
+                <span>MEDIAN: <span style={{ color: '#f59e0b' }}>${ebayListings.price_stats.median?.toFixed(2)}</span></span>
+                <span>HIGH: <span style={{ color: c.text }}>${ebayListings.price_stats.high?.toFixed(2)}</span></span>
+              </div>
+            )}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 10 }}>
+              {ebayListings.listings.slice(0, 8).map((item: any, i: number) => (
+                <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '10px 14px', textDecoration: 'none', display: 'flex', gap: 10, alignItems: 'center', transition: 'border-color 0.15s', cursor: 'pointer' }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = '#f59e0b')}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = c.border)}
+                >
+                  {item.image && <img src={item.image} alt="" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 2, flexShrink: 0 }} />}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.text, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
+                    <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 20, color: '#f59e0b', lineHeight: 1, marginTop: 4 }}>${item.price}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* BETTING ODDS */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.amber}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>

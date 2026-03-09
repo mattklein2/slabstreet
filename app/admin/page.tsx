@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useTheme } from '../../components/ThemeProvider';
-import NavSearch from '../../components/NavSearch';
 import { supabase } from '../../lib/supabase';
 
 // ─── CHART ────────────────────────────────────────────────────

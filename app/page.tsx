@@ -4,6 +4,7 @@ import { useTheme } from './components/ThemeProvider';
 import NavSearch from './components/NavSearch';
 import HomeMovers from './components/HomeMovers';
 import HomeOdds from './components/HomeOdds';
+import HomeNews from './components/HomeNews';
 
 const tickerItems = [
   { label: 'WEMBY AUTO /25',      value: '$2,840',       change: '+8.4%',    up: true  },
@@ -133,6 +134,11 @@ export default function HomePage() {
       {/* LIVE ODDS */}
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px 0' }}>
         <HomeOdds />
+      </div>
+
+      {/* CARD MARKET NEWS */}
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px 0' }}>
+        <HomeNews />
       </div>
 
       {/* FEATURES */}

@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../components/ThemeProvider';
 import NavSearch from '../../components/NavSearch';
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 // ─── CHART ────────────────────────────────────────────────────
 function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: number[] }; lineColor: string }) {

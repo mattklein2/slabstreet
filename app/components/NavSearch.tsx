@@ -45,9 +45,18 @@ export default function NavSearch() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close on route change (catches back button too)
+  // Close on route change
   const pathname = usePathname();
   useEffect(() => { close(); }, [pathname]);
+
+  // Close when page is restored from bfcache (back/forward button)
+  useEffect(() => {
+    function handlePageShow(e: PageTransitionEvent) {
+      if (e.persisted) close();
+    }
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
 
   function close() {
     setOpen(false);

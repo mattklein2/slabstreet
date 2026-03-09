@@ -68,6 +68,12 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   const [psaData, setPsaData]       = useState<any>(null);
   const [ebayListings, setEbayListings] = useState<any>(null);
   const [ebayLoading, setEbayLoading] = useState(true);
+  const [espnId, setEspnId]           = useState<string | null>(null);
+  const [gameLog, setGameLog]         = useState<any[]>([]);
+  const [gameLogLabels, setGameLogLabels] = useState<string[]>([]);
+  const [gameLogSport, setGameLogSport] = useState('');
+  const [gameLogLeague, setGameLogLeague] = useState('');
+  const [isWide, setIsWide]           = useState(false);
 
   const signalColor: Record<string, string>  = { BUY: c.green, HOLD: c.amber, SELL: c.red };
   const xSignalColor: Record<string, string> = { rising: c.green, falling: c.red, stable: c.amber };
@@ -139,16 +145,40 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
       });
   }, [p]);
 
-  // Fetch live stats
+  // Fetch live stats + capture ESPN ID
   useEffect(() => {
     if (!p) return;
     fetch(`/api/stats?player=${encodeURIComponent(p.fullName)}&league=${playerLeague}&team=${p.team}`)
       .then(r => r.json())
       .then(data => {
         if (data.stats?.length > 0) { setLiveStats(data.stats); setStatsLive(true); }
+        if (data.espn_id) setEspnId(data.espn_id);
       })
       .catch(() => {});
   }, [p]);
+
+  // Fetch game log once we have ESPN ID
+  useEffect(() => {
+    if (!espnId || !p || playerLeague === 'F1') return;
+    fetch(`/api/gamelog?espnId=${espnId}&league=${playerLeague}`)
+      .then(r => r.json())
+      .then(data => {
+        setGameLog(data.games ?? []);
+        setGameLogLabels(data.labels ?? []);
+        setGameLogSport(data.sport ?? '');
+        setGameLogLeague(data.league ?? '');
+      })
+      .catch(() => {});
+  }, [espnId, p, playerLeague]);
+
+  // Responsive breakpoint for two-column layout
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 960px)');
+    setIsWide(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsWide(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   // Fetch PSA population data
   useEffect(() => {
@@ -218,7 +248,7 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
         </div>
       </nav>
 
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 20px' }}>
+      <div style={{ maxWidth: gameLog.length > 0 && isWide ? 1200 : 900, margin: '0 auto', padding: '32px 20px', transition: 'max-width 0.3s' }}>
 
         {/* PLAYER HEADER */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderTop: `3px solid ${c.green}`, borderRadius: 4, padding: '24px 28px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap', marginBottom: 20 }}>
@@ -291,6 +321,69 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
           <ScoreChart data={p.scoreHistory[period]} lineColor={c.green} />
         </div>
 
+        {/* TWO-COLUMN ZONE: Game Log (left) + Score Breakdown & Momentum (right) */}
+        <div style={{
+          display: gameLog.length > 0 && isWide ? 'grid' : 'block',
+          gridTemplateColumns: '340px 1fr',
+          gap: 20,
+          marginBottom: gameLog.length > 0 && isWide ? 0 : undefined,
+        }}>
+
+          {/* RECENT GAMES (left column) */}
+          {gameLog.length > 0 && (
+            <div style={{
+              background: c.surface,
+              border: `1px solid ${c.border}`,
+              borderLeft: `4px solid ${c.cyan}`,
+              borderRadius: 4,
+              padding: '20px 16px',
+              marginBottom: isWide ? 0 : 20,
+              alignSelf: 'start',
+              position: isWide ? 'sticky' : undefined,
+              top: isWide ? 78 : undefined,
+            }}>
+              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.cyan, letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+                RECENT GAMES
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>
+              </div>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10 }}>
+                  <thead>
+                    <tr style={{ borderBottom: `1px solid ${c.border}` }}>
+                      <th style={{ padding: '6px 6px', textAlign: 'left', color: c.muted, fontSize: 8, letterSpacing: 1 }}>DATE</th>
+                      <th style={{ padding: '6px 6px', textAlign: 'left', color: c.muted, fontSize: 8, letterSpacing: 1 }}>OPP</th>
+                      <th style={{ padding: '6px 6px', textAlign: 'left', color: c.muted, fontSize: 8, letterSpacing: 1 }}>RES</th>
+                      {gameLogLabels.map(l => (
+                        <th key={l} style={{ padding: '6px 4px', textAlign: 'right', color: c.muted, fontSize: 8, letterSpacing: 1 }}>{l}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gameLog.map((g, i) => (
+                      <tr
+                        key={i}
+                        onClick={() => { window.location.href = `/games/${gameLogSport}/${gameLogLeague}/${g.eventId}`; }}
+                        style={{ borderBottom: `1px solid ${c.border}22`, cursor: 'pointer', transition: 'background 0.1s' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = `${c.green}10`; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <td style={{ padding: '6px 6px', color: c.muted, whiteSpace: 'nowrap' }}>{g.date}</td>
+                        <td style={{ padding: '6px 6px', color: c.text, whiteSpace: 'nowrap' }}>{g.opponent}</td>
+                        <td style={{ padding: '6px 6px', color: g.won ? c.green : c.red, fontWeight: 600, whiteSpace: 'nowrap' }}>{g.result}</td>
+                        {g.stats.map((s: any, si: number) => (
+                          <td key={si} style={{ padding: '6px 4px', textAlign: 'right', color: c.text }}>{s.val}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Right column: Score Breakdown + Momentum */}
+          <div>
+
         {/* SCORE BREAKDOWN */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, letterSpacing: 3, marginBottom: 16 }}>[ SCORE BREAKDOWN ]</div>
@@ -350,6 +443,9 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
             <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginTop: 12, padding: '8px 12px', background: c.bg, border: `1px solid ${c.border}`, borderRadius: 2 }}>ℹ️ {momentum.note}</div>
           )}
         </div>
+
+          </div>{/* end right column */}
+        </div>{/* end two-column zone */}
 
         {/* CARD LISTINGS */}
         <div style={{ marginBottom: 20 }}>
@@ -487,6 +583,16 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
               </div>
             ))}
           </div>
+          <a
+            href={`/odds/${playerLeague.toLowerCase()}`}
+            style={{
+              display: 'inline-block', marginTop: 14,
+              fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.amber,
+              letterSpacing: 2, textDecoration: 'none', borderBottom: `1px solid ${c.amber}33`,
+            }}
+          >
+            VIEW ALL {playerLeague} ODDS →
+          </a>
         </div>
 
         {/* NEWS */}

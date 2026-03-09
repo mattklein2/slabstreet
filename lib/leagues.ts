@@ -14,7 +14,8 @@ export interface LeagueConfig {
   seasonLabel: string;
 
   // The Odds API
-  oddsApiSportKey: string | null;
+  oddsApiSportKey: string | null;   // championship outrights key
+  oddsApiGameKey: string | null;    // game-level odds key (h2h, spreads, totals)
   oddsApiMarketLabel: string;
 
   // ESPN free API
@@ -70,6 +71,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     ],
     seasonLabel: '2024\u201325 Season Stats',
     oddsApiSportKey: 'basketball_nba_championship_winner',
+    oddsApiGameKey: 'basketball_nba',
     oddsApiMarketLabel: 'NBA Champion',
     espnSport: 'basketball',
     espnLeague: 'nba',
@@ -97,6 +99,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     ],
     seasonLabel: '2025 Season Stats',
     oddsApiSportKey: 'americanfootball_nfl_super_bowl_winner',
+    oddsApiGameKey: 'americanfootball_nfl',
     oddsApiMarketLabel: 'Super Bowl Champion',
     espnSport: 'football',
     espnLeague: 'nfl',
@@ -122,6 +125,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     ],
     seasonLabel: '2025 Season Stats',
     oddsApiSportKey: 'baseball_mlb_world_series_winner',
+    oddsApiGameKey: 'baseball_mlb',
     oddsApiMarketLabel: 'World Series Champion',
     espnSport: 'baseball',
     espnLeague: 'mlb',
@@ -147,6 +151,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     ],
     seasonLabel: '2025 Season Stats',
     oddsApiSportKey: null, // F1 championship odds not widely available on The Odds API
+    oddsApiGameKey: null,
     oddsApiMarketLabel: 'F1 WDC',
     espnSport: 'racing',
     espnLeague: 'f1',
@@ -172,6 +177,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     ],
     seasonLabel: '2024\u201325 Season Stats',
     oddsApiSportKey: 'icehockey_nhl_championship_winner',
+    oddsApiGameKey: 'icehockey_nhl',
     oddsApiMarketLabel: 'Stanley Cup Champion',
     espnSport: 'hockey',
     espnLeague: 'nhl',

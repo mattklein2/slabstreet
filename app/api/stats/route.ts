@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getLeagueConfig } from '../../../lib/leagues';
+import { searchEspnPlayer } from '../../../lib/espn';
 
 /*
   GET /api/stats?player=Victor+Wembanyama&league=NBA&team=SAS
@@ -32,33 +33,6 @@ const STAT_MAP: Record<string, { keys: string[]; labels: string[] }> = {
     labels: ['PTS',             'WINS', 'POLES', 'PODIUMS'],
   },
 };
-
-// ── Search ESPN for a player ─────────────────────────────────
-async function searchEspnPlayer(
-  name: string,
-  sport: string,
-  league: string,
-): Promise<{ id: string; name: string } | null> {
-  try {
-    const url = `https://site.api.espn.com/apis/common/v3/search?query=${encodeURIComponent(name)}&type=player&sport=${sport}&league=${league}&limit=5`;
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-
-    // Search results are in data.items or data.results
-    const items = data.items || data.results || [];
-    if (items.length === 0) return null;
-
-    // Return first match
-    const first = items[0];
-    return {
-      id: first.id || first.$ref?.match(/athletes\/(\d+)/)?.[1] || '',
-      name: first.displayName || first.name || name,
-    };
-  } catch {
-    return null;
-  }
-}
 
 // ── Fetch athlete stats from ESPN ────────────────────────────
 async function fetchEspnStats(

@@ -3,24 +3,40 @@
 import { useState, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
+import { supabase } from '../../lib/supabase';
 
-const players = [
-  { name: 'Victor Wembanyama', slug: 'wemby', team: 'SAS', score: 74, signal: 'BUY'  },
-  { name: 'Luka Doncic',       slug: 'luka',  team: 'LAL', score: 61, signal: 'HOLD' },
-  { name: 'Ja Morant',         slug: 'ja',    team: 'MEM', score: 55, signal: 'HOLD' },
-  { name: 'Anthony Edwards',   slug: 'ant',   team: 'MIN', score: 67, signal: 'HOLD' },
-];
+type PlayerRow = {
+  name: string;
+  slug: string;
+  team: string;
+  score: number;
+  signal: string;
+};
 
 export default function NavSearch() {
   const { colors: c } = useTheme();
+  const [players, setPlayers]         = useState<PlayerRow[]>([]);
   const [query, setQuery]             = useState('');
-  const [results, setResults]         = useState<typeof players>([]);
+  const [results, setResults]         = useState<PlayerRow[]>([]);
   const [open, setOpen]               = useState(false);
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const searchRef                     = useRef<HTMLDivElement>(null);
 
   const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
 
+  // Load player list from Supabase once on mount
+  useEffect(() => {
+    supabase
+      .from('players')
+      .select('name, slug, team, score, signal')
+      .eq('active', true)
+      .order('score', { ascending: false })
+      .then(({ data }) => {
+        if (data) setPlayers(data as PlayerRow[]);
+      });
+  }, []);
+
+  // Close on click outside
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) close();
@@ -29,11 +45,9 @@ export default function NavSearch() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close on any route change (catches Next.js client-side navigation + back button)
+  // Close on route change (catches back button too)
   const pathname = usePathname();
-  useEffect(() => {
-    close();
-  }, [pathname]);
+  useEffect(() => { close(); }, [pathname]);
 
   function close() {
     setOpen(false);
@@ -46,11 +60,13 @@ export default function NavSearch() {
     setQuery(q);
     if (q.trim().length < 1) { setResults([]); setOpen(false); return; }
     const lower = q.toLowerCase();
-    setResults(players.filter(p =>
-      p.name.toLowerCase().includes(lower) ||
-      p.slug.includes(lower) ||
-      p.team.toLowerCase().includes(lower)
-    ));
+    setResults(
+      players.filter(p =>
+        p.name.toLowerCase().includes(lower) ||
+        p.slug.includes(lower) ||
+        p.team.toLowerCase().includes(lower)
+      )
+    );
     setOpen(true);
   }
 
@@ -82,10 +98,7 @@ export default function NavSearch() {
       />
       {open && (
         <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
+          position: 'absolute', top: '100%', left: 0, right: 0,
           background: c.surface,
           border: `1px solid ${c.green}`,
           borderTop: 'none',
@@ -126,7 +139,7 @@ export default function NavSearch() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 24, color: c.text, lineHeight: 1 }}>{p.score}</span>
-                <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: signalColor[p.signal], border: `1px solid ${signalColor[p.signal]}`, padding: '2px 6px', borderRadius: 2, letterSpacing: 1 }}>{p.signal}</span>
+                <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: signalColor[p.signal] || c.muted, border: `1px solid ${signalColor[p.signal] || c.muted}`, padding: '2px 6px', borderRadius: 2, letterSpacing: 1 }}>{p.signal}</span>
               </div>
             </a>
           ))}

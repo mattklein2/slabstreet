@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../components/ThemeProvider';
 import NavSearch from '../../components/NavSearch';
 import { supabase } from '../../../lib/supabase';
+import { getLeagueConfig } from '../../../lib/leagues';
 
 // ─── CHART ────────────────────────────────────────────────────
 function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: number[] }; lineColor: string }) {
@@ -91,10 +92,13 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
       });
   }, [slug]);
 
+  const playerLeague = p?.league ?? p?.sport ?? 'NBA';
+  const leagueConfig = p ? getLeagueConfig(playerLeague) : null;
+
   // Fetch live odds
   useEffect(() => {
     if (!p) return;
-    fetch(`/api/odds?player=${p.lastNameSearch}`)
+    fetch(`/api/odds?player=${p.lastNameSearch}&league=${playerLeague}&team=${p.team}`)
       .then(r => r.json())
       .then(data => {
         if (data.odds?.length > 0) { setOdds(data.odds); setOddsLive(true); }
@@ -106,7 +110,7 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   // Fetch live momentum
   useEffect(() => {
     if (!p) return;
-    fetch(`/api/momentum?player=${encodeURIComponent(p.fullName)}&slug=${slug}`)
+    fetch(`/api/momentum?player=${encodeURIComponent(p.fullName)}&slug=${slug}&league=${playerLeague}`)
       .then(r => r.json())
       .then(data => {
         setMomentum(data);
@@ -118,7 +122,7 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   // Fetch live news
   useEffect(() => {
     if (!p) return;
-    fetch(`/api/news?player=${encodeURIComponent(p.fullName)}`)
+    fetch(`/api/news?player=${encodeURIComponent(p.fullName)}&league=${playerLeague}`)
       .then(r => r.json())
       .then(data => {
         setNews(data.news ?? []);
@@ -190,19 +194,24 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
           </div>
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', border: `1px solid ${c.border}`, borderRadius: 3, overflow: 'hidden', alignSelf: 'center', minWidth: 220 }}>
             <div style={{ background: c.border, padding: '5px 12px', display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 9, letterSpacing: 2, color: c.muted, textTransform: 'uppercase' }}>2024–25 Season Stats</span>
-              <span style={{ fontSize: 9, color: c.green, letterSpacing: 1 }}>NBA</span>
+              <span style={{ fontSize: 9, letterSpacing: 2, color: c.muted, textTransform: 'uppercase' }}>{leagueConfig?.seasonLabel ?? '2024\u201325 Season Stats'}</span>
+              <span style={{ fontSize: 9, color: c.green, letterSpacing: 1 }}>{playerLeague}</span>
             </div>
-            {[p.stats.slice(0, 3), p.stats.slice(3)].map((row: any[], ri: number) => (
-              <div key={ri} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: ri === 0 ? `1px solid ${c.border}` : 'none', background: c.surface }}>
-                {row.map((s: any, i: number) => (
-                  <div key={i} style={{ padding: '8px 12px', borderRight: i < 2 ? `1px solid ${c.border}` : 'none', textAlign: 'center' }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: c.text, lineHeight: 1 }}>{s.val}</div>
-                    <div style={{ fontSize: 8, color: c.muted, letterSpacing: 1, marginTop: 3 }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            ))}
+            {(() => {
+              const cols = Math.min(3, p.stats?.length || 3);
+              const rows: any[][] = [];
+              for (let i = 0; i < (p.stats?.length || 0); i += cols) rows.push(p.stats.slice(i, i + cols));
+              return rows.map((row: any[], ri: number) => (
+                <div key={ri} style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, borderBottom: ri < rows.length - 1 ? `1px solid ${c.border}` : 'none', background: c.surface }}>
+                  {row.map((s: any, i: number) => (
+                    <div key={i} style={{ padding: '8px 12px', borderRight: i < row.length - 1 ? `1px solid ${c.border}` : 'none', textAlign: 'center' }}>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: c.text, lineHeight: 1 }}>{s.val}</div>
+                      <div style={{ fontSize: 8, color: c.muted, letterSpacing: 1, marginTop: 3 }}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+              ));
+            })()}
           </div>
         </div>
 
@@ -218,7 +227,7 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
               <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 28, color: signalColor[p.signal], letterSpacing: 3 }}>{p.signal}</span>
             </div>
             <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>SIGNAL THRESHOLD: 70+ BUY</div>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>UPDATED: FEB 28, 2026</div>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>UPDATED: {new Date(p.updated_at ?? Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()}</div>
           </div>
           <div style={{ flex: 1, minWidth: 160 }}>
             <div style={{ height: 6, borderRadius: 3, background: 'linear-gradient(to right, #ff3b5c 0%, #f59e0b 40%, #00ff87 70%)', marginBottom: 4, position: 'relative' }}>

@@ -11,6 +11,7 @@ type PlayerRow = {
   team: string;
   score: number;
   signal: string;
+  league: string;
 };
 
 export default function NavSearch() {
@@ -28,7 +29,7 @@ export default function NavSearch() {
   useEffect(() => {
     supabase
       .from('players')
-      .select('name, slug, team, score, signal')
+      .select('name, slug, team, score, signal, league')
       .eq('active', true)
       .order('score', { ascending: false })
       .then(({ data }) => {
@@ -143,7 +144,7 @@ export default function NavSearch() {
                   {p.name}
                 </div>
                 <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginTop: 2 }}>
-                  {p.team}
+                  {p.team} · <span style={{ color: c.green }}>{p.league ?? 'NBA'}</span>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

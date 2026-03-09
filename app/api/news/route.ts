@@ -1,29 +1,16 @@
 import { NextResponse } from 'next/server';
+import { getRssFeedsForLeague } from '../../../lib/leagues';
 
 /*
-  GET /api/news?player=Victor+Wembanyama
-  
-  Pulls from sports RSS feeds, applies two-layer filter:
+  GET /api/news?player=Victor+Wembanyama&league=NBA
+
+  Pulls from league-specific RSS feeds (+ card market feeds), applies two-layer filter:
   1. Player name mention
   2. Value-relevant keyword match (injuries, awards, trades, card news)
-  
+
   Returns only headlines that would actually affect card value.
   Cached 30 minutes — news changes faster than odds.
 */
-
-// ─────────────────────────────────────────────────────────────
-// RSS FEEDS
-// ─────────────────────────────────────────────────────────────
-const RSS_FEEDS = [
-  // NBA Performance & Awards
-  { url: 'https://www.espn.com/espn/rss/nba/news', source: 'ESPN' },
-  { url: 'https://hoopshype.com/feed/', source: 'HoopsHype' },
-  { url: 'https://www.nba.com/feeds/news/rss.xml', source: 'NBA.com' },
-  { url: 'https://bleacherreport.com/nba.rss', source: 'Bleacher Report' },
-  // Card Market
-  { url: 'https://www.beckett.com/feed', source: 'Beckett' },
-  { url: 'https://www.sportscardsinvestor.com/feed/', source: 'Sports Card Investor' },
-];
 
 // ─────────────────────────────────────────────────────────────
 // VALUE SIGNAL KEYWORDS
@@ -113,20 +100,23 @@ function parseRSS(xml: string, source: string): any[] {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const player = searchParams.get('player') || '';
+  const leagueId = searchParams.get('league') || 'NBA';
 
   if (!player) {
     return NextResponse.json({ error: 'player= parameter required' }, { status: 400 });
   }
 
+  // Get league-specific feeds (+ shared card market feeds)
+  const feeds = getRssFeedsForLeague(leagueId);
+
   // Build name variants for matching
-  // e.g. "Victor Wembanyama" → ["victor wembanyama", "wembanyama", "wemby"]
   const nameParts = player.toLowerCase().split(' ');
   const lastName  = nameParts[nameParts.length - 1];
   const fullLower = player.toLowerCase();
 
   // Fetch all feeds in parallel, don't let one failure kill the rest
   const feedResults = await Promise.allSettled(
-    RSS_FEEDS.map(async feed => {
+    feeds.map(async feed => {
       const res = await fetch(feed.url, {
         headers: { 'User-Agent': 'SlabStreet/1.0 RSS Reader' },
         next: { revalidate: 1800 }, // cache 30 min
@@ -143,7 +133,7 @@ export async function GET(request: Request) {
     if (result.status === 'fulfilled') {
       allArticles.push(...result.value);
     } else {
-      console.warn(`Feed failed: ${RSS_FEEDS[i].source}`, result.reason);
+      console.warn(`Feed failed: ${feeds[i].source}`, result.reason);
     }
   });
 

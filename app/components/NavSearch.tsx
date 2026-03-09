@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { supabase } from '../../lib/supabase';
@@ -16,26 +16,14 @@ type PlayerRow = {
 
 export default function NavSearch() {
   const { colors: c } = useTheme();
-  const [players, setPlayers]         = useState<PlayerRow[]>([]);
   const [query, setQuery]             = useState('');
   const [results, setResults]         = useState<PlayerRow[]>([]);
   const [open, setOpen]               = useState(false);
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const searchRef                     = useRef<HTMLDivElement>(null);
+  const debounceRef                   = useRef<ReturnType<typeof setTimeout>>(null);
 
   const signalColor: Record<string, string> = { BUY: c.green, HOLD: c.amber, SELL: c.red };
-
-  // Load player list from Supabase once on mount
-  useEffect(() => {
-    supabase
-      .from('players')
-      .select('name, slug, team, score, signal, league')
-      .eq('active', true)
-      .order('score', { ascending: false })
-      .then(({ data }) => {
-        if (data) setPlayers(data as PlayerRow[]);
-      });
-  }, []);
 
   // Close on click outside
   useEffect(() => {
@@ -66,18 +54,32 @@ export default function NavSearch() {
     setHoveredSlug(null);
   }
 
+  const searchPlayers = useCallback(async (q: string) => {
+    if (q.trim().length < 2) { setResults([]); setOpen(false); return; }
+
+    const pattern = `%${q.trim()}%`;
+    const { data } = await supabase
+      .from('players')
+      .select('name, slug, team, score, signal, league')
+      .eq('active', true)
+      .or(`name.ilike.${pattern},slug.ilike.${pattern},team.ilike.${pattern}`)
+      .order('score', { ascending: false })
+      .limit(20);
+
+    if (data && data.length > 0) {
+      setResults(data as PlayerRow[]);
+      setOpen(true);
+    } else {
+      setResults([]);
+      setOpen(true);
+    }
+  }, []);
+
   function handleSearch(q: string) {
     setQuery(q);
-    if (q.trim().length < 1) { setResults([]); setOpen(false); return; }
-    const lower = q.toLowerCase();
-    setResults(
-      players.filter(p =>
-        p.name.toLowerCase().includes(lower) ||
-        p.slug.includes(lower) ||
-        p.team.toLowerCase().includes(lower)
-      )
-    );
-    setOpen(true);
+    if (q.trim().length < 2) { setResults([]); setOpen(false); return; }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => searchPlayers(q), 200);
   }
 
   return (
@@ -115,6 +117,8 @@ export default function NavSearch() {
           borderRadius: '0 0 4px 4px',
           zIndex: 999,
           boxShadow: '0 12px 32px rgba(0,0,0,0.35)',
+          maxHeight: 400,
+          overflowY: 'auto',
         }}>
           {results.length === 0 ? (
             <div style={{ padding: '12px 16px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted }}>

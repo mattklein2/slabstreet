@@ -1,421 +1,356 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 
-// ─── CHART ────────────────────────────────────────────────────
-function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: number[] }; lineColor: string }) {
-  const w = 600, h = 160;
-  const pad = { top: 16, right: 16, bottom: 32, left: 36 };
-  const innerW = w - pad.left - pad.right;
-  const innerH = h - pad.top - pad.bottom;
-  const min = Math.min(...data.scores) - 8;
-  const max = Math.max(...data.scores) + 8;
-  const xStep = innerW / (data.scores.length - 1);
-  const yScale = (v: number) => innerH - ((v - min) / (max - min)) * innerH;
-  const points = data.scores.map((s, i) => `${pad.left + i * xStep},${pad.top + yScale(s)}`).join(' ');
-  const areaPoints = `${pad.left},${pad.top + innerH} ${points} ${pad.left + (data.scores.length - 1) * xStep},${pad.top + innerH}`;
-  const labelStep = Math.ceil(data.labels.length / 5);
+const BG      = '#090b0f';
+const GREEN   = '#00ff87';
+const SURFACE = '#0d1117';
+const BORDER  = '#1e2530';
+const MUTED   = '#8899aa';
+const TEXT    = '#e2e8f0';
+
+const SIGNAL_OPTIONS   = ['BUY', 'HOLD', 'SELL'];
+const POSITION_OPTIONS = ['GUARD', 'POINT GUARD', 'SHOOTING GUARD', 'SMALL FORWARD', 'POWER FORWARD', 'FORWARD', 'CENTER'];
+const SPORT_OPTIONS    = ['NBA', 'NFL', 'F1', 'MLB', 'NHL'];
+
+const BLANK_STAT = { label: '', val: '' };
+const BLANK_CARD = { name: '', grade: 'PSA 10', pop: '', tier: 'COMMON', price: '', change: '', up: true };
+const BLANK_SALE = { card: '', grade: 'PSA 10', price: '', date: '' };
+const BLANK_ODD  = { market: '', book: '', odds: '' };
+const BLANK_NEWS = { headline: '', source: '', time: '' };
+
+const DEFAULT_PILLARS = [
+  { label: 'Market',      score: 50, color: '#00ff87', key: 'market'      },
+  { label: 'Scarcity',    score: 50, color: '#38bdf8', key: 'scarcity'    },
+  { label: 'Momentum',    score: 50, color: '#a78bfa', key: 'momentum'    },
+  { label: 'Performance', score: 50, color: '#fb923c', key: 'performance' },
+  { label: 'Risk',        score: 50, color: '#4ade80', key: 'risk'        },
+];
+
+const DEFAULT_SCORE_HISTORY = {
+  daily:   { labels: [], scores: [] },
+  weekly:  { labels: [], scores: [] },
+  monthly: { labels: [], scores: [] },
+  yearly:  { labels: [], scores: [] },
+};
+
+function Input({ label, value, onChange, placeholder = '', type = 'text' }: any) {
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
-      <defs>
-        <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={lineColor} stopOpacity="0.18" />
-          <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {[0, .25, .5, .75, 1].map(t => {
-        const y = pad.top + t * innerH;
-        return (
-          <g key={t}>
-            <line x1={pad.left} y1={y} x2={w - pad.right} y2={y} stroke="#1e2530" strokeWidth="1" />
-            <text x={pad.left - 6} y={y + 4} fill="#8899aa" fontSize="9" textAnchor="end" fontFamily="IBM Plex Mono">{Math.round(max - t * (max - min))}</text>
-          </g>
-        );
-      })}
-      <polygon points={areaPoints} fill="url(#cg)" />
-      <polyline points={points} fill="none" stroke={lineColor} strokeWidth="2" strokeLinejoin="round" />
-      {data.scores.map((s, i) => <circle key={i} cx={pad.left + i * xStep} cy={pad.top + yScale(s)} r="3" fill={lineColor} />)}
-      {data.labels.map((l, i) => {
-        if (i % labelStep !== 0 && i !== data.labels.length - 1) return null;
-        return <text key={i} x={pad.left + i * xStep} y={h - 6} fill="#8899aa" fontSize="9" textAnchor="middle" fontFamily="IBM Plex Mono">{l}</text>;
-      })}
-    </svg>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <label style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: MUTED, letterSpacing: 2 }}>{label}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{ background: BG, border: `1px solid ${BORDER}`, borderRadius: 3, padding: '8px 12px', color: TEXT, fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, outline: 'none' }}
+        onFocus={e => (e.target.style.borderColor = GREEN)}
+        onBlur={e => (e.target.style.borderColor = BORDER)}
+      />
+    </div>
   );
 }
 
-const tierBorder: Record<string, string> = { COMMON: '#8899aa', MID: '#38bdf8', RARE: '#f59e0b' };
+function Select({ label, value, onChange, options }: any) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <label style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: MUTED, letterSpacing: 2 }}>{label}</label>
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{ background: BG, border: `1px solid ${BORDER}`, borderRadius: 3, padding: '8px 12px', color: TEXT, fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, outline: 'none' }}
+      >
+        {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </div>
+  );
+}
 
-// ─── PAGE ─────────────────────────────────────────────────────
-export default function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const { theme, toggle, colors: c } = useTheme();
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: GREEN, letterSpacing: 3, borderBottom: `1px solid ${GREEN}`, paddingBottom: 6, marginTop: 8 }}>
+      {title}
+    </div>
+  );
+}
 
-  const [p, setP]                   = useState<any>(null);
-  const [loading, setLoading]       = useState(true);
-  const [period, setPeriod]         = useState('weekly');
-  const [odds, setOdds]             = useState<any[] | null>(null);
-  const [oddsLive, setOddsLive]     = useState(false);
-  const [momentum, setMomentum]     = useState<any>(null);
-  const [momentumLive, setMomentumLive] = useState(false);
-  const [news, setNews]             = useState<any[]>([]);
-  const [newsLoading, setNewsLoading] = useState(true);
+function AddRowBtn({ label, onClick }: any) {
+  return (
+    <button
+      onClick={onClick}
+      style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: 1, padding: '6px 14px', background: 'transparent', color: GREEN, border: `1px solid ${GREEN}`, borderRadius: 2, cursor: 'pointer', marginTop: 4 }}
+    >
+      + {label}
+    </button>
+  );
+}
 
-  const signalColor: Record<string, string>  = { BUY: c.green, HOLD: c.amber, SELL: c.red };
-  const xSignalColor: Record<string, string> = { rising: c.green, falling: c.red, stable: c.amber };
+function RemoveBtn({ onClick }: any) {
+  return (
+    <button
+      onClick={onClick}
+      style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#ff3b5c', border: '1px solid #ff3b5c33', background: 'transparent', borderRadius: 2, padding: '4px 8px', cursor: 'pointer', flexShrink: 0 }}
+    >✕</button>
+  );
+}
 
-  // Fetch player from Supabase
-  useEffect(() => {
-    setLoading(true);
-    supabase
-      .from('players')
-      .select('*')
-      .eq('slug', slug)
-      .single()
-      .then(({ data, error }) => {
-        if (data && !error) {
-          // Map snake_case DB columns → camelCase used in render
-          setP({
-            ...data,
-            firstName:      data.first_name,
-            lastName:       data.last_name,
-            lastNameSearch: data.last_name_search,
-            fullName:       data.full_name,
-            scoreHistory:   data.score_history,
-            fallbackOdds:   data.fallback_odds,
-          });
-        }
-        setLoading(false);
-      });
-  }, [slug]);
+export default function AdminPage() {
+  const [name, setName]         = useState('');
+  const [slug, setSlug]         = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [team, setTeam]         = useState('');
+  const [position, setPosition] = useState('GUARD');
+  const [number, setNumber]     = useState('');
+  const [score, setScore]       = useState('50');
+  const [signal, setSignal]     = useState('HOLD');
+  const [sport, setSport]       = useState('NBA');
 
-  // Fetch live odds
-  useEffect(() => {
-    if (!p) return;
-    fetch(`/api/odds?player=${p.lastNameSearch}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.odds?.length > 0) { setOdds(data.odds); setOddsLive(true); }
-        else setOdds(p.fallbackOdds);
-      })
-      .catch(() => setOdds(p.fallbackOdds));
-  }, [p]);
+  const [pillars, setPillars]   = useState(DEFAULT_PILLARS.map(p => ({ ...p })));
+  const [stats, setStats]       = useState([
+    { label: 'PPG', val: '' }, { label: 'RPG', val: '' }, { label: 'APG', val: '' },
+    { label: 'FG%', val: '' }, { label: 'GP',  val: '' },
+  ]);
+  const [cards, setCards]       = useState([{ ...BLANK_CARD }]);
+  const [sales, setSales]       = useState([{ ...BLANK_SALE }]);
+  const [odds, setOdds]         = useState([{ ...BLANK_ODD }]);
+  const [news, setNews]         = useState([{ ...BLANK_NEWS }]);
 
-  // Fetch live momentum
-  useEffect(() => {
-    if (!p) return;
-    fetch(`/api/momentum?player=${encodeURIComponent(p.fullName)}&slug=${slug}`)
-      .then(r => r.json())
-      .then(data => {
-        setMomentum(data);
-        setMomentumLive(!data.tier_required);
-      })
-      .catch(() => setMomentum(null));
-  }, [p]);
+  const [saving, setSaving]     = useState(false);
+  const [status, setStatus]     = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
-  // Fetch live news
-  useEffect(() => {
-    if (!p) return;
-    fetch(`/api/news?player=${encodeURIComponent(p.fullName)}`)
-      .then(r => r.json())
-      .then(data => {
-        setNews(data.news ?? []);
-        setNewsLoading(false);
-      })
-      .catch(() => {
-        setNews((p.news ?? []).map((n: any) => ({ headline: n.headline, source: n.source, time: n.time, sentiment: 'neutral', url: '#' })));
-        setNewsLoading(false);
-      });
-  }, [p]);
-
-  // Merge live momentum score into pillars
-  const pillars = p?.pillars?.map((pl: any) => {
-    if (pl.key === 'momentum' && momentum && !momentum.tier_required) {
-      return { ...pl, score: momentum.momentum_score, live: true };
+  function handleNameChange(val: string) {
+    setName(val);
+    const parts = val.trim().split(' ');
+    if (parts.length >= 2) {
+      setFirstName(parts[0].toUpperCase());
+      setLastName(parts.slice(1).join(' ').toUpperCase());
+      setSlug(parts[parts.length - 1].toLowerCase().replace(/[^a-z0-9]/g, ''));
     }
-    return pl;
-  });
-
-  const displayOdds = odds ?? p?.fallbackOdds ?? [];
-
-  // ── Loading state
-  if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'IBM Plex Mono, monospace', color: c.muted, background: c.bg }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 48, color: c.green, letterSpacing: 4 }}>SLABSTREET</div>
-          <div style={{ fontSize: 12, marginTop: 12, letterSpacing: 2 }}>LOADING PLAYER DATA...</div>
-        </div>
-      </div>
-    );
   }
 
-  // ── 404
-  if (!p) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'IBM Plex Mono, monospace', color: c.muted }}>
-        <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 64, color: c.border }}>404</div>
-        <div style={{ marginBottom: 24 }}>Player not found.</div>
-        <a href="/" style={{ color: c.green, textDecoration: 'none', fontSize: 12 }}>← Back to SlabStreet</a>
-      </div>
-    );
+  function updateArr(arr: any[], setArr: any, i: number, field: string, val: any) {
+    const next = [...arr];
+    next[i] = { ...next[i], [field]: val };
+    setArr(next);
+  }
+
+  async function handleSave() {
+    if (!slug || !name || !team) {
+      setStatus({ type: 'error', msg: 'Name, team, and slug are required.' });
+      return;
+    }
+    setSaving(true);
+    setStatus(null);
+
+    const payload = {
+      slug:             slug.toLowerCase().replace(/\s/g, '-'),
+      name,
+      first_name:       firstName,
+      last_name:        lastName,
+      last_name_search: lastName.toLowerCase(),
+      full_name:        name,
+      team:             team.toUpperCase(),
+      position,
+      number,
+      score:            parseInt(score) || 50,
+      signal,
+      sport,
+      pillars,
+      stats,
+      score_history:    DEFAULT_SCORE_HISTORY,
+      cards:            cards.filter(c => c.name),
+      sales:            sales.filter(s => s.card),
+      fallback_odds:    odds.filter(o => o.market),
+      news:             news.filter(n => n.headline),
+      active:           true,
+    };
+
+    const { error } = await supabase.from('players').insert(payload);
+
+    if (error) {
+      setStatus({ type: 'error', msg: error.message });
+    } else {
+      setStatus({ type: 'success', msg: `✓ ${name} added successfully! View at /players/${payload.slug}` });
+      setName(''); setSlug(''); setFirstName(''); setLastName(''); setTeam('');
+      setPosition('GUARD'); setNumber(''); setScore('50'); setSignal('HOLD'); setSport('NBA');
+      setPillars(DEFAULT_PILLARS.map(p => ({ ...p })));
+      setStats([{ label: 'PPG', val: '' }, { label: 'RPG', val: '' }, { label: 'APG', val: '' }, { label: 'FG%', val: '' }, { label: 'GP', val: '' }]);
+      setCards([{ ...BLANK_CARD }]);
+      setSales([{ ...BLANK_SALE }]);
+      setOdds([{ ...BLANK_ODD }]);
+      setNews([{ ...BLANK_NEWS }]);
+    }
+    setSaving(false);
   }
 
   return (
-    <div style={{ color: c.text, fontFamily: 'IBM Plex Sans, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: BG, color: TEXT, fontFamily: 'IBM Plex Sans, sans-serif' }}>
 
       {/* NAV */}
-      <nav style={{ borderBottom: `1px solid ${c.border}`, padding: '0 24px', height: 58, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', position: 'sticky', top: 0, background: c.navBg, zIndex: 100, boxShadow: theme === 'light' ? '0 1px 8px rgba(0,0,0,0.06)' : 'none', gap: 16 }}>
-        <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: c.green, textDecoration: 'none' }}>SLABSTREET</a>
-        <NavSearch />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'flex-end' }}>
-          <button onClick={toggle} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s', flexShrink: 0 }}>
-            <div style={{ width: 18, height: 18, borderRadius: '50%', background: c.green, transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>
-              {theme === 'dark' ? '🌙' : '☀️'}
-            </div>
-          </button>
-        </div>
+      <nav style={{ borderBottom: `1px solid ${BORDER}`, padding: '0 24px', height: 58, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: BG, zIndex: 100 }}>
+        <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: GREEN, textDecoration: 'none' }}>SLABSTREET</a>
+        <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: MUTED, letterSpacing: 2 }}>ADMIN · ADD PLAYER</span>
+        <a href="/" style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: MUTED, textDecoration: 'none', letterSpacing: 1 }}>← Back to Home</a>
       </nav>
 
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 20px' }}>
+      <div style={{ maxWidth: 780, margin: '0 auto', padding: '40px 24px 80px' }}>
 
-        {/* PLAYER HEADER */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderTop: `3px solid ${c.green}`, borderRadius: 4, padding: '24px 28px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap', marginBottom: 20 }}>
-          <div>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, letterSpacing: 2, marginBottom: 8 }}>{p.team} · {p.position} · #{p.number}</div>
-            <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 56, lineHeight: 1, letterSpacing: 2, color: c.text }}>{p.firstName}</div>
-            <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 56, lineHeight: 1, letterSpacing: 2, color: c.green }}>{p.lastName}</div>
+        {/* TITLE */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: MUTED, letterSpacing: 3, marginBottom: 8 }}>Player Management</div>
+          <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 48, letterSpacing: 2, color: TEXT, lineHeight: 1 }}>ADD NEW PLAYER</div>
+        </div>
+
+        {/* STATUS */}
+        {status && (
+          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 12, padding: '12px 16px', borderRadius: 3, marginBottom: 24, background: status.type === 'success' ? `${GREEN}15` : '#ff3b5c15', border: `1px solid ${status.type === 'success' ? GREEN : '#ff3b5c'}`, color: status.type === 'success' ? GREEN : '#ff3b5c' }}>
+            {status.msg}
           </div>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', border: `1px solid ${c.border}`, borderRadius: 3, overflow: 'hidden', alignSelf: 'center', minWidth: 220 }}>
-            <div style={{ background: c.border, padding: '5px 12px', display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 9, letterSpacing: 2, color: c.muted, textTransform: 'uppercase' }}>2024–25 Season Stats</span>
-              <span style={{ fontSize: 9, color: c.green, letterSpacing: 1 }}>NBA</span>
-            </div>
-            {[p.stats.slice(0, 3), p.stats.slice(3)].map((row: any[], ri: number) => (
-              <div key={ri} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: ri === 0 ? `1px solid ${c.border}` : 'none', background: c.surface }}>
-                {row.map((s: any, i: number) => (
-                  <div key={i} style={{ padding: '8px 12px', borderRight: i < 2 ? `1px solid ${c.border}` : 'none', textAlign: 'center' }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: c.text, lineHeight: 1 }}>{s.val}</div>
-                    <div style={{ fontSize: 8, color: c.muted, letterSpacing: 1, marginTop: 3 }}>{s.label}</div>
-                  </div>
-                ))}
+        )}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+          {/* CORE INFO */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderTop: `3px solid ${GREEN}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="CORE INFO" />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <Input label="FULL NAME" value={name} onChange={handleNameChange} placeholder="e.g. LeBron James" />
+                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: MUTED, marginTop: 4 }}>
+                  Slug: <span style={{ color: GREEN }}>{slug || '—'}</span> · First: <span style={{ color: GREEN }}>{firstName || '—'}</span> · Last: <span style={{ color: GREEN }}>{lastName || '—'}</span>
+                </div>
               </div>
-            ))}
+              <Input label="TEAM (abbrev)" value={team} onChange={setTeam} placeholder="e.g. LAL" />
+              <Input label="JERSEY #" value={number} onChange={setNumber} placeholder="e.g. 23" />
+              <Select label="POSITION" value={position} onChange={setPosition} options={POSITION_OPTIONS} />
+              <Select label="SPORT" value={sport} onChange={setSport} options={SPORT_OPTIONS} />
+              <Input label="SLAB SCORE (0–100)" value={score} onChange={setScore} type="number" />
+              <Select label="SIGNAL" value={signal} onChange={setSignal} options={SIGNAL_OPTIONS} />
+            </div>
           </div>
-        </div>
 
-        {/* SLAB SCORE */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.green}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, letterSpacing: 3, marginBottom: 6 }}>SLAB SCORE™</div>
-            <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 96, lineHeight: 1, color: c.green, textShadow: `0 0 40px ${c.green}40` }}>{p.score}</div>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ width: 10, height: 10, borderRadius: '50%', background: signalColor[p.signal], boxShadow: `0 0 8px ${signalColor[p.signal]}`, display: 'inline-block' }}></span>
-              <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 28, color: signalColor[p.signal], letterSpacing: 3 }}>{p.signal}</span>
-            </div>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>SIGNAL THRESHOLD: 70+ BUY</div>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>UPDATED: FEB 28, 2026</div>
-          </div>
-          <div style={{ flex: 1, minWidth: 160 }}>
-            <div style={{ height: 6, borderRadius: 3, background: 'linear-gradient(to right, #ff3b5c 0%, #f59e0b 40%, #00ff87 70%)', marginBottom: 4, position: 'relative' }}>
-              <div style={{ position: 'absolute', left: `${p.score}%`, top: -4, width: 2, height: 14, background: c.text, borderRadius: 1 }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>
-              <span>SELL 0</span><span>HOLD 40</span><span>BUY 70</span><span>100</span>
-            </div>
-          </div>
-        </div>
-
-        {/* SCORE HISTORY */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.green, letterSpacing: 3, borderBottom: `1px solid ${c.green}`, paddingBottom: 4 }}>SLAB SCORE HISTORY</div>
-            <div style={{ display: 'flex', gap: 4 }}>
-              {['daily', 'weekly', 'monthly', 'yearly'].map(per => (
-                <button key={per} onClick={() => setPeriod(per)} style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, letterSpacing: 1, padding: '4px 10px', background: period === per ? c.green : 'transparent', color: period === per ? '#090b0f' : c.muted, border: `1px solid ${period === per ? c.green : c.border}`, borderRadius: 2, cursor: 'pointer', textTransform: 'uppercase' }}>{per}</button>
+          {/* PILLARS */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="PILLAR SCORES" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+              {pillars.map((pl, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '130px 1fr 60px', gap: 10, alignItems: 'center' }}>
+                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: pl.color, letterSpacing: 1 }}>{pl.label.toUpperCase()}</div>
+                  <input
+                    type="range" min={0} max={100} value={pl.score}
+                    onChange={e => updateArr(pillars, setPillars, i, 'score', parseInt(e.target.value))}
+                    style={{ accentColor: pl.color, cursor: 'pointer' }}
+                  />
+                  <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 24, color: pl.color, textAlign: 'center' }}>{pl.score}</div>
+                </div>
               ))}
             </div>
           </div>
-          <ScoreChart data={p.scoreHistory[period]} lineColor={c.green} />
-        </div>
 
-        {/* SCORE BREAKDOWN */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, letterSpacing: 3, marginBottom: 16 }}>[ SCORE BREAKDOWN ]</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            {pillars?.map((pl: any) => (
-              <div key={pl.label} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, letterSpacing: 1, width: 110, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  {pl.label.toUpperCase()}
-                  {pl.live && <span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block', boxShadow: `0 0 6px ${c.green}` }} title="Live data" />}
-                </div>
-                <div style={{ flex: 1, height: 6, background: c.border, borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ width: `${pl.score}%`, height: '100%', background: pl.color, borderRadius: 3, transition: 'width 0.6s ease' }} />
-                </div>
-                <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, color: pl.color, width: 36, textAlign: 'right', flexShrink: 0 }}>{pl.score}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* X MOMENTUM SIGNAL */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid #a78bfa`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#a78bfa', letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
-            X · SOCIAL MOMENTUM
-            {momentumLive
-              ? <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>
-              : <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>BASIC TIER REQUIRED</span>
-            }
-          </div>
-          {momentum ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12 }}>
-              {[
-                { label: 'MOMENTUM SCORE', val: momentum.momentum_score, color: '#a78bfa', size: 36 },
-                { label: 'SIGNAL', val: momentum.signal?.toUpperCase(), color: xSignalColor[momentum.signal] || c.amber, size: 28 },
-                { label: 'MENTIONS 7D', val: momentum.mention_count, color: c.text, size: 36 },
-              ].map((item, i) => (
-                <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
-                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 4 }}>{item.label}</div>
-                  <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: item.size, color: item.color, lineHeight: 1 }}>{item.val}</div>
-                </div>
-              ))}
-              <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
-                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 6 }}>SENTIMENT MIX</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  {[['POS', c.green, momentum.sentiment?.positive ?? 0], ['NEU', c.muted, momentum.sentiment?.neutral ?? 0], ['NEG', c.red, momentum.sentiment?.negative ?? 0]].map(([label, color, val]) => (
-                    <div key={label as string} style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'IBM Plex Mono, monospace', fontSize: 10 }}>
-                      <span style={{ color: color as string }}>{label as string}</span>
-                      <span style={{ color: color as string }}>{val as number}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted }}>Loading momentum data...</div>
-          )}
-          {momentum?.note && (
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginTop: 12, padding: '8px 12px', background: c.bg, border: `1px solid ${c.border}`, borderRadius: 2 }}>ℹ️ {momentum.note}</div>
-          )}
-        </div>
-
-        {/* CARD LISTINGS */}
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, letterSpacing: 3, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
-            CARD LISTINGS
-            <span style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
-              {(['COMMON', 'MID', 'RARE'] as const).map(tier => (
-                <span key={tier} style={{ display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: tierBorder[tier] }}>
-                  <span style={{ width: 8, height: 2, background: tierBorder[tier], display: 'inline-block', borderRadius: 1 }}></span>{tier}
-                </span>
-              ))}
-            </span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {p.cards?.map((card: any, i: number) => (
-              <div key={i} style={{ background: c.surface, border: `1px solid ${c.border}`, borderTop: `3px solid ${tierBorder[card.tier]}`, borderRadius: 4, padding: '12px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-                <div>
-                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 13, color: c.text }}>{card.name}</div>
-                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>{card.grade} · Pop: {card.pop} · <span style={{ color: tierBorder[card.tier] }}>{card.tier}</span></div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 26, color: c.text, lineHeight: 1 }}>{card.price}</div>
-                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: card.up ? c.green : c.red, marginTop: 2 }}>{card.change} 7D</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* RECENT SALES */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.cyan}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.cyan, letterSpacing: 3, marginBottom: 14 }}>RECENT SALES</div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11 }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${c.border}` }}>
-                {['CARD', 'GRADE', 'PRICE', 'DATE'].map(h => (
-                  <th key={h} style={{ textAlign: 'left', color: c.muted, fontSize: 9, letterSpacing: 2, paddingBottom: 8, paddingRight: 16 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {p.sales?.map((s: any, i: number) => (
-                <tr key={i} style={{ borderBottom: `1px solid ${c.border}` }}>
-                  <td style={{ padding: '9px 16px 9px 0', color: c.text }}>{s.card}</td>
-                  <td style={{ padding: '9px 16px 9px 0', color: c.muted }}>{s.grade}</td>
-                  <td style={{ padding: '9px 16px 9px 0', color: c.green, fontWeight: 700 }}>{s.price}</td>
-                  <td style={{ padding: '9px 0', color: c.muted }}>{s.date}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* BETTING ODDS */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.amber}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.amber, letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
-            BETTING ODDS · MOMENTUM SIGNALS
-            {oddsLive && <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
-            {displayOdds.map((b: any, i: number) => (
-              <div key={i} style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '12px 14px' }}>
-                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 4 }}>{b.market}</div>
-                <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 30, color: c.amber, lineHeight: 1 }}>{b.odds}</div>
-                <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginTop: 4 }}>{b.book}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* NEWS */}
-        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.red}`, borderRadius: 4, padding: '20px 28px', marginBottom: 32 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.red, letterSpacing: 3, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
-            VALUE SIGNALS · NEWS
-            <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>INJURY · AWARDS · TRADES · CARDS</span>
-            {!newsLoading && news.length > 0 && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green, marginLeft: 'auto' }}>
-                <span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE
-              </span>
-            )}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {newsLoading ? (
-              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '12px 0' }}>Scanning feeds...</div>
-            ) : news.length === 0 ? (
-              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '12px 0' }}>No value-relevant news in the last 48 hours.</div>
-            ) : news.map((n: any, i: number) => {
-              const sentColor = n.sentiment === 'positive' ? c.green : n.sentiment === 'negative' ? c.red : c.muted;
-              return (
-                <div key={i} style={{ padding: '12px 0', borderBottom: i < news.length - 1 ? `1px solid ${c.border}` : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+          {/* STATS */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="SEASON STATS" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginTop: 16 }}>
+              {stats.map((s, i) => (
+                <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: sentColor, display: 'inline-block', flexShrink: 0 }}></span>
-                      <a href={n.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: c.text, lineHeight: 1.5, textDecoration: 'none' }}>{n.headline}</a>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 14 }}>
-                      <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: sentColor }}>{n.source}</span>
-                      {n.keywords?.map((k: string, ki: number) => (
-                        <span key={ki} style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, background: c.bg, border: `1px solid ${c.border}`, padding: '1px 5px', borderRadius: 2 }}>{k}</span>
-                      ))}
-                    </div>
+                    <Input label="LABEL" value={s.label} onChange={(v: string) => updateArr(stats, setStats, i, 'label', v)} placeholder="PPG" />
                   </div>
-                  <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, whiteSpace: 'nowrap', flexShrink: 0 }}>{n.time}</div>
+                  <div style={{ flex: 1 }}>
+                    <Input label="VALUE" value={s.val} onChange={(v: string) => updateArr(stats, setStats, i, 'val', v)} placeholder="26.3" />
+                  </div>
+                  <RemoveBtn onClick={() => setStats(stats.filter((_, j) => j !== i))} />
                 </div>
-              );
-            })}
+              ))}
+            </div>
+            <AddRowBtn label="ADD STAT" onClick={() => setStats([...stats, { ...BLANK_STAT }])} />
           </div>
+
+          {/* CARDS */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="CARD LISTINGS" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 16 }}>
+              {cards.map((card, i) => (
+                <div key={i} style={{ background: BG, border: `1px solid ${BORDER}`, borderRadius: 3, padding: '14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                    <Input label="CARD NAME" value={card.name} onChange={(v: string) => updateArr(cards, setCards, i, 'name', v)} placeholder="2023-24 Prizm Base" />
+                    <Input label="PRICE" value={card.price} onChange={(v: string) => updateArr(cards, setCards, i, 'price', v)} placeholder="$480" />
+                    <Input label="GRADE" value={card.grade} onChange={(v: string) => updateArr(cards, setCards, i, 'grade', v)} placeholder="PSA 10" />
+                    <Input label="POP" value={card.pop} onChange={(v: string) => updateArr(cards, setCards, i, 'pop', v)} placeholder="26,000" />
+                    <Select label="TIER" value={card.tier} onChange={(v: string) => updateArr(cards, setCards, i, 'tier', v)} options={['COMMON', 'MID', 'RARE']} />
+                    <Input label="7D CHANGE" value={card.change} onChange={(v: string) => updateArr(cards, setCards, i, 'change', v)} placeholder="▲ +5.3%" />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <RemoveBtn onClick={() => setCards(cards.filter((_, j) => j !== i))} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <AddRowBtn label="ADD CARD" onClick={() => setCards([...cards, { ...BLANK_CARD }])} />
+          </div>
+
+          {/* SALES */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="RECENT SALES" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+              {sales.map((s, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px 90px 32px', gap: 10, alignItems: 'flex-end' }}>
+                  <Input label="CARD" value={s.card} onChange={(v: string) => updateArr(sales, setSales, i, 'card', v)} placeholder="2023-24 Prizm Base" />
+                  <Input label="GRADE" value={s.grade} onChange={(v: string) => updateArr(sales, setSales, i, 'grade', v)} placeholder="PSA 10" />
+                  <Input label="PRICE" value={s.price} onChange={(v: string) => updateArr(sales, setSales, i, 'price', v)} placeholder="$480" />
+                  <Input label="DATE" value={s.date} onChange={(v: string) => updateArr(sales, setSales, i, 'date', v)} placeholder="Mar 9" />
+                  <RemoveBtn onClick={() => setSales(sales.filter((_, j) => j !== i))} />
+                </div>
+              ))}
+            </div>
+            <AddRowBtn label="ADD SALE" onClick={() => setSales([...sales, { ...BLANK_SALE }])} />
+          </div>
+
+          {/* ODDS */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="FALLBACK ODDS" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+              {odds.map((o, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 80px 32px', gap: 10, alignItems: 'flex-end' }}>
+                  <Input label="MARKET" value={o.market} onChange={(v: string) => updateArr(odds, setOdds, i, 'market', v)} placeholder="NBA MVP" />
+                  <Input label="BOOK" value={o.book} onChange={(v: string) => updateArr(odds, setOdds, i, 'book', v)} placeholder="DraftKings" />
+                  <Input label="ODDS" value={o.odds} onChange={(v: string) => updateArr(odds, setOdds, i, 'odds', v)} placeholder="-320" />
+                  <RemoveBtn onClick={() => setOdds(odds.filter((_, j) => j !== i))} />
+                </div>
+              ))}
+            </div>
+            <AddRowBtn label="ADD LINE" onClick={() => setOdds([...odds, { ...BLANK_ODD }])} />
+          </div>
+
+          {/* NEWS */}
+          <div style={{ background: SURFACE, border: `1px solid ${BORDER}`, borderRadius: 4, padding: '24px' }}>
+            <SectionHeader title="FALLBACK NEWS" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
+              {news.map((n, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 120px 80px 32px', gap: 10, alignItems: 'flex-end' }}>
+                  <Input label="HEADLINE" value={n.headline} onChange={(v: string) => updateArr(news, setNews, i, 'headline', v)} placeholder="Player drops 40 points..." />
+                  <Input label="SOURCE" value={n.source} onChange={(v: string) => updateArr(news, setNews, i, 'source', v)} placeholder="ESPN" />
+                  <Input label="TIME" value={n.time} onChange={(v: string) => updateArr(news, setNews, i, 'time', v)} placeholder="2h ago" />
+                  <RemoveBtn onClick={() => setNews(news.filter((_, j) => j !== i))} />
+                </div>
+              ))}
+            </div>
+            <AddRowBtn label="ADD NEWS" onClick={() => setNews([...news, { ...BLANK_NEWS }])} />
+          </div>
+
+          {/* SAVE BUTTON */}
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 13, letterSpacing: 2, padding: '16px 32px', background: saving ? BORDER : GREEN, color: saving ? MUTED : '#090b0f', border: 'none', borderRadius: 3, cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 700, transition: 'all 0.2s' }}
+          >
+            {saving ? 'SAVING...' : '+ ADD PLAYER TO SLABSTREET'}
+          </button>
+
         </div>
-
       </div>
-
-      {/* FOOTER */}
-      <footer style={{ borderTop: `1px solid ${c.border}`, padding: '20px 24px', textAlign: 'center', background: c.surface }}>
-        <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 18, letterSpacing: 3, color: c.green, marginBottom: 6 }}>SLABSTREET</div>
-        <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted }}>© 2026 Slab Street · slabstreet.io · All rights reserved</div>
-      </footer>
     </div>
   );
 }

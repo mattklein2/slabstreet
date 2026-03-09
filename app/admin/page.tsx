@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { getLeagueConfig, getAllLeagueIds } from '../../lib/leagues';
 
 const BG      = '#090b0f';
 const GREEN   = '#00ff87';
@@ -10,9 +11,8 @@ const BORDER  = '#1e2530';
 const MUTED   = '#8899aa';
 const TEXT    = '#e2e8f0';
 
-const SIGNAL_OPTIONS   = ['BUY', 'HOLD', 'SELL'];
-const POSITION_OPTIONS = ['GUARD', 'POINT GUARD', 'SHOOTING GUARD', 'SMALL FORWARD', 'POWER FORWARD', 'FORWARD', 'CENTER'];
-const SPORT_OPTIONS    = ['NBA', 'NFL', 'F1', 'MLB', 'NHL'];
+const SIGNAL_OPTIONS = ['BUY', 'HOLD', 'SELL'];
+const LEAGUE_OPTIONS = getAllLeagueIds();
 
 const BLANK_STAT = { label: '', val: '' };
 const BLANK_CARD = { name: '', grade: 'PSA 10', pop: '', tier: 'COMMON', price: '', change: '', up: true };
@@ -105,13 +105,19 @@ export default function AdminPage() {
   const [number, setNumber]     = useState('');
   const [score, setScore]       = useState('50');
   const [signal, setSignal]     = useState('HOLD');
-  const [sport, setSport]       = useState('NBA');
+  const [league, setLeague]     = useState('NBA');
+
+  const leagueConfig = getLeagueConfig(league);
 
   const [pillars, setPillars]   = useState(DEFAULT_PILLARS.map(p => ({ ...p })));
-  const [stats, setStats]       = useState([
-    { label: 'PPG', val: '' }, { label: 'RPG', val: '' }, { label: 'APG', val: '' },
-    { label: 'FG%', val: '' }, { label: 'GP',  val: '' },
-  ]);
+  const [stats, setStats]       = useState(getLeagueConfig('NBA').defaultStats.map(s => ({ ...s })));
+
+  function handleLeagueChange(newLeague: string) {
+    setLeague(newLeague);
+    const config = getLeagueConfig(newLeague);
+    setPosition(config.positions[0]);
+    setStats(config.defaultStats.map(s => ({ ...s })));
+  }
   const [cards, setCards]       = useState([{ ...BLANK_CARD }]);
   const [sales, setSales]       = useState([{ ...BLANK_SALE }]);
   const [odds, setOdds]         = useState([{ ...BLANK_ODD }]);
@@ -156,7 +162,7 @@ export default function AdminPage() {
       number,
       score:            parseInt(score) || 50,
       signal,
-      sport,
+      league,
       pillars,
       stats,
       score_history:    DEFAULT_SCORE_HISTORY,
@@ -174,9 +180,9 @@ export default function AdminPage() {
     } else {
       setStatus({ type: 'success', msg: `✓ ${name} added successfully! View at /players/${payload.slug}` });
       setName(''); setSlug(''); setFirstName(''); setLastName(''); setTeam('');
-      setPosition('GUARD'); setNumber(''); setScore('50'); setSignal('HOLD'); setSport('NBA');
+      setPosition(getLeagueConfig('NBA').positions[0]); setNumber(''); setScore('50'); setSignal('HOLD'); setLeague('NBA');
       setPillars(DEFAULT_PILLARS.map(p => ({ ...p })));
-      setStats([{ label: 'PPG', val: '' }, { label: 'RPG', val: '' }, { label: 'APG', val: '' }, { label: 'FG%', val: '' }, { label: 'GP', val: '' }]);
+      setStats(getLeagueConfig('NBA').defaultStats.map(s => ({ ...s })));
       setCards([{ ...BLANK_CARD }]);
       setSales([{ ...BLANK_SALE }]);
       setOdds([{ ...BLANK_ODD }]);
@@ -224,8 +230,8 @@ export default function AdminPage() {
               </div>
               <Input label="TEAM (abbrev)" value={team} onChange={setTeam} placeholder="e.g. LAL" />
               <Input label="JERSEY #" value={number} onChange={setNumber} placeholder="e.g. 23" />
-              <Select label="POSITION" value={position} onChange={setPosition} options={POSITION_OPTIONS} />
-              <Select label="SPORT" value={sport} onChange={setSport} options={SPORT_OPTIONS} />
+              <Select label="POSITION" value={position} onChange={setPosition} options={leagueConfig.positions} />
+              <Select label="LEAGUE" value={league} onChange={handleLeagueChange} options={LEAGUE_OPTIONS} />
               <Input label="SLAB SCORE (0–100)" value={score} onChange={setScore} type="number" />
               <Select label="SIGNAL" value={signal} onChange={setSignal} options={SIGNAL_OPTIONS} />
             </div>

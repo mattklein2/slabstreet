@@ -2,6 +2,8 @@
 
 import { useTheme } from './components/ThemeProvider';
 import NavSearch from './components/NavSearch';
+import HomeMovers from './components/HomeMovers';
+import HomeOdds from './components/HomeOdds';
 
 const tickerItems = [
   { label: 'WEMBY AUTO /25',      value: '$2,840',       change: '+8.4%',    up: true  },
@@ -119,6 +121,18 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* MOVERS — Risers & Fallers */}
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px 0' }}>
+        <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, letterSpacing: 3, marginBottom: 8 }}>Market Movers</div>
+        <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 'clamp(28px, 5vw, 42px)', letterSpacing: 2, color: c.text, marginBottom: 24 }}>RISERS & FALLERS</div>
+        <HomeMovers />
+      </div>
+
+      {/* LIVE ODDS */}
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 24px 0' }}>
+        <HomeOdds />
       </div>
 
       {/* FEATURES */}

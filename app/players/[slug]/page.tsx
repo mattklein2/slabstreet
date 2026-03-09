@@ -583,6 +583,16 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
               </div>
             ))}
           </div>
+          <a
+            href={`/odds/${playerLeague.toLowerCase()}`}
+            style={{
+              display: 'inline-block', marginTop: 14,
+              fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.amber,
+              letterSpacing: 2, textDecoration: 'none', borderBottom: `1px solid ${c.amber}33`,
+            }}
+          >
+            VIEW ALL {playerLeague} ODDS →
+          </a>
         </div>
 
         {/* NEWS */}

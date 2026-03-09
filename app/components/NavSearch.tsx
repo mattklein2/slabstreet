@@ -118,7 +118,7 @@ export default function NavSearch() {
           padding: isMobile ? '8px 10px 8px 34px' : '10px 14px 10px 40px',
           color: c.text,
           fontFamily: 'IBM Plex Mono, monospace',
-          fontSize: isMobile ? 12 : 13,
+          fontSize: isMobile ? 16 : 13,
           outline: 'none',
           boxSizing: 'border-box',
           transition: 'border-color 0.15s, box-shadow 0.15s',

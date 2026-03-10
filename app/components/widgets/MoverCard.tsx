@@ -32,21 +32,21 @@ export default function MoverCard({ name, slug, team, score, signal }: MoverCard
         borderLeft: `3px solid ${accentColor}`,
       }}
     >
-      <div className="p-3">
-        <div className="font-mono text-[10px] tracking-wider mb-1" style={{ color: c.muted }}>
+      <div className="p-4">
+        <div className="font-mono text-[10px] tracking-wider mb-1.5" style={{ color: c.muted }}>
           {name.split(' ').pop()?.toUpperCase()}
         </div>
-        <div className="font-mono text-[11px] mb-0.5" style={{ color: c.text }}>
+        <div className="font-mono text-[11px] mb-1" style={{ color: c.text }}>
           {team}
         </div>
-        <div className="font-display text-[28px] leading-none" style={{ color: c.text }}>
+        <div className="font-display text-[32px] leading-none" style={{ color: c.text }}>
           {score}
         </div>
-        <div className="font-mono text-[11px] font-semibold mt-1" style={{ color: accentColor }}>
+        <div className="font-mono text-[11px] font-semibold mt-1.5" style={{ color: accentColor }}>
           {isRiser ? '▲' : '▼'} {signal}
         </div>
         {/* Sparkline placeholder */}
-        <div className="flex gap-0.5 items-end h-5 mt-1.5">
+        <div className="flex gap-0.5 items-end h-6 mt-2">
           {bars.map((h, i) => (
             <div
               key={i}

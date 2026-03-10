@@ -34,10 +34,10 @@ export default function WidgetShell({
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3">
-        <div className="flex items-center gap-2.5">
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center gap-3">
           <span
-            className="font-mono text-xs font-semibold tracking-wider"
+            className="font-mono text-sm font-semibold tracking-wider"
             style={{ color: accentColor }}
           >
             {icon} {title}
@@ -47,7 +47,7 @@ export default function WidgetShell({
         {viewAllHref && (
           <a
             href={viewAllHref}
-            className="font-mono text-[10px] no-underline hover:underline"
+            className="font-mono text-[11px] no-underline hover:underline"
             style={{ color: c.muted }}
           >
             {viewAllLabel}
@@ -55,7 +55,7 @@ export default function WidgetShell({
         )}
       </div>
       {/* Content */}
-      <div className="px-5 pb-4">
+      <div className="px-6 pb-5">
         {children}
       </div>
     </div>

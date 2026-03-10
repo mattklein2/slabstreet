@@ -66,7 +66,7 @@ export default function TradeSignals() {
         <WidgetEmpty message={`No ${leagueLabel}signals right now`} />
       )}
       {!loading && !error && signals.length > 0 && (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2.5">
           {signals.map((s) => (
             <SignalRow key={s.slug} {...s} />
           ))}

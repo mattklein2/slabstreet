@@ -104,9 +104,9 @@ export default function MarketMovers() {
         <WidgetEmpty message={`No ${leagueLabel}movers data available`} />
       )}
       {!loading && !error && movers.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:overflow-x-visible">
+        <div className="flex gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:overflow-x-visible md:gap-4">
           {movers.map((m) => (
-            <div key={m.slug} className="min-w-[140px] md:min-w-0 shrink-0 md:shrink">
+            <div key={m.slug} className="min-w-[160px] md:min-w-0 shrink-0 md:shrink">
               <MoverCard {...m} />
             </div>
           ))}

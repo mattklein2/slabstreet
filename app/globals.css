@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+@import "tailwindcss";
 
 /* Register custom fonts with Tailwind v4 so we can use font-mono, font-display, font-body */
 @theme {

@@ -11,7 +11,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Blocking script — runs before React, kills theme flash on back navigation */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -24,9 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        {/* Fonts loaded via @import in globals.css — preconnect only here */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet" />
       </head>
       <body style={{ margin: 0, padding: 0 }}>
         <ThemeProvider>

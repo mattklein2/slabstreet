@@ -19,7 +19,7 @@ type GameOdds = {
   bookmakers: BookmakerOdds[];
 };
 
-const LEAGUES = ['NBA', 'NFL', 'MLB', 'NHL'] as const;
+const LEAGUES = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL'] as const;
 
 export default function OddsDashboard({
   params,

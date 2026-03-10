@@ -14,7 +14,7 @@ export default function GameRow({ homeTeam, awayTeam, time, spread }: GameRowPro
 
   return (
     <div
-      className="flex items-center justify-between rounded px-3 py-2.5"
+      className="flex items-center justify-between rounded px-4 py-3"
       style={{ background: c.bg, border: `1px solid ${c.border}` }}
     >
       <div>

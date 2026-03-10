@@ -31,20 +31,20 @@ export default function NewsCard({ headline, source, url, category, time }: News
       className="block no-underline rounded transition-colors duration-150"
       style={{ background: c.bg, border: `1px solid ${c.border}` }}
     >
-      <div className="p-3">
+      <div className="p-4">
         <div
-          className="font-mono text-[9px] tracking-wider mb-1.5"
+          className="font-mono text-[10px] tracking-wider mb-2"
           style={{ color: catColor }}
         >
           {category}
         </div>
         <div
-          className="font-mono text-xs leading-snug mb-1.5 line-clamp-2"
+          className="font-mono text-[13px] leading-snug mb-2 line-clamp-2"
           style={{ color: c.text }}
         >
           {headline}
         </div>
-        <div className="font-mono text-[9px]" style={{ color: c.muted }}>
+        <div className="font-mono text-[10px]" style={{ color: c.muted }}>
           {time} · {source}
         </div>
       </div>

@@ -56,7 +56,7 @@ export default function CardNews() {
         <WidgetEmpty message={`No recent ${leagueLabel}news`} />
       )}
       {!loading && !error && displayed.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {displayed.map((n, i) => (
             <NewsCard key={i} {...n} />
           ))}

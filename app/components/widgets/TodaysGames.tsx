@@ -109,7 +109,7 @@ export default function TodaysGames() {
         <WidgetEmpty message={`No upcoming ${leagueLabel} games today`} />
       )}
       {!loading && !error && games.length > 0 && (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2.5">
           {games.map((g) => (
             <GameRow
               key={g.id}

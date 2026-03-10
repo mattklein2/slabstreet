@@ -21,12 +21,12 @@ export default function HomePage() {
       <LeagueTabs />
 
       {/* Widget Grid */}
-      <main className="max-w-[1400px] mx-auto px-6 py-4 flex flex-col gap-3">
+      <main className="max-w-[1800px] mx-auto px-8 md:px-12 lg:px-16 py-6 flex flex-col gap-5">
         {/* Row 1: Market Movers — full width */}
         <MarketMovers />
 
         {/* Row 2: Games + Signals — side by side on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <TodaysGames />
           <TradeSignals />
         </div>
@@ -37,7 +37,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer
-        className="mt-8 py-6 px-6 text-center"
+        className="mt-10 py-8 px-6 text-center"
         style={{ borderTop: `1px solid ${c.border}`, background: c.surface }}
       >
         <div className="font-display text-xl tracking-[3px] mb-1.5" style={{ color: c.green }}>

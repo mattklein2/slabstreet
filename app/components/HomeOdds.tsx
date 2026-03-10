@@ -18,7 +18,7 @@ type GameOdds = {
   bookmakers: BookmakerOdds[];
 };
 
-const LEAGUES_TO_TRY = ['NBA', 'NFL', 'MLB', 'NHL'];
+const LEAGUES_TO_TRY = ['NBA', 'WNBA', 'NFL', 'MLB', 'NHL'];
 
 export default function HomeOdds() {
   const { colors: c } = useTheme();

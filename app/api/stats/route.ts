@@ -32,6 +32,10 @@ const STAT_MAP: Record<string, { keys: string[]; labels: string[] }> = {
     keys:   ['championshipPts', 'wins', 'poles', 'podiums'],
     labels: ['PTS',             'WINS', 'POLES', 'PODIUMS'],
   },
+  WNBA: {
+    keys:   ['avgPoints', 'avgRebounds', 'avgAssists', 'avgBlocks', 'fieldGoalPct', 'gamesPlayed'],
+    labels: ['PPG',       'RPG',         'APG',        'BPG',       'FG%',          'GP'],
+  },
 };
 
 // ── Fetch athlete stats from ESPN ────────────────────────────

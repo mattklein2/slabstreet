@@ -4,7 +4,7 @@
 // To add a new league: add one entry to the LEAGUES map below.
 // ─────────────────────────────────────────────────────────────
 
-export type LeagueId = 'NBA' | 'NFL' | 'MLB' | 'F1' | 'NHL';
+export type LeagueId = 'NBA' | 'NFL' | 'MLB' | 'F1' | 'NHL' | 'WNBA';
 
 export interface LeagueConfig {
   id: LeagueId;
@@ -190,6 +190,30 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     socialAccounts: {
       insiders: ['PierreVLeBrun', 'FriedgeHNIC', 'DarrenDreger', 'NHL', 'NHLNetwork', 'ESPNStatsInfo'],
       teams: ['EdmontonOilers', 'NHLFlyers', 'NHLBruins', 'MapleLeafs', 'NYRangers', 'Avalanche'],
+    },
+  },
+  WNBA: {
+    id: 'WNBA',
+    name: 'WNBA',
+    positions: ['GUARD', 'FORWARD', 'CENTER'],
+    defaultStats: [
+      { label: 'PPG', val: '' }, { label: 'RPG', val: '' }, { label: 'APG', val: '' },
+      { label: 'FG%', val: '' }, { label: 'GP', val: '' },
+    ],
+    seasonLabel: '2025 Season Stats',
+    oddsApiSportKey: 'basketball_wnba_championship_winner',
+    oddsApiGameKey: 'basketball_wnba',
+    oddsApiMarketLabel: 'WNBA Champion',
+    espnSport: 'basketball',
+    espnLeague: 'wnba',
+    espnStandingsSeason: '2025',
+    teamSuccess: { playoffSeeds: 8, usesConferences: false },
+    rssFeeds: [
+      { url: 'https://www.espn.com/espn/rss/wnba/news', source: 'ESPN' },
+    ],
+    socialAccounts: {
+      insiders: ['WNBA', 'espabortnW', 'AlexaPhilbeck', 'MechellVoepel', 'HowardMegdal', 'JustWomensSports'],
+      teams: ['IndianaFever', 'LASparks', 'NYLiberty', 'seabortstorm', 'LVAces', 'ConnecticutSun'],
     },
   },
 };

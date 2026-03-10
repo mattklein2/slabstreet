@@ -27,10 +27,11 @@ const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPA
 
 // ── ESPN config ──────────────────────────────────────────────
 const ESPN_LEAGUES = {
-  NBA: { sport: 'basketball', league: 'nba' },
-  NFL: { sport: 'football',   league: 'nfl' },
-  MLB: { sport: 'baseball',   league: 'mlb' },
-  NHL: { sport: 'hockey',     league: 'nhl' },
+  NBA:  { sport: 'basketball', league: 'nba'  },
+  NFL:  { sport: 'football',   league: 'nfl'  },
+  MLB:  { sport: 'baseball',   league: 'mlb'  },
+  NHL:  { sport: 'hockey',     league: 'nhl'  },
+  WNBA: { sport: 'basketball', league: 'wnba' },
 };
 
 // ── Position mapping (ESPN abbreviation → our positions) ─────
@@ -38,7 +39,8 @@ const POS = {
   NBA: { PG: 'GUARD', SG: 'GUARD', G: 'GUARD', SF: 'FORWARD', PF: 'FORWARD', F: 'FORWARD', C: 'CENTER' },
   NFL: { QB: 'QB', RB: 'RB', FB: 'RB', WR: 'WR', TE: 'TE', OT: 'OL', OG: 'OL', OL: 'OL', C: 'OL', DE: 'DL', DT: 'DL', DL: 'DL', NT: 'DL', LB: 'LB', ILB: 'LB', OLB: 'LB', MLB: 'LB', CB: 'DB', S: 'DB', FS: 'DB', SS: 'DB', DB: 'DB', K: 'K/P', P: 'K/P', LS: 'OL' },
   MLB: { SP: 'PITCHER', RP: 'PITCHER', CP: 'PITCHER', P: 'PITCHER', C: 'CATCHER', '1B': 'INFIELDER', '2B': 'INFIELDER', '3B': 'INFIELDER', SS: 'INFIELDER', IF: 'INFIELDER', LF: 'OUTFIELDER', CF: 'OUTFIELDER', RF: 'OUTFIELDER', OF: 'OUTFIELDER', DH: 'DH', UT: 'INFIELDER' },
-  NHL: { C: 'CENTER', LW: 'WING', RW: 'WING', W: 'WING', D: 'DEFENSEMAN', LD: 'DEFENSEMAN', RD: 'DEFENSEMAN', G: 'GOALIE' },
+  NHL:  { C: 'CENTER', LW: 'WING', RW: 'WING', W: 'WING', D: 'DEFENSEMAN', LD: 'DEFENSEMAN', RD: 'DEFENSEMAN', G: 'GOALIE' },
+  WNBA: { PG: 'GUARD', SG: 'GUARD', G: 'GUARD', SF: 'FORWARD', PF: 'FORWARD', F: 'FORWARD', C: 'CENTER' },
 };
 
 // ── Defaults ─────────────────────────────────────────────────

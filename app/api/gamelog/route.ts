@@ -15,7 +15,8 @@ const DISPLAY_COLUMNS: Record<string, string[]> = {
   NBA: ['PTS', 'REB', 'AST', 'FG%', 'MIN'],
   NFL: ['CMP', 'YDS', 'TD', 'INT', 'QBR'],
   MLB: ['AB', 'H', 'HR', 'RBI', 'AVG'],
-  NHL: ['G', 'A', 'PTS', '+/-', 'TOI'],
+  NHL:  ['G', 'A', 'PTS', '+/-', 'TOI'],
+  WNBA: ['PTS', 'REB', 'AST', 'FG%', 'MIN'],
 };
 
 export async function GET(request: Request) {

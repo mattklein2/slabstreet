@@ -6,8 +6,11 @@ import Ticker from './components/layout/Ticker';
 import Nav from './components/layout/Nav';
 import LeagueTabs from './components/layout/LeagueTabs';
 import MarketMovers from './components/widgets/MarketMovers';
-import TodaysGames from './components/widgets/TodaysGames';
+import FullSchedule from './components/widgets/FullSchedule';
 import TradeSignals from './components/widgets/TradeSignals';
+import ChampionshipOdds from './components/widgets/ChampionshipOdds';
+import RecentSales from './components/widgets/RecentSales';
+import SportsNews from './components/widgets/SportsNews';
 import CardNews from './components/widgets/CardNews';
 
 export default function HomePage() {
@@ -20,19 +23,28 @@ export default function HomePage() {
       <Nav />
       <LeagueTabs />
 
-      {/* Widget Grid */}
+      {/* Widget Grid — 5 rows, scrollable */}
       <main className="max-w-[1800px] mx-auto px-8 md:px-12 lg:px-16 py-6 flex flex-col gap-5">
-        {/* Row 1: Market Movers — full width */}
+        {/* Row 1: Market Movers — full width horizontal scroll */}
         <MarketMovers />
 
-        {/* Row 2: Games + Signals — side by side on desktop */}
+        {/* Row 2: Full Schedule — full width with date nav + league tabs */}
+        <FullSchedule />
+
+        {/* Row 3: Trade Signals + Championship Odds — side by side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <TodaysGames />
           <TradeSignals />
+          <ChampionshipOdds />
         </div>
 
-        {/* Row 3: News — full width */}
-        <CardNews />
+        {/* Row 4: Recent eBay Sales — full width horizontal scroll */}
+        <RecentSales />
+
+        {/* Row 5: Sports News + Card Market News — side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <SportsNews />
+          <CardNews />
+        </div>
       </main>
 
       {/* Footer */}

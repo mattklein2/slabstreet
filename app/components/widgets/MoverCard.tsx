@@ -32,7 +32,7 @@ export default function MoverCard({ name, slug, team, score, signal }: MoverCard
         borderLeft: `3px solid ${accentColor}`,
       }}
     >
-      <div className="p-4">
+      <div className="p-5">
         <div className="font-mono text-[10px] tracking-wider mb-1.5" style={{ color: c.muted }}>
           {name.split(' ').pop()?.toUpperCase()}
         </div>

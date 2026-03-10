@@ -23,7 +23,7 @@ export default function SignalRow({ signal, name, slug, team, score }: SignalRow
   return (
     <a
       href={`/players/${slug}`}
-      className="flex items-center justify-between rounded px-4 py-3 no-underline"
+      className="flex items-center justify-between rounded px-5 py-3.5 no-underline"
       style={{ background: c.bg, border: `1px solid ${c.border}` }}
     >
       <div className="flex items-center gap-2.5">

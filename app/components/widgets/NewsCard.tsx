@@ -31,7 +31,7 @@ export default function NewsCard({ headline, source, url, category, time }: News
       className="block no-underline rounded transition-colors duration-150"
       style={{ background: c.bg, border: `1px solid ${c.border}` }}
     >
-      <div className="p-4">
+      <div className="p-5">
         <div
           className="font-mono text-[10px] tracking-wider mb-2"
           style={{ color: catColor }}

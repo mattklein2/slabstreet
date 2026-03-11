@@ -1,0 +1,366 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useTheme } from '../ThemeProvider';
+
+type F1View = 'race' | 'qualifying' | 'standings';
+
+interface F1Result {
+  position: number;
+  driver: string;
+  team: string;
+  winner: boolean;
+}
+
+interface StandingEntry {
+  rank: number;
+  name: string;
+  points: number;
+}
+
+// Podium position colors
+const POSITION_COLORS: Record<number, string> = {
+  1: '#FFD700', // gold
+  2: '#C0C0C0', // silver
+  3: '#CD7F32', // bronze
+};
+
+// Team colors (approximate F1 team colors)
+const TEAM_COLORS: Record<string, string> = {
+  'Red Bull Racing': '#3671C6',
+  McLaren: '#FF8000',
+  Ferrari: '#E8002D',
+  Mercedes: '#27F4D2',
+  'Aston Martin': '#229971',
+  Alpine: '#0093CC',
+  Williams: '#64C4FF',
+  'RB F1 Team': '#6692FF',
+  'Kick Sauber': '#52E252',
+  Haas: '#B6BABD',
+};
+
+export default function F1Results() {
+  const { colors: c } = useTheme();
+  const [view, setView] = useState<F1View>('race');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  // Race/qualifying data
+  const [raceName, setRaceName] = useState('');
+  const [results, setResults] = useState<F1Result[]>([]);
+  const [raceStatus, setRaceStatus] = useState('');
+
+  // Standings data
+  const [drivers, setDrivers] = useState<StandingEntry[]>([]);
+  const [constructors, setConstructors] = useState<StandingEntry[]>([]);
+  const [standingsTab, setStandingsTab] = useState<'drivers' | 'constructors'>(
+    'drivers'
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadData() {
+      setLoading(true);
+      setError(false);
+      try {
+        const res = await fetch(`/api/f1?view=${view}`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+
+        if (cancelled) return;
+
+        if (view === 'standings') {
+          setDrivers(data.drivers || []);
+          setConstructors(data.constructors || []);
+        } else {
+          setRaceName(data.raceName || '');
+          setResults(data.results || []);
+          setRaceStatus(data.status || '');
+        }
+      } catch {
+        if (!cancelled) setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadData();
+    return () => {
+      cancelled = true;
+    };
+  }, [view]);
+
+  const views: { key: F1View; label: string }[] = [
+    { key: 'race', label: 'RACE' },
+    { key: 'qualifying', label: 'QUALI' },
+    { key: 'standings', label: 'WDC' },
+  ];
+
+  return (
+    <div>
+      {/* F1 view tabs */}
+      <div className="flex gap-1 px-5 pb-2">
+        {views.map((v) => (
+          <button
+            key={v.key}
+            onClick={() => setView(v.key)}
+            className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
+            style={{
+              color: view === v.key ? '#fff' : c.muted,
+              background: view === v.key ? '#E8002D' : 'transparent',
+              border: `1px solid ${view === v.key ? '#E8002D' : c.border}`,
+            }}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="px-5 pb-4">
+        {loading && (
+          <div className="flex flex-col gap-1.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded h-6"
+                style={{
+                  background: `linear-gradient(90deg, ${c.border} 25%, ${c.surface} 50%, ${c.border} 75%)`,
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 1.5s ease-in-out infinite',
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {error && (
+          <div
+            className="py-6 text-center font-body text-xs"
+            style={{ color: c.muted }}
+          >
+            Unable to load F1 data
+          </div>
+        )}
+
+        {!loading && !error && view !== 'standings' && (
+          <>
+            {/* Race name header */}
+            {raceName && (
+              <div
+                className="font-body text-[11px] font-semibold mb-2 pb-1.5"
+                style={{
+                  color: c.text,
+                  borderBottom: `1px solid ${c.border}`,
+                }}
+              >
+                {raceName}
+                {raceStatus && (
+                  <span
+                    className="font-body text-[9px] font-medium ml-2 px-1.5 py-0.5 rounded"
+                    style={{
+                      color:
+                        raceStatus === 'Final'
+                          ? c.muted
+                          : raceStatus === 'In Progress'
+                            ? c.green
+                            : c.muted,
+                      background:
+                        raceStatus === 'In Progress'
+                          ? `${c.green}20`
+                          : `${c.muted}15`,
+                    }}
+                  >
+                    {raceStatus === 'In Progress' ? 'LIVE' : raceStatus.toUpperCase()}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {results.length === 0 && (
+              <div
+                className="py-6 text-center font-body text-xs"
+                style={{ color: c.muted }}
+              >
+                {raceStatus || 'No results available'}
+              </div>
+            )}
+
+            {/* Driver results grid */}
+            {results.length > 0 && (
+              <div className="flex flex-col gap-0.5">
+                {results.map((r) => {
+                  const posColor = POSITION_COLORS[r.position];
+                  const teamColor = TEAM_COLORS[r.team] || c.muted;
+                  return (
+                    <div
+                      key={r.position}
+                      className="flex items-center gap-2 rounded px-2 py-1"
+                      style={{
+                        background:
+                          r.position <= 3 ? `${posColor}10` : 'transparent',
+                      }}
+                    >
+                      {/* Position */}
+                      <span
+                        className="font-display text-[13px] w-5 text-right leading-none"
+                        style={{
+                          color: posColor || c.muted,
+                          fontWeight: r.position <= 3 ? 700 : 500,
+                        }}
+                      >
+                        {r.position}
+                      </span>
+
+                      {/* Team color bar */}
+                      <div
+                        className="w-0.5 h-4 rounded-full"
+                        style={{ background: teamColor }}
+                      />
+
+                      {/* Driver name */}
+                      <span
+                        className="font-body text-[11px] flex-1 truncate"
+                        style={{
+                          color: r.position <= 3 ? c.text : c.muted,
+                          fontWeight: r.position <= 3 ? 600 : 400,
+                        }}
+                      >
+                        {r.driver}
+                      </span>
+
+                      {/* Points indicator for top 10 */}
+                      {r.position <= 10 && (
+                        <span
+                          className="font-body text-[9px] font-medium"
+                          style={{ color: c.muted }}
+                        >
+                          +
+                          {r.position === 1
+                            ? 25
+                            : r.position === 2
+                              ? 18
+                              : r.position === 3
+                                ? 15
+                                : r.position === 4
+                                  ? 12
+                                  : r.position === 5
+                                    ? 10
+                                    : r.position === 6
+                                      ? 8
+                                      : r.position === 7
+                                        ? 6
+                                        : r.position === 8
+                                          ? 4
+                                          : r.position === 9
+                                            ? 2
+                                            : 1}
+                          pts
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Standings view */}
+        {!loading && !error && view === 'standings' && (
+          <>
+            {/* Driver/Constructor sub-tabs */}
+            <div className="flex gap-1 mb-2">
+              <button
+                onClick={() => setStandingsTab('drivers')}
+                className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
+                style={{
+                  color: standingsTab === 'drivers' ? c.text : c.muted,
+                  background: 'transparent',
+                  border: `1px solid ${standingsTab === 'drivers' ? c.text : c.border}`,
+                }}
+              >
+                DRIVERS
+              </button>
+              <button
+                onClick={() => setStandingsTab('constructors')}
+                className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
+                style={{
+                  color: standingsTab === 'constructors' ? c.text : c.muted,
+                  background: 'transparent',
+                  border: `1px solid ${standingsTab === 'constructors' ? c.text : c.border}`,
+                }}
+              >
+                CONSTRUCTORS
+              </button>
+            </div>
+
+            {/* Standings list */}
+            <div className="flex flex-col gap-0.5">
+              {(standingsTab === 'drivers' ? drivers : constructors).map(
+                (entry) => {
+                  const posColor = POSITION_COLORS[entry.rank];
+                  const teamColor =
+                    standingsTab === 'constructors'
+                      ? TEAM_COLORS[entry.name] || c.muted
+                      : undefined;
+                  return (
+                    <div
+                      key={entry.rank}
+                      className="flex items-center gap-2 rounded px-2 py-1"
+                      style={{
+                        background:
+                          entry.rank <= 3 ? `${posColor}10` : 'transparent',
+                      }}
+                    >
+                      <span
+                        className="font-display text-[13px] w-5 text-right leading-none"
+                        style={{
+                          color: posColor || c.muted,
+                          fontWeight: entry.rank <= 3 ? 700 : 500,
+                        }}
+                      >
+                        {entry.rank}
+                      </span>
+
+                      {teamColor && (
+                        <div
+                          className="w-0.5 h-4 rounded-full"
+                          style={{ background: teamColor }}
+                        />
+                      )}
+
+                      <span
+                        className="font-body text-[11px] flex-1 truncate"
+                        style={{
+                          color: entry.rank <= 3 ? c.text : c.muted,
+                          fontWeight: entry.rank <= 3 ? 600 : 400,
+                        }}
+                      >
+                        {entry.name}
+                      </span>
+
+                      <span
+                        className="font-body text-[11px] font-semibold"
+                        style={{ color: entry.rank <= 3 ? c.text : c.muted }}
+                      >
+                        {entry.points}
+                        <span
+                          className="text-[9px] font-normal ml-0.5"
+                          style={{ color: c.muted }}
+                        >
+                          pts
+                        </span>
+                      </span>
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

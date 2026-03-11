@@ -5,6 +5,7 @@ import { useTheme } from '../ThemeProvider';
 import { useLeague } from '../LeagueProvider';
 import { WidgetSkeleton, WidgetError, WidgetEmpty } from './WidgetShell';
 import ScoreBugRow from './ScoreBugRow';
+import F1Results from './F1Results';
 
 // ESPN league slug mapping for logo URLs
 const LEAGUE_TO_ESPN: Record<string, string> = {
@@ -82,7 +83,7 @@ function formatGameTime(commenceTime: string): string {
   }
 }
 
-const SCORE_LEAGUES = ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA'] as const;
+const SCORE_LEAGUES = ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA', 'F1'] as const;
 
 // ─── Mini Calendar Dropdown ─────────────────────────────────
 function MiniCalendar({
@@ -274,74 +275,76 @@ export default function FullSchedule() {
         borderTop: `2px solid ${c.cyan}`,
       }}
     >
-      {/* Header: title + calendar toggle */}
+      {/* Header: title + calendar toggle (hidden for F1) */}
       <div className="flex items-center justify-between px-5 pt-3 pb-1">
         <div className="flex items-center gap-2">
-          <span className="text-sm leading-none">📅</span>
+          <span className="text-sm leading-none">{scoreLeague === 'F1' ? '🏎️' : '📅'}</span>
           <span
             className="font-body text-[12px] font-medium tracking-widest uppercase"
             style={{ color: c.cyan }}
           >
-            SCORES
+            {scoreLeague === 'F1' ? 'F1' : 'SCORES'}
           </span>
         </div>
 
-        <div className="relative flex items-center gap-1.5">
-          <button
-            onClick={goToPrev}
-            disabled={!canGoPrev}
-            className="font-body text-xs px-0.5 rounded"
-            style={{
-              color: canGoPrev ? c.text : c.muted,
-              opacity: canGoPrev ? 1 : 0.4,
-              background: 'transparent',
-              border: 'none',
-              cursor: canGoPrev ? 'pointer' : 'default',
-            }}
-            aria-label="Previous day"
-          >
-            ‹
-          </button>
-          <button
-            onClick={() => setCalendarOpen((o) => !o)}
-            className="font-body text-[11px] font-medium px-1.5 py-0.5 rounded cursor-pointer"
-            style={{
-              color: c.text,
-              background: calendarOpen ? `${c.cyan}18` : 'transparent',
-              border: `1px solid ${calendarOpen ? c.cyan : c.border}`,
-            }}
-          >
-            {formatDateDisplay(selectedDate)}
-          </button>
-          <button
-            onClick={goToNext}
-            disabled={!canGoNext}
-            className="font-body text-xs px-0.5 rounded"
-            style={{
-              color: canGoNext ? c.text : c.muted,
-              opacity: canGoNext ? 1 : 0.4,
-              background: 'transparent',
-              border: 'none',
-              cursor: canGoNext ? 'pointer' : 'default',
-            }}
-            aria-label="Next day"
-          >
-            ›
-          </button>
-          {calendarOpen && (
-            <MiniCalendar
-              selected={selectedDate}
-              today={today}
-              onSelect={setSelectedDate}
-              onClose={() => setCalendarOpen(false)}
-              colors={c}
-            />
-          )}
-        </div>
+        {scoreLeague !== 'F1' && (
+          <div className="relative flex items-center gap-1.5">
+            <button
+              onClick={goToPrev}
+              disabled={!canGoPrev}
+              className="font-body text-xs px-0.5 rounded"
+              style={{
+                color: canGoPrev ? c.text : c.muted,
+                opacity: canGoPrev ? 1 : 0.4,
+                background: 'transparent',
+                border: 'none',
+                cursor: canGoPrev ? 'pointer' : 'default',
+              }}
+              aria-label="Previous day"
+            >
+              ‹
+            </button>
+            <button
+              onClick={() => setCalendarOpen((o) => !o)}
+              className="font-body text-[11px] font-medium px-1.5 py-0.5 rounded cursor-pointer"
+              style={{
+                color: c.text,
+                background: calendarOpen ? `${c.cyan}18` : 'transparent',
+                border: `1px solid ${calendarOpen ? c.cyan : c.border}`,
+              }}
+            >
+              {formatDateDisplay(selectedDate)}
+            </button>
+            <button
+              onClick={goToNext}
+              disabled={!canGoNext}
+              className="font-body text-xs px-0.5 rounded"
+              style={{
+                color: canGoNext ? c.text : c.muted,
+                opacity: canGoNext ? 1 : 0.4,
+                background: 'transparent',
+                border: 'none',
+                cursor: canGoNext ? 'pointer' : 'default',
+              }}
+              aria-label="Next day"
+            >
+              ›
+            </button>
+            {calendarOpen && (
+              <MiniCalendar
+                selected={selectedDate}
+                today={today}
+                onSelect={setSelectedDate}
+                onClose={() => setCalendarOpen(false)}
+                colors={c}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {/* League toggle tabs */}
-      <div className="flex gap-1 px-5 pb-2">
+      <div className="flex flex-wrap gap-1 px-5 pb-2">
         {SCORE_LEAGUES.map((lg) => (
           <button
             key={lg}
@@ -349,8 +352,19 @@ export default function FullSchedule() {
             className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
             style={{
               color: scoreLeague === lg ? '#fff' : c.muted,
-              background: scoreLeague === lg ? c.cyan : 'transparent',
-              border: `1px solid ${scoreLeague === lg ? c.cyan : c.border}`,
+              background:
+                scoreLeague === lg
+                  ? lg === 'F1'
+                    ? '#E8002D'
+                    : c.cyan
+                  : 'transparent',
+              border: `1px solid ${
+                scoreLeague === lg
+                  ? lg === 'F1'
+                    ? '#E8002D'
+                    : c.cyan
+                  : c.border
+              }`,
             }}
           >
             {lg}
@@ -358,37 +372,42 @@ export default function FullSchedule() {
         ))}
       </div>
 
-      {/* Score rows — vertical list */}
-      <div className="px-5 pb-4">
-        {loading && <WidgetSkeleton rows={3} />}
-        {error && <WidgetError message="Unable to load scores" />}
-        {!loading && !error && games.length === 0 && (
-          <WidgetEmpty
-            message={`No ${scoreLeague} games on ${formatDateDisplay(selectedDate)}`}
-          />
-        )}
-        {!loading && !error && games.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            {games.map((g) => (
-              <ScoreBugRow
-                key={g.id}
-                homeTeam={g.home_team}
-                awayTeam={g.away_team}
-                homeAbbrev={g.home_abbrev || ''}
-                awayAbbrev={g.away_abbrev || ''}
-                homeScore={g.home_score}
-                awayScore={g.away_score}
-                status={g.status}
-                period={g.period}
-                clock={g.clock}
-                time={formatGameTime(g.commence_time)}
-                boxscoreUrl={g.boxscoreUrl}
-                espnLeague={espnLeague}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {/* F1 view — race results, qualifying, standings */}
+      {scoreLeague === 'F1' && <F1Results />}
+
+      {/* Standard scores — vertical list */}
+      {scoreLeague !== 'F1' && (
+        <div className="px-5 pb-4">
+          {loading && <WidgetSkeleton rows={3} />}
+          {error && <WidgetError message="Unable to load scores" />}
+          {!loading && !error && games.length === 0 && (
+            <WidgetEmpty
+              message={`No ${scoreLeague} games on ${formatDateDisplay(selectedDate)}`}
+            />
+          )}
+          {!loading && !error && games.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              {games.map((g) => (
+                <ScoreBugRow
+                  key={g.id}
+                  homeTeam={g.home_team}
+                  awayTeam={g.away_team}
+                  homeAbbrev={g.home_abbrev || ''}
+                  awayAbbrev={g.away_abbrev || ''}
+                  homeScore={g.home_score}
+                  awayScore={g.away_score}
+                  status={g.status}
+                  period={g.period}
+                  clock={g.clock}
+                  time={formatGameTime(g.commence_time)}
+                  boxscoreUrl={g.boxscoreUrl}
+                  espnLeague={espnLeague}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

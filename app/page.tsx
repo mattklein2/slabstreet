@@ -2,8 +2,6 @@
 
 import { useTheme } from './components/ThemeProvider';
 import { LeagueProvider } from './components/LeagueProvider';
-import Nav from './components/layout/Nav';
-import LeagueTabs from './components/layout/LeagueTabs';
 import MarketMovers from './components/widgets/MarketMovers';
 import FullSchedule from './components/widgets/FullSchedule';
 import TradeSignals from './components/widgets/TradeSignals';
@@ -17,9 +15,6 @@ export default function HomePage() {
   return (
     <LeagueProvider>
     <div className="min-h-screen" style={{ color: c.text }}>
-      <Nav />
-      <LeagueTabs />
-
       <main className="max-w-[1800px] mx-auto px-8 md:px-12 lg:px-16 py-6 flex flex-col gap-5">
         {/* Row 1: Market Movers — full width, always on top */}
         <MarketMovers />

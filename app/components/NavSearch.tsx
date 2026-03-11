@@ -14,10 +14,22 @@ type PlayerRow = {
   league: string;
 };
 
+type CardRow = {
+  slug: string;
+  player_slug: string;
+  year: number;
+  set_name: string;
+  parallel: string;
+  card_number: string;
+  league: string;
+  image_url: string | null;
+};
+
 export default function NavSearch() {
   const { colors: c } = useTheme();
   const [query, setQuery]             = useState('');
   const [results, setResults]         = useState<PlayerRow[]>([]);
+  const [cardResults, setCardResults] = useState<CardRow[]>([]);
   const [open, setOpen]               = useState(false);
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
   const [isMobile, setIsMobile]       = useState(false);
@@ -61,35 +73,52 @@ export default function NavSearch() {
     setOpen(false);
     setQuery('');
     setResults([]);
+    setCardResults([]);
     setHoveredSlug(null);
   }
 
-  const searchPlayers = useCallback(async (q: string) => {
-    if (q.trim().length < 2) { setResults([]); setOpen(false); return; }
+  const search = useCallback(async (q: string) => {
+    if (q.trim().length < 2) { setResults([]); setCardResults([]); setOpen(false); return; }
 
     const pattern = `%${q.trim()}%`;
-    const { data } = await supabase
-      .from('players')
-      .select('name, slug, team, score, signal, league')
-      .eq('active', true)
-      .or(`name.ilike.${pattern},slug.ilike.${pattern},team.ilike.${pattern}`)
-      .order('score', { ascending: false })
-      .limit(20);
 
-    if (data && data.length > 0) {
-      setResults(data as PlayerRow[]);
-      setOpen(true);
-    } else {
-      setResults([]);
-      setOpen(true);
-    }
+    // Search players and cards in parallel
+    const [playersRes, cardsRes] = await Promise.all([
+      supabase
+        .from('players')
+        .select('name, slug, team, score, signal, league')
+        .eq('active', true)
+        .or(`name.ilike.${pattern},slug.ilike.${pattern},team.ilike.${pattern}`)
+        .order('score', { ascending: false })
+        .limit(8),
+      supabase
+        .from('cards')
+        .select('slug, player_slug, year, set_name, parallel, card_number, league, image_url')
+        .or(`player_slug.ilike.${pattern},set_name.ilike.${pattern},slug.ilike.${pattern}`)
+        .order('year', { ascending: false })
+        .limit(5),
+    ]);
+
+    const players = (playersRes.data || []) as PlayerRow[];
+    const cards = (cardsRes.data || []) as CardRow[];
+
+    setResults(players);
+    setCardResults(cards);
+    setOpen(true);
   }, []);
 
   function handleSearch(q: string) {
     setQuery(q);
-    if (q.trim().length < 2) { setResults([]); setOpen(false); return; }
+    if (q.trim().length < 2) { setResults([]); setCardResults([]); setOpen(false); return; }
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => searchPlayers(q), 200);
+    debounceRef.current = setTimeout(() => search(q), 200);
+  }
+
+  function formatCardName(card: CardRow): string {
+    const parts = [String(card.year), card.set_name];
+    if (card.parallel && card.parallel !== 'Base') parts.push(card.parallel);
+    if (card.card_number) parts.push(`#${card.card_number}`);
+    return parts.join(' ');
   }
 
   // Calculate dropdown top for fixed positioning on mobile
@@ -137,54 +166,152 @@ export default function NavSearch() {
           borderRadius: isMobile ? 4 : '0 0 4px 4px',
           zIndex: 9999,
           boxShadow: '0 12px 32px rgba(0,0,0,0.45)',
-          maxHeight: isMobile ? '60vh' : 400,
+          maxHeight: isMobile ? '60vh' : 480,
           overflowY: 'auto',
         }}>
-          {results.length === 0 ? (
+          {results.length === 0 && cardResults.length === 0 ? (
             <div style={{ padding: isMobile ? '10px 12px' : '12px 16px', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted }}>
-              No players found.
+              No results found.
             </div>
-          ) : results.map(p => (
-            <a
-              key={p.slug}
-              href={`/players/${p.slug}`}
-              onMouseEnter={() => setHoveredSlug(p.slug)}
-              onMouseLeave={() => setHoveredSlug(null)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 8,
-                padding: isMobile ? '10px 12px' : '12px 16px',
-                borderBottom: `1px solid ${c.border}`,
-                textDecoration: 'none',
-                background: hoveredSlug === p.slug ? `${c.green}12` : 'transparent',
-                borderLeft: hoveredSlug === p.slug ? `3px solid ${c.green}` : '3px solid transparent',
-                transition: 'background 0.1s, border-left 0.1s',
-                cursor: 'pointer',
-              }}
-            >
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{
-                  fontFamily: 'IBM Plex Mono, monospace', fontSize: isMobile ? 12 : 13,
-                  color: hoveredSlug === p.slug ? c.green : c.text, transition: 'color 0.1s',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {p.name}
-                </div>
-                <div style={{
-                  fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginTop: 2,
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
-                  {p.team} · <span style={{ color: c.green }}>{p.league ?? 'NBA'}</span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 6 : 10, flexShrink: 0 }}>
-                <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: isMobile ? 18 : 24, color: c.text, lineHeight: 1 }}>{p.score}</span>
-                <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: signalColor[p.signal] || c.muted, border: `1px solid ${signalColor[p.signal] || c.muted}`, padding: '2px 6px', borderRadius: 2, letterSpacing: 1 }}>{p.signal}</span>
-              </div>
-            </a>
-          ))}
+          ) : (
+            <>
+              {/* Players section */}
+              {results.length > 0 && (
+                <>
+                  <div style={{
+                    padding: '8px 16px 4px',
+                    fontFamily: 'IBM Plex Mono, monospace',
+                    fontSize: 9,
+                    color: c.muted,
+                    letterSpacing: 2,
+                    textTransform: 'uppercase',
+                  }}>
+                    Players
+                  </div>
+                  {results.map(p => (
+                    <a
+                      key={p.slug}
+                      href={`/players/${p.slug}`}
+                      onMouseEnter={() => setHoveredSlug(p.slug)}
+                      onMouseLeave={() => setHoveredSlug(null)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 8,
+                        padding: isMobile ? '10px 12px' : '10px 16px',
+                        borderBottom: `1px solid ${c.border}`,
+                        textDecoration: 'none',
+                        background: hoveredSlug === p.slug ? `${c.green}12` : 'transparent',
+                        borderLeft: hoveredSlug === p.slug ? `3px solid ${c.green}` : '3px solid transparent',
+                        transition: 'background 0.1s, border-left 0.1s',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{
+                          fontFamily: 'IBM Plex Mono, monospace', fontSize: isMobile ? 12 : 13,
+                          color: hoveredSlug === p.slug ? c.green : c.text, transition: 'color 0.1s',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        }}>
+                          {p.name}
+                        </div>
+                        <div style={{
+                          fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginTop: 2,
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        }}>
+                          {p.team} · <span style={{ color: c.green }}>{p.league ?? 'NBA'}</span>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 6 : 10, flexShrink: 0 }}>
+                        <span style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: isMobile ? 18 : 24, color: c.text, lineHeight: 1 }}>{p.score}</span>
+                        <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: signalColor[p.signal] || c.muted, border: `1px solid ${signalColor[p.signal] || c.muted}`, padding: '2px 6px', borderRadius: 2, letterSpacing: 1 }}>{p.signal}</span>
+                      </div>
+                    </a>
+                  ))}
+                </>
+              )}
+
+              {/* Cards section */}
+              {cardResults.length > 0 && (
+                <>
+                  <div style={{
+                    padding: '8px 16px 4px',
+                    fontFamily: 'IBM Plex Mono, monospace',
+                    fontSize: 9,
+                    color: c.muted,
+                    letterSpacing: 2,
+                    textTransform: 'uppercase',
+                    borderTop: results.length > 0 ? `1px solid ${c.border}` : 'none',
+                  }}>
+                    Cards
+                  </div>
+                  {cardResults.map(card => (
+                    <a
+                      key={card.slug}
+                      href={`/cards/${card.slug}`}
+                      onMouseEnter={() => setHoveredSlug(card.slug)}
+                      onMouseLeave={() => setHoveredSlug(null)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 10,
+                        padding: isMobile ? '10px 12px' : '10px 16px',
+                        borderBottom: `1px solid ${c.border}`,
+                        textDecoration: 'none',
+                        background: hoveredSlug === card.slug ? `${c.green}12` : 'transparent',
+                        borderLeft: hoveredSlug === card.slug ? `3px solid ${c.green}` : '3px solid transparent',
+                        transition: 'background 0.1s, border-left 0.1s',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {card.image_url && (
+                        <img
+                          src={card.image_url}
+                          alt=""
+                          style={{ width: 32, height: 44, objectFit: 'cover', borderRadius: 2, flexShrink: 0 }}
+                        />
+                      )}
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{
+                          fontFamily: 'IBM Plex Mono, monospace', fontSize: isMobile ? 12 : 12,
+                          color: hoveredSlug === card.slug ? c.green : c.text, transition: 'color 0.1s',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        }}>
+                          {formatCardName(card)}
+                        </div>
+                        <div style={{
+                          fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginTop: 2,
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        }}>
+                          {card.player_slug.replace(/-/g, ' ')} · <span style={{ color: c.green }}>{card.league}</span>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </>
+              )}
+
+              {/* View all results link */}
+              {query.trim().length >= 2 && (
+                <a
+                  href={`/search?q=${encodeURIComponent(query.trim())}`}
+                  style={{
+                    display: 'block',
+                    padding: '10px 16px',
+                    fontFamily: 'IBM Plex Mono, monospace',
+                    fontSize: 11,
+                    color: c.green,
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                    borderTop: `1px solid ${c.border}`,
+                  }}
+                >
+                  View all results for &quot;{query.trim()}&quot; →
+                </a>
+              )}
+            </>
+          )}
         </div>
       )}
       <style>{`input::placeholder { color: ${c.muted}; }`}</style>

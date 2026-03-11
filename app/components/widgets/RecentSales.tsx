@@ -249,8 +249,8 @@ export default function RecentSales() {
             className="flex flex-col gap-0.5 overflow-y-auto"
             style={{ maxHeight: 420, scrollbarWidth: 'thin' }}
           >
-            {filtered.slice(0, 20).map((item) => (
-              <FeedRow key={item.id} item={item} colors={c} />
+            {filtered.slice(0, 20).map((item, idx) => (
+              <FeedRow key={`${item.id}-${idx}`} item={item} colors={c} />
             ))}
             {filtered.length === 0 && (
               <div className="py-6 text-center font-body text-xs" style={{ color: c.muted }}>

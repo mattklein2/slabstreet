@@ -2,7 +2,6 @@
 
 import { useTheme } from './components/ThemeProvider';
 import { LeagueProvider } from './components/LeagueProvider';
-import MarketMovers from './components/widgets/MarketMovers';
 import FullSchedule from './components/widgets/FullSchedule';
 import TradeSignals from './components/widgets/TradeSignals';
 import RecentSales from './components/widgets/RecentSales';
@@ -17,10 +16,7 @@ export default function HomePage() {
     <LeagueProvider>
     <div className="min-h-screen" style={{ color: c.text }}>
       <main className="max-w-[1600px] mx-auto px-7 py-8 flex flex-col gap-6">
-        {/* Row 1: Market Movers — full width */}
-        <MarketMovers />
-
-        {/* Row 2: Catalyst Alerts — full width */}
+        {/* Row 1: Catalyst Alerts — 2-column undervalued/overvalued */}
         <CatalystAlerts />
 
         {/* Row 3: 3-column layout — Scores | News | Signals */}

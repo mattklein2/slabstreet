@@ -45,16 +45,9 @@ const FACTOR_MAX: Record<string, number> = {
   opportunityChange: 10,
 };
 
-function CatalystRow({ player }: { player: CatalystPlayer }) {
+function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: number; accent: string }) {
   const { colors: c } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const isBuy = player.signal === 'BUY';
-  const accent = isBuy ? '#00ff87' : '#ff3b5c';
-
-  // Top factor for compact display
-  const topFactor = Object.entries(player.factors)
-    .filter(([, v]) => v > 0)
-    .sort(([, a], [, b]) => b - a)[0];
 
   return (
     <div
@@ -65,30 +58,25 @@ function CatalystRow({ player }: { player: CatalystPlayer }) {
         overflow: 'hidden',
       }}
     >
-      {/* Main row — clickable to player page */}
-      <div className="flex items-start gap-3" style={{ padding: '14px 18px' }}>
-        {/* Catalyst score badge */}
+      {/* Main row */}
+      <div className="flex items-start gap-3" style={{ padding: '12px 14px' }}>
+        {/* Rank number */}
         <div
-          className="flex flex-col items-center justify-center shrink-0"
+          className="flex items-center justify-center shrink-0 font-mono text-[13px] font-bold"
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 10,
+            width: 28,
+            height: 28,
+            borderRadius: 8,
             background: `${accent}14`,
-            border: `1px solid ${accent}30`,
+            color: accent,
           }}
         >
-          <div className="font-mono text-[15px] font-bold leading-none" style={{ color: accent }}>
-            {player.catalystScore}
-          </div>
-          <div className="font-body text-[7px] uppercase tracking-wider mt-0.5" style={{ color: `${accent}99` }}>
-            CAT
-          </div>
+          {rank}
         </div>
 
         {/* Player info */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-0.5">
             <a
               href={`/players/${player.slug}`}
               className="font-body text-[13px] font-semibold no-underline hover:underline truncate"
@@ -96,48 +84,68 @@ function CatalystRow({ player }: { player: CatalystPlayer }) {
             >
               {player.name}
             </a>
-            <span
-              className="font-mono text-[9px] font-bold px-1.5 py-0.5 shrink-0"
-              style={{
-                borderRadius: 5,
-                background: `${accent}18`,
-                color: accent,
-              }}
-            >
-              {player.signal}
+            <span className="font-body text-[10px] shrink-0" style={{ color: c.muted }}>
+              {player.team} · {player.league}
             </span>
           </div>
-          <div className="font-body text-[10px] mb-1.5" style={{ color: c.muted }}>
-            {player.team} · {player.league}
-            {player.marketData.marketCap && ` · ${player.marketData.marketCap}`}
-          </div>
           {/* Blurb */}
-          <div className="font-body text-[11px] leading-relaxed" style={{ color: c.text, opacity: 0.85 }}>
+          <div className="font-body text-[11px] leading-relaxed mt-1" style={{ color: c.text, opacity: 0.8 }}>
             {player.blurb}
+          </div>
+          {/* Market data inline */}
+          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
+            {player.marketData.marketCap && (
+              <span className="font-mono text-[9px]" style={{ color: c.muted }}>
+                {player.marketData.marketCap}
+              </span>
+            )}
+            {player.marketData.weeklyChange != null && (
+              <span className="font-mono text-[9px]" style={{ color: Number(player.marketData.weeklyChange) >= 0 ? '#00ff87' : '#ff3b5c' }}>
+                W: {Number(player.marketData.weeklyChange) >= 0 ? '+' : ''}{Number(player.marketData.weeklyChange).toFixed(1)}%
+              </span>
+            )}
+            {player.marketData.monthlyChange != null && (
+              <span className="font-mono text-[9px]" style={{ color: Number(player.marketData.monthlyChange) >= 0 ? '#00ff87' : '#ff3b5c' }}>
+                M: {Number(player.marketData.monthlyChange) >= 0 ? '+' : ''}{Number(player.marketData.monthlyChange).toFixed(1)}%
+              </span>
+            )}
+            {player.marketData.sales24h !== null && (
+              <span className="font-mono text-[9px]" style={{ color: c.muted }}>
+                {player.marketData.sales24h} sales/24h
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Expand button */}
-        <button
-          onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
-          className="shrink-0 cursor-pointer"
-          style={{
-            background: 'none',
-            border: 'none',
-            color: c.muted,
-            fontSize: 12,
-            padding: '4px 2px',
-            transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
-            transition: 'transform 0.15s',
-          }}
-        >
-          ▼
-        </button>
+        {/* Catalyst score + expand */}
+        <div className="flex flex-col items-center gap-1 shrink-0">
+          <div
+            className="font-mono text-[14px] font-bold leading-none"
+            style={{ color: accent }}
+          >
+            {player.catalystScore}
+          </div>
+          <button
+            onClick={(e) => { e.preventDefault(); setExpanded(!expanded); }}
+            className="shrink-0 cursor-pointer"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: c.muted,
+              fontSize: 10,
+              padding: '2px',
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.15s',
+            }}
+          >
+            ▼
+          </button>
+        </div>
       </div>
 
       {/* Expanded detail */}
       {expanded && (
-        <div style={{ padding: '0 18px 14px', borderTop: `1px solid ${c.border}` }}>
+        <div style={{ padding: '0 14px 12px', borderTop: `1px solid ${c.border}` }}>
           <div className="font-body text-[9px] font-medium tracking-widest uppercase mt-3 mb-2" style={{ color: c.muted }}>
             CATALYST BREAKDOWN
           </div>
@@ -166,30 +174,83 @@ function CatalystRow({ player }: { player: CatalystPlayer }) {
                 </div>
               ))}
           </div>
-          {/* Market data row */}
-          <div className="flex gap-4 mt-3 pt-2" style={{ borderTop: `1px solid ${c.border}` }}>
-            {player.marketData.weeklyChange !== null && (
-              <div className="font-body text-[10px]" style={{ color: c.muted }}>
-                Week: <span style={{ color: player.marketData.weeklyChange >= 0 ? '#00ff87' : '#ff3b5c' }}>
-                  {player.marketData.weeklyChange >= 0 ? '+' : ''}{player.marketData.weeklyChange.toFixed(1)}%
-                </span>
-              </div>
-            )}
-            {player.marketData.monthlyChange !== null && (
-              <div className="font-body text-[10px]" style={{ color: c.muted }}>
-                Month: <span style={{ color: player.marketData.monthlyChange >= 0 ? '#00ff87' : '#ff3b5c' }}>
-                  {player.marketData.monthlyChange >= 0 ? '+' : ''}{player.marketData.monthlyChange.toFixed(1)}%
-                </span>
-              </div>
-            )}
-            {player.marketData.sales24h !== null && (
-              <div className="font-body text-[10px]" style={{ color: c.muted }}>
-                24h Sales: <span style={{ color: c.text }}>{player.marketData.sales24h}</span>
-              </div>
-            )}
-          </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function CatalystColumn({
+  title,
+  subtitle,
+  players,
+  accent,
+  loading,
+  error,
+}: {
+  title: string;
+  subtitle: string;
+  players: CatalystPlayer[];
+  accent: string;
+  loading: boolean;
+  error: boolean;
+}) {
+  const { colors: c } = useTheme();
+
+  return (
+    <div className="flex-1 min-w-0">
+      <div className="mb-3">
+        <div className="font-display text-[13px] tracking-[2px] font-bold" style={{ color: accent }}>
+          {title}
+        </div>
+        <div className="font-body text-[10px] mt-0.5" style={{ color: c.muted }}>
+          {subtitle}
+        </div>
+      </div>
+      {loading && <WidgetSkeleton rows={6} />}
+      {error && <WidgetError message="Unable to load data" />}
+      {!loading && !error && players.length === 0 && (
+        <WidgetEmpty message="No alerts right now" />
+      )}
+      {!loading && !error && players.length > 0 && (
+        <div className="flex flex-col gap-2">
+          {players.map((p, i) => (
+            <CatalystRow key={p.slug} player={p} rank={i + 1} accent={accent} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type WatchPlayer = { name: string; slug: string; team: string; league: string };
+
+function WatchlistSection({ title, players, accent }: { title: string; players: WatchPlayer[]; accent: string }) {
+  const { colors: c } = useTheme();
+  if (players.length === 0) return null;
+
+  return (
+    <div className="flex-1 min-w-0">
+      <div className="font-display text-[11px] tracking-[2px] font-bold mb-2" style={{ color: accent, opacity: 0.7 }}>
+        {title}
+      </div>
+      <div className="flex flex-wrap gap-x-1 gap-y-1">
+        {players.map((p) => (
+          <a
+            key={p.slug}
+            href={`/players/${p.slug}`}
+            className="font-body text-[11px] no-underline hover:underline px-2 py-1"
+            style={{
+              color: c.text,
+              background: `${accent}08`,
+              border: `1px solid ${accent}20`,
+              borderRadius: 8,
+            }}
+          >
+            {p.name} <span style={{ color: c.muted, fontSize: 9 }}>{p.team}</span>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
@@ -199,9 +260,10 @@ export default function CatalystAlerts() {
   const { activeLeague } = useLeague();
   const [buys, setBuys] = useState<CatalystPlayer[]>([]);
   const [sells, setSells] = useState<CatalystPlayer[]>([]);
+  const [watchBuys, setWatchBuys] = useState<WatchPlayer[]>([]);
+  const [watchSells, setWatchSells] = useState<WatchPlayer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [tab, setTab] = useState<'buy' | 'sell'>('buy');
 
   useEffect(() => {
     async function loadData() {
@@ -213,6 +275,8 @@ export default function CatalystAlerts() {
         const data = await res.json();
         setBuys(data.buys || []);
         setSells(data.sells || []);
+        setWatchBuys(data.watchBuys || []);
+        setWatchSells(data.watchSells || []);
       } catch {
         setError(true);
       } finally {
@@ -225,60 +289,48 @@ export default function CatalystAlerts() {
   // Filter by active league
   const filteredBuys = activeLeague === 'ALL' ? buys : buys.filter(p => p.league === activeLeague);
   const filteredSells = activeLeague === 'ALL' ? sells : sells.filter(p => p.league === activeLeague);
-  const players = tab === 'buy' ? filteredBuys : filteredSells;
-
-  const toggleBadge = (
-    <div className="flex gap-2">
-      <button
-        onClick={() => setTab('buy')}
-        className="font-body text-[10px] font-medium px-2.5 py-1 cursor-pointer"
-        style={{
-          borderRadius: 6,
-          color: tab === 'buy' ? c.green : c.muted,
-          background: tab === 'buy' ? `${c.green}12` : 'transparent',
-          border: `1px solid ${tab === 'buy' ? c.green : c.border}`,
-        }}
-      >
-        UNDERVALUED
-      </button>
-      <button
-        onClick={() => setTab('sell')}
-        className="font-body text-[10px] font-medium px-2.5 py-1 cursor-pointer"
-        style={{
-          borderRadius: 6,
-          color: tab === 'sell' ? c.red : c.muted,
-          background: tab === 'sell' ? `${c.red}12` : 'transparent',
-          border: `1px solid ${tab === 'sell' ? c.red : c.border}`,
-        }}
-      >
-        OVERVALUED
-      </button>
-    </div>
-  );
+  const filteredWatchBuys = activeLeague === 'ALL' ? watchBuys : watchBuys.filter(p => p.league === activeLeague);
+  const filteredWatchSells = activeLeague === 'ALL' ? watchSells : watchSells.filter(p => p.league === activeLeague);
 
   return (
     <WidgetShell
       title="CATALYST ALERTS"
       icon="🔬"
       accentColor={c.green}
-      badge={toggleBadge}
-      minContentHeight={200}
+      minContentHeight={300}
     >
-      {loading && <WidgetSkeleton rows={4} />}
-      {error && <WidgetError message="Unable to load catalyst data" />}
-      {!loading && !error && players.length === 0 && (
-        <WidgetEmpty message="No catalyst alerts right now" />
-      )}
-      {!loading && !error && players.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <div className="font-body text-[10px] leading-relaxed" style={{ color: c.muted, marginBottom: 2 }}>
-            {tab === 'buy'
-              ? 'Players with real-world catalysts the card market hasn\'t priced in yet.'
-              : 'Players whose market activity may not be justified by current performance.'}
+      <div className="flex flex-col lg:flex-row gap-6">
+        <CatalystColumn
+          title="UNDERVALUED"
+          subtitle="Players with catalysts the card market hasn't priced in yet."
+          players={filteredBuys}
+          accent="#00ff87"
+          loading={loading}
+          error={error}
+        />
+        <CatalystColumn
+          title="OVERVALUED"
+          subtitle="Players whose market activity may not be justified by current performance."
+          players={filteredSells}
+          accent="#ff3b5c"
+          loading={loading}
+          error={error}
+        />
+      </div>
+
+      {/* Keep an Eye On — compact watchlist */}
+      {!loading && !error && (filteredWatchBuys.length > 0 || filteredWatchSells.length > 0) && (
+        <div style={{ borderTop: `1px solid ${c.border}`, marginTop: 24, paddingTop: 20 }}>
+          <div className="font-display text-[12px] tracking-[2px] mb-1" style={{ color: c.muted }}>
+            KEEP AN EYE ON
           </div>
-          {players.map((p) => (
-            <CatalystRow key={p.slug} player={p} />
-          ))}
+          <div className="font-body text-[10px] mb-4" style={{ color: c.muted, opacity: 0.7 }}>
+            Not strong enough to make our lists yet, but showing early signals worth watching.
+          </div>
+          <div className="flex flex-col lg:flex-row gap-6">
+            <WatchlistSection title="LEANS BUY" players={filteredWatchBuys} accent="#00ff87" />
+            <WatchlistSection title="LEANS SELL" players={filteredWatchSells} accent="#ff3b5c" />
+          </div>
         </div>
       )}
     </WidgetShell>

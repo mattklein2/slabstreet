@@ -217,9 +217,9 @@ function generateBlurb(
       }
     }
 
-    // Youth
+    // Youth — only mention if truly young (real upside)
     if (details.age && details.age <= 24) {
-      parts.push(`just ${details.age} years old`);
+      parts.push(`just ${details.age} years old with upside still ahead`);
     }
 
     // Minutes trend
@@ -459,16 +459,26 @@ export async function GET() {
         if (monthly !== null && monthly > 15) factors.marketLag += 5;
       }
 
-      // Youth premium (0-15)
+      // Youth/age factor (-10 to 15)
+      // Young breakout players have real upside. Mid-career established guys
+      // (27+) rarely see big card value jumps unless they're HOF-bound.
+      // On SELL side, aging players lose value faster.
       if (age !== null) {
         if (signal === 'BUY') {
           if (age <= 22) factors.youthPremium = 15;
           else if (age <= 24) factors.youthPremium = 12;
-          else if (age <= 26) factors.youthPremium = 6;
+          else if (age <= 25) factors.youthPremium = 6;
+          else if (age <= 26) factors.youthPremium = 2;
+          // 27+ established players — upside is largely priced in
+          // Negative values drag down total catalyst score
+          else if (age >= 30) factors.youthPremium = -10;
+          else if (age >= 28) factors.youthPremium = -6;
+          else if (age >= 27) factors.youthPremium = -3;
         } else {
           if (age >= 34) factors.youthPremium = 15;
-          else if (age >= 32) factors.youthPremium = 10;
-          else if (age >= 30) factors.youthPremium = 5;
+          else if (age >= 32) factors.youthPremium = 12;
+          else if (age >= 30) factors.youthPremium = 8;
+          else if (age >= 28) factors.youthPremium = 4;
         }
       }
 
@@ -556,13 +566,19 @@ export async function GET() {
       processBatch(sellScored, 'SELL'),
     ]);
 
-    // Sort by catalyst score and take top 20
+    // Sort by catalyst score and take top 20 + watchlist
     buyResults.sort((a, b) => b.catalystScore - a.catalystScore);
     sellResults.sort((a, b) => b.catalystScore - a.catalystScore);
+
+    // Watchlist: next 10 after the top 20 — just names, no blurbs needed
+    const buyWatch = buyResults.slice(20, 30).map(p => ({ name: p.name, slug: p.slug, team: p.team, league: p.league }));
+    const sellWatch = sellResults.slice(20, 30).map(p => ({ name: p.name, slug: p.slug, team: p.team, league: p.league }));
 
     return NextResponse.json({
       buys: buyResults.slice(0, 20),
       sells: sellResults.slice(0, 20),
+      watchBuys: buyWatch,
+      watchSells: sellWatch,
       computed_at: new Date().toISOString(),
     });
   } catch (err) {

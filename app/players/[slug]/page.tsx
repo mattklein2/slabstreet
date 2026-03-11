@@ -8,6 +8,9 @@ import { getLeagueConfig } from '../../../lib/leagues';
 
 // ─── CHART ────────────────────────────────────────────────────
 function ScoreChart({ data, lineColor }: { data: { labels: string[]; scores: number[] }; lineColor: string }) {
+  if (!data || !data.scores || data.scores.length < 2) {
+    return <div style={{ padding: '20px 0', textAlign: 'center', fontSize: 11, color: '#8899aa', fontFamily: 'IBM Plex Mono, monospace' }}>No score history available</div>;
+  }
   const w = 600, h = 160;
   const pad = { top: 16, right: 16, bottom: 32, left: 36 };
   const innerW = w - pad.left - pad.right;

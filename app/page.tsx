@@ -7,7 +7,6 @@ import LeagueTabs from './components/layout/LeagueTabs';
 import MarketMovers from './components/widgets/MarketMovers';
 import FullSchedule from './components/widgets/FullSchedule';
 import TradeSignals from './components/widgets/TradeSignals';
-import ChampionshipOdds from './components/widgets/ChampionshipOdds';
 import RecentSales from './components/widgets/RecentSales';
 import SportsNews from './components/widgets/SportsNews';
 import CardNews from './components/widgets/CardNews';
@@ -29,20 +28,17 @@ export default function HomePage() {
         {/* Row 2: Full Schedule — full width with date nav + league tabs */}
         <FullSchedule />
 
-        {/* Row 3: Trade Signals + Championship Odds — side by side */}
+        {/* Row 3: Sports News + Trade Signals — side by side */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <SportsNews />
           <TradeSignals />
-          <ChampionshipOdds />
         </div>
 
         {/* Row 4: Recent eBay Sales — full width horizontal scroll */}
         <RecentSales />
 
-        {/* Row 5: Sports News + Card Market News — side by side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <SportsNews />
-          <CardNews />
-        </div>
+        {/* Row 5: Card Market News — full width */}
+        <CardNews />
       </main>
 
       {/* Footer */}

@@ -40,7 +40,7 @@ export default function CardNews() {
 
   // News API doesn't support league filtering yet — show all news for now
   // Future: add league param to /api/news/cards
-  const displayed = news.slice(0, 4);
+  const displayed = news.slice(0, 6);
   const leagueLabel = activeLeague === 'ALL' ? '' : `${activeLeague} `;
 
   return (
@@ -56,7 +56,7 @@ export default function CardNews() {
         <WidgetEmpty message={`No recent ${leagueLabel}news`} />
       )}
       {!loading && !error && displayed.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {displayed.map((n, i) => (
             <NewsCard key={i} {...n} />
           ))}

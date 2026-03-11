@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 /**
- * Scrapes CardLadder player data (index, sales volume, market cap, cards)
- * and stores structured data in Supabase.
+ * Fetches CardLadder player data (index, sales volume, market cap, cards)
+ * via the Firestore REST API and stores structured data in Supabase.
  *
- * Requires a CardLadder Pro account.
+ * Requires a CardLadder account (Free or Pro).
  *
  * Usage:
  *   node scripts/scrape-cardladder.mjs                      # all leagues, top 20 per league
  *   node scripts/scrape-cardladder.mjs --league=NBA         # NBA only
  *   node scripts/scrape-cardladder.mjs --player=victor-wembanyama  # single player
  *   node scripts/scrape-cardladder.mjs --limit=5            # top 5 per league
- *   node scripts/scrape-cardladder.mjs --cards              # also scrape individual card details
+ *   node scripts/scrape-cardladder.mjs --cards              # also fetch individual card details
  *
  * Environment variables (in .env.local):
  *   CARDLADDER_EMAIL     - CardLadder account email
@@ -24,7 +24,6 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
-import { chromium } from 'playwright';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -51,31 +50,172 @@ const PLAYER_FILTER = args.player || '';
 const LIMIT_PER_LEAGUE = parseInt(args.limit || '20');
 const SCRAPE_CARDS = args.cards === 'true';
 
+// ── Constants ────────────────────────────────────────────────
+const FIREBASE_API_KEY = 'AIzaSyBqbxgaaGlpeb1F6HRvEW319OcuCsbkAHM';
+const FIREBASE_PROJECT = 'cardladder-71d53';
+const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+
+// Map our league IDs to CardLadder categories
+const LEAGUE_TO_CATEGORY = {
+  NBA: 'Basketball',
+  NFL: 'Football',
+  MLB: 'Baseball',
+  NHL: 'Hockey',
+  WNBA: 'Basketball',
+  F1: 'Racing',
+  MLS: 'Soccer',
+  PGA: 'Golf',
+};
+
 // ── Helpers ──────────────────────────────────────────────────
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function parsePrice(text) {
-  if (!text) return 0;
-  const cleaned = text.replace(/[^0-9.]/g, '');
-  return parseFloat(cleaned) || 0;
+/** Extract a simple JS value from a Firestore value object */
+function fsVal(v) {
+  if (!v) return null;
+  if ('stringValue' in v) return v.stringValue;
+  if ('integerValue' in v) return parseInt(v.integerValue);
+  if ('doubleValue' in v) return v.doubleValue;
+  if ('booleanValue' in v) return v.booleanValue;
+  if ('timestampValue' in v) return v.timestampValue;
+  if ('nullValue' in v) return null;
+  if ('mapValue' in v) {
+    const result = {};
+    for (const [k, val] of Object.entries(v.mapValue.fields || {})) {
+      result[k] = fsVal(val);
+    }
+    return result;
+  }
+  if ('arrayValue' in v) {
+    return (v.arrayValue.values || []).map(fsVal);
+  }
+  return null;
 }
 
-function parseGrowth(text) {
-  if (!text) return null;
-  const match = text.match(/([+-]?\d+\.?\d*)%?/);
-  return match ? parseFloat(match[1]) : null;
+function formatMoney(num) {
+  if (!num && num !== 0) return null;
+  if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(2)}m`;
+  if (num >= 1_000) return `$${(num / 1_000).toFixed(2)}k`;
+  return `$${num.toFixed(2)}`;
 }
 
-function parseLargeNumber(text) {
-  if (!text) return 0;
-  const match = text.match(/([\d,.]+)\s*(k|m|b)?/i);
-  if (!match) return parsePrice(text);
-  let num = parseFloat(match[1].replace(/,/g, ''));
-  const suffix = (match[2] || '').toLowerCase();
-  if (suffix === 'k') num *= 1000;
-  else if (suffix === 'm') num *= 1000000;
-  else if (suffix === 'b') num *= 1000000000;
-  return num;
+function formatPercent(num) {
+  if (num === null || num === undefined) return null;
+  return `${(num * 100).toFixed(2)}%`;
+}
+
+// ── Firebase Auth ────────────────────────────────────────────
+async function firebaseSignIn() {
+  const email = env.CARDLADDER_EMAIL;
+  const password = env.CARDLADDER_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error(
+      'Missing CARDLADDER_EMAIL and/or CARDLADDER_PASSWORD in .env.local\n' +
+      'Add them to .env.local:\n' +
+      '  CARDLADDER_EMAIL=your@email.com\n' +
+      '  CARDLADDER_PASSWORD=yourpassword'
+    );
+  }
+
+  const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, returnSecureToken: true }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const msg = err?.error?.message || res.statusText;
+    throw new Error(`Firebase auth failed: ${msg}`);
+  }
+
+  const data = await res.json();
+  return data.idToken; // Bearer token for Firestore requests
+}
+
+// ── Firestore Queries ────────────────────────────────────────
+
+async function firestoreQuery(token, collectionId, where, orderBy, limit = 100) {
+  const url = `${FIRESTORE_BASE}:runQuery`;
+  const query = {
+    structuredQuery: {
+      from: [{ collectionId }],
+      limit,
+    },
+  };
+
+  if (where) {
+    if (Array.isArray(where)) {
+      query.structuredQuery.where = {
+        compositeFilter: {
+          op: 'AND',
+          filters: where.map(w => ({
+            fieldFilter: {
+              field: { fieldPath: w.field },
+              op: w.op || 'EQUAL',
+              value: w.value,
+            },
+          })),
+        },
+      };
+    } else {
+      query.structuredQuery.where = {
+        fieldFilter: {
+          field: { fieldPath: where.field },
+          op: where.op || 'EQUAL',
+          value: where.value,
+        },
+      };
+    }
+  }
+
+  if (orderBy) {
+    query.structuredQuery.orderBy = Array.isArray(orderBy) ? orderBy : [orderBy];
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(query),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Firestore query failed: ${err?.error?.message || res.statusText}`);
+  }
+
+  const results = await res.json();
+  return results
+    .filter(r => r.document)
+    .map(r => {
+      const fields = {};
+      for (const [k, v] of Object.entries(r.document.fields || {})) {
+        fields[k] = fsVal(v);
+      }
+      fields._id = r.document.name.split('/').pop();
+      return fields;
+    });
+}
+
+async function firestoreGet(token, path) {
+  const res = await fetch(`${FIRESTORE_BASE}/${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) return null;
+
+  const doc = await res.json();
+  const fields = {};
+  for (const [k, v] of Object.entries(doc.fields || {})) {
+    fields[k] = fsVal(v);
+  }
+  fields._id = doc.name.split('/').pop();
+  return fields;
 }
 
 // ── Fetch target players from Supabase ───────────────────────
@@ -106,441 +246,99 @@ async function getTargetPlayers() {
   return all;
 }
 
-// ── Login to CardLadder ──────────────────────────────────────
-async function loginToCardLadder(page) {
-  const email = env.CARDLADDER_EMAIL;
-  const password = env.CARDLADDER_PASSWORD;
+// ── Common name suffixes/variations to try ───────────────────
+const NAME_SUFFIXES = ['', ' II', ' III', ' IV', ' Jr.', ' Jr', ' Sr.', ' Sr'];
 
-  if (!email || !password) {
-    throw new Error(
-      'Missing CARDLADDER_EMAIL and/or CARDLADDER_PASSWORD in .env.local\n' +
-      'Add them to .env.local:\n' +
-      '  CARDLADDER_EMAIL=your@email.com\n' +
-      '  CARDLADDER_PASSWORD=yourpassword'
-    );
-  }
+// ── Fetch player data from CardLadder Firestore ──────────────
+async function fetchPlayerData(token, playerName) {
+  // Try exact name first, then common variations (e.g. "Patrick Mahomes" → "Patrick Mahomes II")
+  for (const suffix of NAME_SUFFIXES) {
+    const tryName = playerName + suffix;
+    const results = await firestoreQuery(token, 'players', {
+      field: 'player',
+      op: 'EQUAL',
+      value: { stringValue: tryName },
+    }, null, 1);
 
-  console.log('  Navigating to login page...');
-  await page.goto('https://app.cardladder.com/login', {
-    waitUntil: 'networkidle',
-    timeout: 30000,
-  });
-
-  // Wait for login form to render
-  await page.waitForSelector('input[type="email"], input[type="text"]', { timeout: 10000 });
-  await sleep(1000);
-
-  // Fill email
-  const emailInput = await page.$('input[type="email"]') || await page.$('input[type="text"]');
-  if (!emailInput) throw new Error('Could not find email input on login page');
-  await emailInput.fill(email);
-
-  // Fill password
-  const passwordInput = await page.$('input[type="password"]');
-  if (!passwordInput) throw new Error('Could not find password input on login page');
-  await passwordInput.fill(password);
-
-  // Click login button
-  const loginBtn = await page.$('button[type="submit"]');
-  if (!loginBtn) throw new Error('Could not find login button');
-  await loginBtn.click();
-
-  // Wait for navigation to dashboard or player page
-  console.log('  Waiting for login to complete...');
-  await page.waitForURL('**/dashboard**', { timeout: 30000 }).catch(() => {});
-  await sleep(2000);
-
-  // Verify we're logged in by checking for sidebar nav
-  const sidebar = await page.$('text=PLAYERS').catch(() => null);
-  if (!sidebar) {
-    // Try alternative: check if we're still on login page
-    const currentUrl = page.url();
-    if (currentUrl.includes('/login')) {
-      throw new Error('Login failed — still on login page. Check credentials.');
-    }
-  }
-
-  console.log('  Logged in successfully!\n');
-}
-
-// ── Scrape player STATS tab (index data + sales volume) ──────
-async function scrapePlayerStats(page, playerName) {
-  const encodedName = encodeURIComponent(playerName);
-  const url = `https://app.cardladder.com/players/${encodedName}`;
-
-  try {
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-    await sleep(2000);
-
-    // Check if player was found
-    const notFound = await page.$('text=Player not found').catch(() => null);
-    if (notFound) return null;
-
-    // Make sure we're on the STATS tab
-    const statsTab = await page.$('button:has-text("Stats")');
-    if (statsTab) {
-      await statsTab.click();
-      await sleep(1000);
+    if (results.length > 0) {
+      if (suffix) process.stdout.write(`[as "${tryName}"] `);
+      results[0]._clName = tryName; // Store the CardLadder name for card queries
+      return results[0];
     }
 
-    // Extract all data from the page
-    const stats = await page.evaluate(() => {
-      const result = {
-        index: {},
-        salesVolume: {},
-      };
-
-      // Helper: find text near a label
-      function findValueNear(labelText) {
-        const allElements = document.querySelectorAll('*');
-        for (const el of allElements) {
-          if (el.children.length === 0 && el.textContent.trim() === labelText) {
-            // Look at next sibling or parent's next child
-            const parent = el.parentElement;
-            if (parent) {
-              const children = [...parent.children];
-              const idx = children.indexOf(el);
-              if (idx >= 0 && idx + 1 < children.length) {
-                return children[idx + 1].textContent.trim();
-              }
-            }
-            // Also check next sibling
-            const next = el.nextElementSibling;
-            if (next) return next.textContent.trim();
-          }
-        }
-        return null;
-      }
-
-      // Grab all the key-value pairs from the stats section
-      // The page structure uses pairs of elements: label then value
-      const textPairs = [
-        // Index Data
-        ['Starting Value', 'startingValue'],
-        ['Current Value', 'currentValue'],
-        ['Rate of Growth', 'rateOfGrowth'],
-        ['Real Value Change', 'realValueChange'],
-        ['Low Value', 'lowValue'],
-        ['High Value', 'highValue'],
-        ['Average Value', 'averageValue'],
-        ['Total Cards', 'totalCards'],
-        // Sales Volume
-        ['Low Daily Volume', 'lowDailyVolume'],
-        ['High Daily Volume', 'highDailyVolume'],
-        ['Average Daily Volume', 'avgDailyVolume'],
-        ['# of Sales 24H', 'sales24h'],
-        ['Market Cap', 'marketCap'],
-      ];
-
-      for (const [label, key] of textPairs) {
-        const val = findValueNear(label);
-        if (val) {
-          // Store in appropriate section
-          if (['startingValue', 'currentValue', 'rateOfGrowth', 'realValueChange',
-               'lowValue', 'highValue', 'averageValue', 'totalCards'].includes(key)) {
-            result.index[key] = val;
-          } else {
-            result.salesVolume[key] = val;
-          }
-        }
-      }
-
-      return result;
-    });
-
-    return stats;
-  } catch (err) {
-    console.error(`    Error scraping stats for ${playerName}: ${err.message}`);
-    return null;
+    // Only try suffix if this is the first (exact) attempt that failed
+    if (!suffix) continue;
   }
+
+  return null;
 }
 
-// ── Scrape player CARDS tab ──────────────────────────────────
-async function scrapePlayerCards(page, playerName) {
-  try {
-    // Click CARDS tab
-    const cardsTab = await page.$('button:has-text("Cards")');
-    if (!cardsTab) {
-      console.log('    No CARDS tab found');
-      return [];
-    }
+// ── Fetch player's cards from CardLadder Firestore ───────────
+async function fetchPlayerCards(token, playerName, limit = 30) {
+  const results = await firestoreQuery(token, 'cards', {
+    field: 'player',
+    op: 'EQUAL',
+    value: { stringValue: playerName },
+  }, null, limit);
 
-    await cardsTab.click();
-    await sleep(2000);
-
-    // Extract cards list
-    const cards = await page.evaluate(() => {
-      const results = [];
-
-      // Cards are listed as rows — each row contains:
-      // image, year+set, name+number, tags (parallel, grade), Last Sold, Value, Score
-      // We look for repeating patterns of card data
-
-      // Strategy: find all elements that look like card rows
-      // The card rows are direct children of the cards container
-      // Each has: set info, card name, grade badge, last sold, value, score
-
-      // Try to get structured data from the card list
-      // Look for elements that contain "Last Sold" text pattern
-      const allText = document.body.innerText;
-
-      // Find card entries by looking for pattern: Year Set, Name #Number
-      // with Last Sold and Value columns
-      const rows = document.querySelectorAll('[class*="card"], [class*="row"], [class*="list"] > div, [class*="item"]');
-
-      for (const row of rows) {
-        const text = row.textContent || '';
-
-        // Must have a year (19xx or 20xx) and price ($)
-        if (!/\b(?:19|20)\d{2}\b/.test(text)) continue;
-        if (!/\$/.test(text)) continue;
-        // Skip very short or very long text blocks
-        if (text.length < 20 || text.length > 500) continue;
-
-        // Extract data from the row text
-        const yearMatch = text.match(/\b((?:19|20)\d{2})\s+(.+?)(?=Victor|#|\n)/i);
-        const nameMatch = text.match(/#(\w+)/);
-        const gradeMatch = text.match(/\b(PSA|BGS|SGC|CGC)\s*(\d+\.?\d*)/i);
-        const rawMatch = text.match(/\bRaw\b/i);
-        const priceMatches = text.match(/\$[\d,.]+k?/gi) || [];
-        const scoreMatch = text.match(/(\d+\.\d+)\s*$/);
-
-        // Need at least a price to be useful
-        if (priceMatches.length === 0) continue;
-
-        // Detect parallel (Base, Silver, Gold, Pink Ice, etc.)
-        const parallelMatch = text.match(/\b(Base|Silver|Gold|Green|Blue|Red|Orange|Pink Ice|Pink|Purple|Black|White|Shimmer|Cracked Ice|Mojo|Hyper|Camo|Tie-Dye|Holo|Rainbow|Refractor|Xfractor|Wave|Disco|Scope)\b/i);
-
-        const card = {
-          year: yearMatch ? yearMatch[1] : '',
-          set: yearMatch ? yearMatch[2].trim() : '',
-          cardNumber: nameMatch ? nameMatch[1] : '',
-          parallel: parallelMatch ? parallelMatch[1] : 'Base',
-          grade: gradeMatch ? `${gradeMatch[1].toUpperCase()} ${gradeMatch[2]}` : (rawMatch ? 'Raw' : ''),
-          lastSold: priceMatches[0] || '',
-          clValue: priceMatches.length > 1 ? priceMatches[1] : priceMatches[0] || '',
-          score: scoreMatch ? parseFloat(scoreMatch[1]) : null,
-        };
-
-        // Dedup: skip if we already have this exact card
-        const key = `${card.year}|${card.set}|${card.cardNumber}|${card.grade}`;
-        if (!results.find(r => `${r.year}|${r.set}|${r.cardNumber}|${r.grade}` === key)) {
-          results.push(card);
-        }
-
-        if (results.length >= 20) break;
-      }
-
-      return results;
-    });
-
-    return cards;
-  } catch (err) {
-    console.error(`    Error scraping cards for ${playerName}: ${err.message}`);
-    return [];
-  }
-}
-
-// ── Alternative: scrape cards using accessibility tree ────────
-async function scrapePlayerCardsAlt(page, playerName) {
-  try {
-    // Click CARDS tab
-    const cardsTab = await page.$('button:has-text("Cards")');
-    if (!cardsTab) return [];
-
-    await cardsTab.click();
-    await sleep(2500);
-
-    // Use a more targeted approach: look for the card list items
-    // Each card row in CardLadder has a specific structure
-    const cards = await page.evaluate(() => {
-      const results = [];
-
-      // Get all anchor/link elements that point to /card/ pages
-      const cardLinks = document.querySelectorAll('a[href*="/card/"]');
-
-      for (const link of cardLinks) {
-        // Get the parent row container
-        const row = link.closest('div[class]') || link.parentElement?.parentElement;
-        if (!row) continue;
-
-        const rowText = row.textContent || '';
-
-        // Skip navigation links, etc.
-        if (rowText.length < 15 || rowText.length > 500) continue;
-
-        // Extract cardId from the link
-        const cardIdMatch = link.href.match(/\/card\/([a-zA-Z0-9]+)/);
-        const cardId = cardIdMatch ? cardIdMatch[1] : '';
-
-        // Parse the row for data points
-        const yearMatch = rowText.match(/\b((?:19|20)\d{2})\b/);
-        const priceMatches = rowText.match(/\$[\d,.]+k?/gi) || [];
-        const gradeMatch = rowText.match(/\b(PSA|BGS|SGC|CGC)\s*(\d+\.?\d*)/i);
-        const rawMatch = rowText.match(/\bRaw\b/i);
-        const scoreMatch = rowText.match(/(\d+\.\d+)\s*$/);
-
-        // Extract set name: text between the year and the player name
-        let set = '';
-        if (yearMatch) {
-          const afterYear = rowText.substring(rowText.indexOf(yearMatch[0]) + yearMatch[0].length).trim();
-          // Set name is usually the text before the player's last name or card number
-          const setMatch = afterYear.match(/^([A-Za-z\s()]+?)(?:Victor|#|\d+\.\d+)/i);
-          if (setMatch) set = setMatch[1].trim();
-        }
-
-        const cardNumber = (rowText.match(/#(\w+)/) || [])[1] || '';
-
-        // Detect parallel
-        const parallelPatterns = ['Base', 'Silver', 'Gold', 'Green', 'Blue', 'Red', 'Orange',
-          'Pink Ice', 'Pink', 'Purple', 'Black', 'White', 'Shimmer', 'Cracked Ice',
-          'Mojo', 'Hyper', 'Camo', 'Tie-Dye', 'Holo', 'Rainbow', 'Refractor',
-          'Xfractor', 'Wave', 'Disco', 'Scope', 'Sticker', 'Insert'];
-
-        let parallel = 'Base';
-        for (const p of parallelPatterns) {
-          if (rowText.toLowerCase().includes(p.toLowerCase())) {
-            parallel = p;
-            break;
-          }
-        }
-
-        const card = {
-          cardId,
-          year: yearMatch ? yearMatch[1] : '',
-          set: set || '',
-          cardNumber,
-          parallel,
-          grade: gradeMatch ? `${gradeMatch[1].toUpperCase()} ${gradeMatch[2]}` : (rawMatch ? 'Raw' : ''),
-          lastSold: priceMatches[0] || '',
-          clValue: priceMatches.length > 1 ? priceMatches[1] : priceMatches[0] || '',
-          score: scoreMatch ? parseFloat(scoreMatch[1]) : null,
-        };
-
-        // Dedup
-        if (card.cardId && !results.find(r => r.cardId === card.cardId)) {
-          results.push(card);
-        } else if (!card.cardId) {
-          const key = `${card.year}|${card.set}|${card.cardNumber}|${card.grade}`;
-          if (!results.find(r => `${r.year}|${r.set}|${r.cardNumber}|${r.grade}` === key)) {
-            results.push(card);
-          }
-        }
-
-        if (results.length >= 30) break;
-      }
-
-      return results;
-    });
-
-    return cards;
-  } catch (err) {
-    console.error(`    Error scraping cards (alt) for ${playerName}: ${err.message}`);
-    return [];
-  }
-}
-
-// ── Scrape individual card detail page ───────────────────────
-async function scrapeCardDetail(page, cardId) {
-  try {
-    await page.goto(`https://app.cardladder.com/card/${cardId}`, {
-      waitUntil: 'networkidle',
-      timeout: 30000,
-    });
-    await sleep(2000);
-
-    const detail = await page.evaluate(() => {
-      function findValue(labelText) {
-        const allElements = document.querySelectorAll('*');
-        for (const el of allElements) {
-          if (el.children.length === 0 && el.textContent.trim() === labelText) {
-            const parent = el.parentElement;
-            if (parent) {
-              const children = [...parent.children];
-              const idx = children.indexOf(el);
-              if (idx >= 0 && idx + 1 < children.length) {
-                return children[idx + 1].textContent.trim();
-              }
-            }
-            const next = el.nextElementSibling;
-            if (next) return next.textContent.trim();
-          }
-        }
-        return null;
-      }
-
-      return {
-        lastSoldPrice: findValue('Last Sold Price'),
-        lastSoldDate: findValue('Last Sold Date'),
-        clValue: findValue('CL Value'),
-        pop: findValue('Pop'),
-        marketCap: findValue('Market Cap'),
-        rateOfGrowth: findValue('Rate of Growth'),
-        realDollarChange: findValue('Real Dollar Change'),
-        startingPrice: findValue('Starting Price'),
-        currentPrice: findValue('Current Price'),
-        numberOfSales: findValue('Number of Sales'),
-        averagePrice: findValue('Average Price'),
-        lowPrice: findValue('Low Price'),
-        highPrice: findValue('High Price'),
-      };
-    });
-
-    return detail;
-  } catch (err) {
-    console.error(`    Error scraping card ${cardId}: ${err.message}`);
-    return null;
-  }
+  return results;
 }
 
 // ── Build cardladder data object for Supabase ────────────────
-function buildCardLadderData(stats, cards) {
+function buildCardLadderData(playerDoc, cards) {
   const now = new Date().toISOString();
 
   const data = {
     updatedAt: now,
+    // Index data (from the player document)
+    indexValue: playerDoc.dailyIndex || null,
+    indexStartingValue: 1000, // CardLadder starts all indices at 1000
+    rateOfGrowth: formatPercent(playerDoc.allTimePercentChange),
+    realValueChange: null,
+    lowValue: null,
+    highValue: null,
+    averageValue: playerDoc.totalValue ? Math.round(playerDoc.totalValue / (playerDoc.totalCards || 1)) : null,
+    totalCards: playerDoc.totalCards || null,
+    // Sales volume data
+    marketCap: formatMoney(playerDoc.totalMarketCap),
+    marketCapNum: playerDoc.totalMarketCap || null,
+    sales24h: playerDoc.dailySalesCount || null,
+    avgDailyVolume: formatMoney(playerDoc.dailySales),
+    avgDailyVolumeNum: playerDoc.dailySales || null,
+    lowDailyVolume: null,
+    highDailyVolume: null,
+    // Percent changes
+    dailyPercentChange: playerDoc.dailyPercentChange || null,
+    weeklyPercentChange: playerDoc.weeklyPercentChange || null,
+    monthlyPercentChange: playerDoc.monthlyPercentChange || null,
+    quarterlyPercentChange: playerDoc.quarterlyPercentChange || null,
+    annualPercentChange: playerDoc.annualPercentChange || null,
+    allTimePercentChange: playerDoc.allTimePercentChange || null,
+    // Key card
+    keyCard: playerDoc.keyCard ? {
+      id: playerDoc.keyCard.id || null,
+      image: playerDoc.keyCard.image || null,
+    } : null,
   };
-
-  // Index data
-  if (stats?.index) {
-    const idx = stats.index;
-    data.indexValue = parseFloat(idx.currentValue) || null;
-    data.indexStartingValue = parseFloat(idx.startingValue) || null;
-    data.rateOfGrowth = idx.rateOfGrowth || null;
-    data.realValueChange = idx.realValueChange || null;
-    data.lowValue = parseFloat(idx.lowValue) || null;
-    data.highValue = parseFloat(idx.highValue) || null;
-    data.averageValue = parseFloat(idx.averageValue) || null;
-    data.totalCards = parseInt(idx.totalCards) || null;
-  }
-
-  // Sales volume data
-  if (stats?.salesVolume) {
-    const sv = stats.salesVolume;
-    data.marketCap = sv.marketCap || null;
-    data.marketCapNum = parseLargeNumber(sv.marketCap) || null;
-    data.sales24h = parseInt(sv.sales24h) || null;
-    data.avgDailyVolume = sv.avgDailyVolume || null;
-    data.avgDailyVolumeNum = parseLargeNumber(sv.avgDailyVolume) || null;
-    data.lowDailyVolume = sv.lowDailyVolume || null;
-    data.highDailyVolume = sv.highDailyVolume || null;
-  }
 
   // Cards
   if (cards && cards.length > 0) {
     data.cards = cards.map(c => ({
-      cardId: c.cardId || null,
-      year: c.year || '',
+      cardId: c._id || null,
+      year: String(c.year || ''),
       set: c.set || '',
-      cardNumber: c.cardNumber || '',
-      parallel: c.parallel || 'Base',
-      grade: c.grade || '',
-      lastSold: c.lastSold || '',
-      clValue: c.clValue || '',
-      score: c.score || null,
-      // Card detail fields (filled if --cards flag used)
+      cardNumber: String(c.number || ''),
+      parallel: c.variation || 'Base',
+      grade: c.condition || '',
+      lastSold: formatMoney(c.stats?.marketValue) || '',
+      clValue: formatMoney(c.currentValue) || '',
+      score: c.stats?.score || null,
       pop: c.pop || null,
-      marketCap: c.marketCap || null,
+      marketCap: formatMoney(c.stats?.marketCap) || null,
+      numSales: c.numSales || null,
+      image: c.image || null,
+      slug: c.slug || null,
+      label: c.label || null,
     }));
   }
 
@@ -549,76 +347,46 @@ function buildCardLadderData(stats, cards) {
 
 // ── Main ─────────────────────────────────────────────────────
 async function main() {
-  console.log('SlabStreet CardLadder Scraper\n');
+  console.log('SlabStreet CardLadder Scraper (Firestore API)\n');
 
-  // 1. Get target players
-  console.log('Fetching target players...');
+  // 1. Get target players from Supabase
+  console.log('Fetching target players from Supabase...');
   const players = await getTargetPlayers();
-  console.log(`  ${players.length} players to scrape\n`);
+  console.log(`  ${players.length} players to fetch\n`);
 
   if (players.length === 0) {
     console.log('No players found. Check --league or --player args.');
     return;
   }
 
-  // 2. Launch browser
-  console.log('Launching browser...');
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    viewport: { width: 1440, height: 900 },
-  });
-  const page = await context.newPage();
-  console.log('  Browser ready\n');
+  // 2. Authenticate with Firebase
+  console.log('Authenticating with CardLadder (Firebase)...');
+  const token = await firebaseSignIn();
+  console.log('  Auth OK\n');
 
-  // 3. Login to CardLadder
-  console.log('Logging into CardLadder...');
-  await loginToCardLadder(page);
-
-  // 4. Scrape each player
+  // 3. Fetch data for each player
   let ok = 0, fail = 0, skip = 0;
-  const BATCH_SIZE = 5;
 
   for (let i = 0; i < players.length; i++) {
     const player = players[i];
     process.stdout.write(`  [${i + 1}/${players.length}] ${player.name.padEnd(28)} `);
 
     try {
-      // Scrape player stats (index + sales volume)
-      const stats = await scrapePlayerStats(page, player.name);
+      // Fetch player data from CardLadder Firestore
+      const playerDoc = await fetchPlayerData(token, player.name);
 
-      if (!stats) {
-        console.log('  not found — skipped');
+      if (!playerDoc) {
+        console.log('not found — skipped');
         skip++;
-        await sleep(1500);
         continue;
       }
 
-      // Scrape player cards
-      const cards = await scrapePlayerCardsAlt(page, player.name);
-
-      // Optionally scrape individual card details
-      if (SCRAPE_CARDS && cards.length > 0) {
-        const topCards = cards.slice(0, 5); // Limit to top 5 for speed
-        for (let j = 0; j < topCards.length; j++) {
-          if (topCards[j].cardId) {
-            process.stdout.write('.');
-            const detail = await scrapeCardDetail(page, topCards[j].cardId);
-            if (detail) {
-              topCards[j].pop = detail.pop;
-              topCards[j].marketCap = detail.marketCap;
-              topCards[j].lastSoldPrice = detail.lastSoldPrice;
-              topCards[j].lastSoldDate = detail.lastSoldDate;
-              topCards[j].numberOfSales = detail.numberOfSales;
-              topCards[j].rateOfGrowth = detail.rateOfGrowth;
-            }
-            await sleep(2000);
-          }
-        }
-      }
+      // Fetch cards using the CardLadder name (handles suffixes like "II")
+      const clName = playerDoc._clName || player.name;
+      const cards = await fetchPlayerCards(token, clName, SCRAPE_CARDS ? 50 : 20);
 
       // Build structured data
-      const cardladderData = buildCardLadderData(stats, cards);
+      const cardladderData = buildCardLadderData(playerDoc, cards);
 
       // Write to Supabase
       const { error } = await supabase
@@ -627,38 +395,27 @@ async function main() {
         .eq('slug', player.slug);
 
       if (error) {
-        // If 'cardladder' column doesn't exist yet, show helpful error
         if (error.message.includes('cardladder')) {
-          console.log(`  ERROR: 'cardladder' column not found in players table.`);
-          console.log(`         Run this SQL in Supabase: ALTER TABLE players ADD COLUMN cardladder JSONB;`);
-          await browser.close();
+          console.log(`ERROR: 'cardladder' column not found.`);
+          console.log(`       Run: ALTER TABLE players ADD COLUMN cardladder JSONB;`);
           process.exit(1);
         }
-        console.log(`  ERROR: ${error.message}`);
+        console.log(`ERROR: ${error.message}`);
         fail++;
       } else {
         const cardCount = cards.length;
-        const mktCap = stats?.salesVolume?.marketCap || 'N/A';
-        console.log(`  ${cardCount} cards, mktcap=${mktCap} — saved`);
+        const mktCap = formatMoney(playerDoc.totalMarketCap) || 'N/A';
+        console.log(`${cardCount} cards, mktcap=${mktCap} — saved`);
         ok++;
       }
     } catch (err) {
-      console.log(`  FAIL: ${err.message}`);
+      console.log(`FAIL: ${err.message}`);
       fail++;
     }
 
-    // Rate limiting — be respectful to CardLadder
-    await sleep(3000);
-
-    // Extra pause between batches
-    if ((i + 1) % BATCH_SIZE === 0 && i + 1 < players.length) {
-      console.log(`  --- batch pause (8s) ---`);
-      await sleep(8000);
-    }
+    // Rate limit: 500ms between players (Firestore API is fast, no need for long delays)
+    await sleep(500);
   }
-
-  // 5. Cleanup
-  await browser.close();
 
   console.log(`\nDone! ${ok} updated, ${skip} skipped, ${fail} failed.`);
 }

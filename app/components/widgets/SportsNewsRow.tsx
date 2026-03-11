@@ -42,16 +42,14 @@ export default function SportsNewsRow({
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        className="block no-underline rounded-md overflow-hidden transition-all duration-150 hover:brightness-110"
+        className="block no-underline overflow-hidden transition-all duration-150 hover:brightness-110"
         style={{
-          background: c.bg,
+          background: c.surface,
           border: `1px solid ${c.border}`,
+          borderRadius: 16,
         }}
       >
-        <div
-          style={{ height: 3, background: c.green }}
-        />
-        <div className="px-5 py-4">
+        <div style={{ padding: '18px 22px' }}>
           <div
             className="font-body text-[17px] leading-snug font-semibold line-clamp-3"
             style={{ color: c.text }}
@@ -96,10 +94,10 @@ export default function SportsNewsRow({
       href={link}
       target="_blank"
       rel="noopener noreferrer"
-      className="block no-underline rounded transition-colors duration-150 hover:brightness-110"
-      style={{ background: c.bg, border: `1px solid ${c.border}` }}
+      className="block no-underline transition-colors duration-150 hover:brightness-110"
+      style={{ background: 'transparent', borderBottom: `1px solid #141c28` }}
     >
-      <div className="px-5 py-3">
+      <div style={{ padding: '10px 0' }}>
         <div
           className="font-body text-[13px] leading-snug line-clamp-2 font-medium"
           style={{ color: c.text }}

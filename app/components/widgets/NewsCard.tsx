@@ -28,10 +28,10 @@ export default function NewsCard({ headline, source, url, category, time }: News
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block no-underline rounded transition-colors duration-150"
-      style={{ background: c.bg, border: `1px solid ${c.border}` }}
+      className="block no-underline transition-colors duration-150"
+      style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16 }}
     >
-      <div className="p-5">
+      <div style={{ padding: 18 }}>
         <div
           className="font-body text-[10px] font-medium tracking-wider uppercase mb-2"
           style={{ color: catColor }}

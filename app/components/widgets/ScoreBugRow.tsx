@@ -59,10 +59,12 @@ export default function ScoreBugRow({
 
   const row = (
     <div
-      className="flex items-center rounded-md px-3 py-2 transition-colors duration-100"
+      className="flex items-center transition-colors duration-100"
       style={{
-        background: c.bg,
+        background: c.surface,
         border: isLive ? `1px solid ${c.green}` : `1px solid ${c.border}`,
+        borderRadius: 12,
+        padding: '10px 14px',
         cursor: boxscoreUrl ? 'pointer' : 'default',
       }}
     >

@@ -17,15 +17,16 @@ export default function SaleCard({ playerName, playerSlug, title, price, date, i
   return (
     <a
       href={`/players/${playerSlug}`}
-      className="block no-underline rounded transition-colors duration-150"
+      className="block no-underline transition-colors duration-150"
       style={{
-        background: c.bg,
+        background: c.surface,
         border: `1px solid ${c.border}`,
-        borderLeft: `3px solid ${c.green}`,
-        minWidth: '160px',
+        borderRadius: 16,
+        padding: 16,
+        minWidth: 220,
       }}
     >
-      <div className="p-5">
+      <div>
         {/* Thumbnail */}
         {imageUrl && (
           <div className="mb-2">

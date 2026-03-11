@@ -11,9 +11,9 @@ interface SignalRowProps {
 }
 
 const SIGNAL_COLORS: Record<string, { bg: string; text: string }> = {
-  BUY:  { bg: '#00ff87', text: '#090b0f' },
-  SELL: { bg: '#ff3b5c', text: '#090b0f' },
-  HOLD: { bg: '#f0b429', text: '#090b0f' },
+  BUY:  { bg: '#00ff8718', text: '#00ff87' },
+  SELL: { bg: '#ff3b5c18', text: '#ff3b5c' },
+  HOLD: { bg: '#f0b42918', text: '#f0b429' },
 };
 
 export default function SignalRow({ signal, name, slug, team, score }: SignalRowProps) {
@@ -23,12 +23,13 @@ export default function SignalRow({ signal, name, slug, team, score }: SignalRow
   return (
     <a
       href={`/players/${slug}`}
-      className="flex items-center justify-between rounded px-5 py-3.5 no-underline"
-      style={{ background: c.bg, border: `1px solid ${c.border}` }}
+      className="flex items-center justify-between no-underline"
+      style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 12, padding: '12px 18px' }}
     >
       <div className="flex items-center gap-2.5">
         <span
-          className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-sm"
+          className="font-mono text-[10px] font-bold px-1.5 py-0.5"
+          style={{ borderRadius: 6 }}
           style={{ background: sc.bg, color: sc.text }}
         >
           {signal}
@@ -40,7 +41,7 @@ export default function SignalRow({ signal, name, slug, team, score }: SignalRow
           </div>
         </div>
       </div>
-      <div className="font-mono text-[11px]" style={{ color: sc.bg }}>
+      <div className="font-mono" style={{ color: sc.text, fontSize: 15, fontWeight: 600 }}>
         {score}
       </div>
     </a>

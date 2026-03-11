@@ -73,6 +73,9 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   const [ebayLoading, setEbayLoading] = useState(true);
   const [ebaySort, setEbaySort] = useState('newlyListed');
   const [ebayExpanded, setEbayExpanded] = useState(false);
+  const [recentSales, setRecentSales] = useState<any[]>([]);
+  const [salesStats, setSalesStats] = useState<any>(null);
+  const [salesLoading, setSalesLoading] = useState(true);
   const [espnId, setEspnId]           = useState<string | null>(null);
   const [gameLog, setGameLog]         = useState<any[]>([]);
   const [gameLogLabels, setGameLogLabels] = useState<string[]>([]);
@@ -203,6 +206,16 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
       .then(data => { setEbayListings(data); setEbayLoading(false); })
       .catch(() => setEbayLoading(false));
   }, [p, ebaySort, playerLeague]);
+
+  // Fetch recent sales from card_sales table
+  useEffect(() => {
+    if (!p) return;
+    setSalesLoading(true);
+    fetch(`/api/sales?player=${p.slug}&limit=50`)
+      .then(r => r.json())
+      .then(data => { setRecentSales(data.sales || []); setSalesStats(data.stats || null); setSalesLoading(false); })
+      .catch(() => setSalesLoading(false));
+  }, [p]);
 
   // Merge live momentum score into pillars
   const pillars = p?.pillars?.map((pl: any) => {
@@ -482,26 +495,45 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
 
         {/* RECENT SALES */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.cyan}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-          <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.cyan, letterSpacing: 3, marginBottom: 14 }}>RECENT SALES</div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'IBM Plex Mono, monospace', fontSize: 11 }}>
-            <thead>
-              <tr style={{ borderBottom: `1px solid ${c.border}` }}>
-                {['CARD', 'GRADE', 'PRICE', 'DATE'].map(h => (
-                  <th key={h} style={{ textAlign: 'left', color: c.muted, fontSize: 9, letterSpacing: 2, paddingBottom: 8, paddingRight: 16 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {p.sales?.map((s: any, i: number) => (
-                <tr key={i} style={{ borderBottom: `1px solid ${c.border}` }}>
-                  <td style={{ padding: '9px 16px 9px 0', color: c.text }}>{s.card}</td>
-                  <td style={{ padding: '9px 16px 9px 0', color: c.muted }}>{s.grade}</td>
-                  <td style={{ padding: '9px 16px 9px 0', color: c.green, fontWeight: 700 }}>{s.price}</td>
-                  <td style={{ padding: '9px 0', color: c.muted }}>{s.date}</td>
-                </tr>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4, flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.cyan, letterSpacing: 3, display: 'flex', alignItems: 'center', gap: 12 }}>
+              RECENT SALES
+              {recentSales.length > 0 && <span style={{ fontSize: 9, color: c.muted, letterSpacing: 1 }}>{salesStats?.total?.toLocaleString()} total</span>}
+            </div>
+          </div>
+          {salesStats && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 14, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <span>LOW: <span style={{ color: c.text }}>${salesStats.low?.toFixed(2)}</span></span>
+              <span>AVG: <span style={{ color: c.cyan }}>${salesStats.avg?.toFixed(2)}</span></span>
+              <span>HIGH: <span style={{ color: c.text }}>${salesStats.high?.toFixed(2)}</span></span>
+            </div>
+          )}
+          {salesLoading && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '20px 0', textAlign: 'center' }}>Loading sales...</div>
+          )}
+          {!salesLoading && recentSales.length === 0 && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '20px 0', textAlign: 'center' }}>No sales data yet</div>
+          )}
+          {!salesLoading && recentSales.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: 420, overflowY: 'auto' }}>
+              {recentSales.slice(0, 30).map((s: any) => (
+                <a key={s.id} href={s.url && !s.url.startsWith('cardladder://') ? s.url : undefined} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 10px', borderRadius: 6, textDecoration: 'none', transition: 'background 0.1s', cursor: s.url && !s.url.startsWith('cardladder://') ? 'pointer' : 'default' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `${c.border}44`; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
+                >
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.card}</div>
+                    <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+                      <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: s.grader ? '#38bdf8' : c.muted }}>{s.grade}</span>
+                      <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>{s.platform}</span>
+                      <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted }}>{s.date}</span>
+                    </div>
+                  </div>
+                  <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 20, color: c.green, flexShrink: 0 }}>${s.price.toFixed(2)}</div>
+                </a>
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
 
         {/* PSA POPULATION */}

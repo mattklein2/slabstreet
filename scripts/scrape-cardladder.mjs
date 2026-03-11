@@ -13,6 +13,8 @@
  *   node scripts/scrape-cardladder.mjs --limit=50           # top 50 per league
  *   node scripts/scrape-cardladder.mjs --cards              # also fetch individual card details (50/player)
  *   node scripts/scrape-cardladder.mjs --all-cards          # fetch ALL cards per player (paginated)
+ *   node scripts/scrape-cardladder.mjs --sales              # fetch sales history per card → card_sales table
+ *   node scripts/scrape-cardladder.mjs --all-cards --sales  # full cards + sales sync
  *   node scripts/scrape-cardladder.mjs --import             # import ALL CardLadder sports players
  *   node scripts/scrape-cardladder.mjs --import --dry-run   # preview import without writing
  *
@@ -27,6 +29,7 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import { generateCardSlug } from './lib/card-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -53,6 +56,7 @@ const PLAYER_FILTER = args.player || '';
 const LIMIT_PER_LEAGUE = parseInt(args.limit || '20');
 const SCRAPE_CARDS = args.cards === 'true';
 const ALL_CARDS = args['all-cards'] === 'true';
+const FETCH_SALES = args.sales === 'true';
 const IMPORT_MODE = args.import === 'true';
 const DRY_RUN = args['dry-run'] === 'true';
 
@@ -355,6 +359,144 @@ async function fetchPlayerCards(token, playerName, limit = 30) {
   }
 
   return allCards;
+}
+
+// ── Fetch sales for a single card from CardLadder ────────────
+async function fetchCardSales(token, cardFirestoreId) {
+  const allSales = [];
+  let pageToken = null;
+
+  while (true) {
+    let url = `${FIRESTORE_BASE}/cards/${cardFirestoreId}/sales?pageSize=100`;
+    if (pageToken) url += `&pageToken=${pageToken}`;
+
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!res.ok) break;
+    const data = await res.json();
+    const docs = data.documents || [];
+    if (docs.length === 0) break;
+
+    for (const doc of docs) {
+      const f = doc.fields || {};
+      const price = parseFloat(fsVal(f.price) || 0);
+      if (price <= 0) continue;
+
+      allSales.push({
+        price, // CardLadder stores prices in dollars
+        date: fsVal(f.date) || null,
+        platform: fsVal(f.platform) || 'eBay',
+        listingType: fsVal(f.listingType) || '',
+        title: fsVal(f.title) || '',
+        condition: fsVal(f.condition) || '',
+        url: fsVal(f.url) || '',
+        image: fsVal(f.image) || fsVal(f.thumbnail) || '',
+        listingId: fsVal(f.listingId) || fsVal(f.itemId) || '',
+      });
+    }
+
+    if (data.nextPageToken) {
+      pageToken = data.nextPageToken;
+    } else {
+      break;
+    }
+  }
+
+  return allSales;
+}
+
+// ── Write CardLadder sales to card_sales + cards tables ──────
+async function writeCardSalesToDB(sales, cardInfo, playerSlug, league) {
+  if (sales.length === 0) return 0;
+
+  // Ensure the card exists in cards table
+  const slug = generateCardSlug(
+    playerSlug,
+    cardInfo.year || '0',
+    cardInfo.set || 'Unknown',
+    cardInfo.variation || 'Base',
+    cardInfo.number || ''
+  );
+
+  let { data: card } = await supabase
+    .from('cards')
+    .select('id')
+    .eq('slug', slug)
+    .limit(1)
+    .single();
+
+  if (!card) {
+    const { data: newCard, error: insertErr } = await supabase
+      .from('cards')
+      .insert({
+        player_slug: playerSlug,
+        year: parseInt(cardInfo.year) || 0,
+        set_name: cardInfo.set || 'Unknown',
+        parallel: cardInfo.variation || 'Base',
+        card_number: cardInfo.number || null,
+        league,
+        image_url: cardInfo.image || null,
+        cardladder_slug: cardInfo.slug || null,
+        slug,
+      })
+      .select('id')
+      .single();
+
+    if (insertErr) return 0;
+    card = newCard;
+  }
+
+  if (!card) return 0;
+
+  // Batch upsert sales
+  let written = 0;
+  const rows = sales.map(s => {
+    // Parse grade from condition string (e.g. "PSA 10" → grader=PSA, grade_number=10)
+    let grader = null, gradeNumber = null, grade = s.condition || null;
+    const gradeMatch = (s.condition || '').match(/^(PSA|BGS|SGC|CGC|HGA|CSG|TAG)\s*(\d+\.?\d*)/i);
+    if (gradeMatch) {
+      grader = gradeMatch[1].toUpperCase();
+      gradeNumber = parseFloat(gradeMatch[2]);
+    }
+
+    // Parse date
+    let soldDate;
+    try {
+      soldDate = s.date ? new Date(s.date).toISOString() : null;
+    } catch {
+      soldDate = null;
+    }
+    if (!soldDate) return null;
+
+    // Build a unique listing URL/ID
+    const listingUrl = s.url || (s.listingId ? `cardladder://${s.listingId}` : null);
+    if (!listingUrl) return null;
+
+    return {
+      card_id: card.id,
+      price: s.price,
+      grade,
+      grader,
+      grade_number: gradeNumber,
+      sold_date: soldDate,
+      platform: s.platform || 'eBay',
+      listing_url: listingUrl,
+      image_url: s.image || null,
+    };
+  }).filter(Boolean);
+
+  // Upsert in batches of 50
+  for (let i = 0; i < rows.length; i += 50) {
+    const batch = rows.slice(i, i + 50);
+    const { error } = await supabase
+      .from('card_sales')
+      .upsert(batch, { onConflict: 'listing_url', ignoreDuplicates: true });
+    if (!error) written += batch.length;
+  }
+
+  return written;
 }
 
 // ── Build cardladder data object for Supabase ────────────────
@@ -714,7 +856,8 @@ async function runStandard(token) {
       }
 
       // Fetch cards (still requires per-player Firestore query)
-      const cards = await fetchPlayerCards(token, clName, ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 20));
+      const cardLimit = FETCH_SALES ? 9999 : (ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 20));
+      const cards = await fetchPlayerCards(token, clName, cardLimit);
 
       const cardladderData = buildCardLadderData(clDoc, cards);
 
@@ -727,8 +870,24 @@ async function runStandard(token) {
         console.log(`ERROR: ${error.message}`);
         fail++;
       } else {
+        let salesMsg = '';
+        // Fetch and store sales per card if --sales flag is set
+        if (FETCH_SALES && cards.length > 0) {
+          let totalSalesWritten = 0;
+          for (const card of cards) {
+            const cardId = card._id;
+            if (!cardId) continue;
+            const sales = await fetchCardSales(token, cardId);
+            if (sales.length > 0) {
+              const written = await writeCardSalesToDB(sales, card, player.slug, player.league);
+              totalSalesWritten += written;
+            }
+            await sleep(50); // small delay between card sales fetches
+          }
+          salesMsg = `, ${totalSalesWritten} sales`;
+        }
         const mktCap = formatMoney(clDoc.totalMarketCap) || 'N/A';
-        console.log(`${cards.length} cards, mktcap=${mktCap} — saved`);
+        console.log(`${cards.length} cards${salesMsg}, mktcap=${mktCap} — saved`);
         ok++;
       }
     } catch (err) {

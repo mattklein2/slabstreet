@@ -34,8 +34,8 @@ export default function SignalRow({ signal, name, slug, team, score }: SignalRow
           {signal}
         </span>
         <div>
-          <div className="font-mono text-xs" style={{ color: c.text }}>{name}</div>
-          <div className="font-mono text-[9px] mt-0.5" style={{ color: c.muted }}>
+          <div className="font-body text-[13px] font-medium" style={{ color: c.text }}>{name}</div>
+          <div className="font-body text-[10px] mt-0.5" style={{ color: c.muted }}>
             {team} · Score: {score}
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function LeagueTabs() {
           <button
             key={tab}
             onClick={() => setActiveLeague(tab)}
-            className="shrink-0 font-mono text-[11px] tracking-wider px-4 py-2.5 cursor-pointer bg-transparent border-none transition-colors duration-150 whitespace-nowrap"
+            className="shrink-0 font-body text-[11px] font-medium tracking-widest uppercase px-4 py-2.5 cursor-pointer bg-transparent border-none transition-colors duration-150 whitespace-nowrap"
             style={{
               color: isActive ? c.green : c.muted,
               borderBottom: isActive ? `2px solid ${c.green}` : '2px solid transparent',
@@ -38,7 +38,7 @@ export default function LeagueTabs() {
       {/* Spacer + LIVE indicator */}
       <div className="flex-1" />
       <div
-        className="flex items-center gap-1.5 font-mono text-[10px] shrink-0 py-2.5"
+        className="flex items-center gap-1.5 font-body text-[10px] font-medium tracking-wider shrink-0 py-2.5"
         style={{ color: c.green }}
       >
         <span

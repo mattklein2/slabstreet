@@ -33,18 +33,18 @@ export default function NewsCard({ headline, source, url, category, time }: News
     >
       <div className="p-5">
         <div
-          className="font-mono text-[10px] tracking-wider mb-2"
+          className="font-body text-[10px] font-medium tracking-wider uppercase mb-2"
           style={{ color: catColor }}
         >
           {category}
         </div>
         <div
-          className="font-mono text-[13px] leading-snug mb-2 line-clamp-2"
+          className="font-body text-[13px] leading-snug mb-2 line-clamp-2 font-medium"
           style={{ color: c.text }}
         >
           {headline}
         </div>
-        <div className="font-mono text-[10px]" style={{ color: c.muted }}>
+        <div className="font-body text-[10px]" style={{ color: c.muted }}>
           {time} · {source}
         </div>
       </div>

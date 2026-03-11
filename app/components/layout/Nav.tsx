@@ -25,7 +25,7 @@ export default function Nav() {
           </span>
         </a>
         <span
-          className="hidden md:block font-mono text-[9px] tracking-wider pl-4"
+          className="hidden md:block font-body text-[9px] font-medium tracking-widest uppercase pl-4"
           style={{ color: c.muted, borderLeft: `1px solid ${c.border}` }}
         >
           CARD MARKET INTELLIGENCE

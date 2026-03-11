@@ -58,7 +58,7 @@ export default function RecentSales() {
   }, [activeLeague]);
 
   const statsBadge = stats ? (
-    <span className="font-mono text-[11px]" style={{ color: c.muted }}>
+    <span className="font-body text-[11px]" style={{ color: c.muted }}>
       {stats.totalSales} sales{' · '}Avg ${stats.avgPrice.toFixed(2)}{' · '}
       Top{' '}
       <span style={{ color: c.green }}>${stats.topSale.price.toFixed(2)}</span>

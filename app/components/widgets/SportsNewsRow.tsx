@@ -34,26 +34,26 @@ export default function SportsNewsRow({ title, link, source, time, league }: Spo
     >
       <div className="px-5 py-3">
         <div
-          className="font-mono text-[12px] leading-snug line-clamp-2"
+          className="font-body text-[13px] leading-snug line-clamp-2 font-medium"
           style={{ color: c.text }}
         >
           {title}
         </div>
         <div className="flex items-center gap-2 mt-1.5">
           <span
-            className="font-mono text-[9px] font-bold px-1.5 py-0.5 rounded-sm"
+            className="font-body text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase"
             style={{ background: sourceColor, color: '#090b0f' }}
           >
             {source}
           </span>
           <span
-            className="font-mono text-[10px]"
+            className="font-body text-[10px]"
             style={{ color: c.muted }}
           >
             {time}
           </span>
           <span
-            className="font-mono text-[9px] px-1.5 py-0.5 rounded-sm"
+            className="font-body text-[9px] px-1.5 py-0.5 rounded-sm"
             style={{ background: `${c.muted}22`, color: c.muted, border: `1px solid ${c.muted}33` }}
           >
             {league}

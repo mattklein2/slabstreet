@@ -41,13 +41,13 @@ const lightColors = {
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'dark',
+  theme: 'light',
   toggle: () => {},
-  colors: darkColors,
+  colors: lightColors,
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -68,10 +68,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  // Use dark colors until mounted to match server render — prevents flash
+  // Use light colors until mounted to match server render — prevents flash
   const colors = mounted
     ? (theme === 'dark' ? darkColors : lightColors)
-    : darkColors;
+    : lightColors;
 
   return (
     <ThemeContext.Provider value={{ theme, toggle, colors }}>

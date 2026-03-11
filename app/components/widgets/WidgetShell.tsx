@@ -35,19 +35,20 @@ export default function WidgetShell({
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="text-base leading-none">{icon}</span>
           <span
-            className="font-mono text-sm font-semibold tracking-wider"
+            className="font-body text-[13px] font-medium tracking-widest uppercase"
             style={{ color: accentColor }}
           >
-            {icon} {title}
+            {title}
           </span>
           {badge}
         </div>
         {viewAllHref && (
           <a
             href={viewAllHref}
-            className="font-mono text-[11px] no-underline hover:underline"
+            className="font-body text-[11px] no-underline hover:underline"
             style={{ color: c.muted }}
           >
             {viewAllLabel}
@@ -82,7 +83,7 @@ export function WidgetSkeleton({ rows = 3 }: { rows?: number }) {
 
 export function WidgetError({ message }: { message: string }) {
   return (
-    <div className="py-8 text-center font-mono text-xs" style={{ color: 'var(--muted)' }}>
+    <div className="py-8 text-center font-body text-xs" style={{ color: 'var(--muted)' }}>
       {message}
     </div>
   );
@@ -90,7 +91,7 @@ export function WidgetError({ message }: { message: string }) {
 
 export function WidgetEmpty({ message }: { message: string }) {
   return (
-    <div className="py-8 text-center font-mono text-xs" style={{ color: 'var(--muted)' }}>
+    <div className="py-8 text-center font-body text-xs" style={{ color: 'var(--muted)' }}>
       {message}
     </div>
   );

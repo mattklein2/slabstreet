@@ -18,7 +18,7 @@ export default function HomePage() {
 
   return (
     <LeagueProvider>
-    <div className="min-h-screen" style={{ color: c.text, fontFamily: 'var(--body)' }}>
+    <div className="min-h-screen" style={{ color: c.text }}>
       <Ticker />
       <Nav />
       <LeagueTabs />
@@ -55,7 +55,7 @@ export default function HomePage() {
         <div className="font-display text-xl tracking-[3px] mb-1.5" style={{ color: c.green }}>
           SLABSTREET
         </div>
-        <div className="font-mono text-[10px]" style={{ color: c.muted }}>
+        <div className="font-body text-[10px]" style={{ color: c.muted }}>
           © 2026 Slab Street · slabstreet.io · All rights reserved
         </div>
       </footer>

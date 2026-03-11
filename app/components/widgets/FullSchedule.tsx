@@ -121,7 +121,7 @@ export default function FullSchedule() {
         <button
           onClick={goToPrev}
           disabled={!canGoPrev}
-          className="font-mono text-sm px-2 py-1 rounded transition-opacity"
+          className="font-body text-sm px-2 py-1 rounded transition-opacity"
           style={{
             color: canGoPrev ? c.text : c.muted,
             opacity: canGoPrev ? 1 : 0.4,
@@ -135,13 +135,13 @@ export default function FullSchedule() {
         </button>
 
         <div className="flex items-center gap-3">
-          <span className="font-mono text-xs font-semibold" style={{ color: c.text }}>
+          <span className="font-body text-[13px] font-medium" style={{ color: c.text }}>
             {formatDateDisplay(selectedDate)}
           </span>
           {!isToday && (
             <button
               onClick={goToToday}
-              className="font-mono text-[10px] px-2 py-0.5 rounded"
+              className="font-body text-[10px] font-medium px-2 py-0.5 rounded"
               style={{
                 color: c.cyan,
                 background: 'transparent',
@@ -157,7 +157,7 @@ export default function FullSchedule() {
         <button
           onClick={goToNext}
           disabled={!canGoNext}
-          className="font-mono text-sm px-2 py-1 rounded transition-opacity"
+          className="font-body text-sm px-2 py-1 rounded transition-opacity"
           style={{
             color: canGoNext ? c.text : c.muted,
             opacity: canGoNext ? 1 : 0.4,
@@ -179,7 +179,7 @@ export default function FullSchedule() {
             <button
               key={league}
               onClick={() => setSelectedLeague(league)}
-              className="font-mono text-[10px] font-semibold px-3 py-1 rounded-full transition-colors"
+              className="font-body text-[10px] font-semibold px-3 py-1 rounded-full transition-colors"
               style={{
                 background: isActive ? c.cyan : 'transparent',
                 color: isActive ? c.bg : c.muted,

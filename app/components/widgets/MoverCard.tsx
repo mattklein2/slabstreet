@@ -33,16 +33,16 @@ export default function MoverCard({ name, slug, team, score, signal }: MoverCard
       }}
     >
       <div className="p-5">
-        <div className="font-mono text-[10px] tracking-wider mb-1.5" style={{ color: c.muted }}>
-          {name.split(' ').pop()?.toUpperCase()}
+        <div className="font-body text-[10px] font-medium tracking-wider uppercase mb-1.5" style={{ color: c.muted }}>
+          {name.split(' ').pop()}
         </div>
-        <div className="font-mono text-[11px] mb-1" style={{ color: c.text }}>
+        <div className="font-body text-[11px] mb-1" style={{ color: c.text }}>
           {team}
         </div>
         <div className="font-display text-[32px] leading-none" style={{ color: c.text }}>
           {score}
         </div>
-        <div className="font-mono text-[11px] font-semibold mt-1.5" style={{ color: accentColor }}>
+        <div className="font-body text-[11px] font-semibold mt-1.5" style={{ color: accentColor }}>
           {isRiser ? '▲' : '▼'} {signal}
         </div>
         {/* Sparkline placeholder */}

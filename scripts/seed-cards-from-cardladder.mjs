@@ -72,7 +72,7 @@ async function main() {
   let totalSeeded = 0;
 
   for (const player of players) {
-    const { slug: playerSlug, cardladder } = player;
+    const { slug: playerSlug, league, cardladder } = player;
     const cards = cardladder?.cards;
 
     if (!Array.isArray(cards) || cards.length === 0) {
@@ -101,32 +101,40 @@ async function main() {
         set_name: setName,
         parallel,
         card_number: cardNumber ? String(cardNumber).replace(/^#/, '') : null,
+        league: league || 'NBA',
         image_url: imageUrl,
         updated_at: new Date().toISOString(),
       });
     }
 
-    if (rows.length === 0) {
+    // Deduplicate by slug (keep last occurrence)
+    const slugMap = new Map();
+    for (const row of rows) {
+      slugMap.set(row.slug, row);
+    }
+    const dedupedRows = [...slugMap.values()];
+
+    if (dedupedRows.length === 0) {
       continue;
     }
 
     if (dryRun) {
-      console.log(`[dry-run] Would upsert ${rows.length} card(s) for ${playerSlug}`);
-      totalSeeded += rows.length;
+      console.log(`[dry-run] Would upsert ${dedupedRows.length} card(s) for ${playerSlug}`);
+      totalSeeded += dedupedRows.length;
       continue;
     }
 
     const { error: upsertError } = await supabase
       .from('cards')
-      .upsert(rows, { onConflict: 'slug', ignoreDuplicates: false });
+      .upsert(dedupedRows, { onConflict: 'slug', ignoreDuplicates: false });
 
     if (upsertError) {
       console.error(`Failed to upsert cards for ${playerSlug}:`, upsertError.message);
       continue;
     }
 
-    console.log(`Seeded ${rows.length} cards for ${playerSlug}`);
-    totalSeeded += rows.length;
+    console.log(`Seeded ${dedupedRows.length} cards for ${playerSlug}`);
+    totalSeeded += dedupedRows.length;
   }
 
   console.log(`\nDone. Total cards seeded: ${totalSeeded}`);

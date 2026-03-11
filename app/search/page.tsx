@@ -7,14 +7,14 @@ import { useTheme } from '../components/ThemeProvider';
 type CardResult = {
   id: string;
   slug: string;
-  player_slug: string;
+  playerSlug: string;
   year: number;
-  set_name: string;
+  setName: string;
   parallel: string;
-  card_number: string;
-  numbered_to: number | null;
+  cardNumber: string;
+  numberedTo: number | null;
   league: string;
-  image_url: string | null;
+  imageUrl: string | null;
 };
 
 type PlayerResult = {
@@ -27,9 +27,9 @@ type PlayerResult = {
 };
 
 function formatCardName(card: CardResult): string {
-  const parts = [String(card.year), card.set_name];
+  const parts = [String(card.year), card.setName];
   if (card.parallel && card.parallel !== 'Base') parts.push(card.parallel);
-  if (card.card_number) parts.push(`#${card.card_number}`);
+  if (card.cardNumber) parts.push(`#${card.cardNumber}`);
   return parts.join(' ');
 }
 
@@ -165,9 +165,9 @@ function SearchPageInner() {
                     (e.currentTarget as HTMLElement).style.transform = 'none';
                   }}
                 >
-                  {card.image_url ? (
+                  {card.imageUrl ? (
                     <div style={{ height: 180, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img src={card.image_url} alt="" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                      <img src={card.imageUrl} alt="" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                     </div>
                   ) : (
                     <div style={{ height: 180, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -179,8 +179,8 @@ function SearchPageInner() {
                       {formatCardName(card)}
                     </div>
                     <div className="font-body text-[10px]" style={{ color: c.muted }}>
-                      {formatPlayerSlug(card.player_slug)}
-                      {card.numbered_to && <span> · /{card.numbered_to}</span>}
+                      {formatPlayerSlug(card.playerSlug)}
+                      {card.numberedTo && <span> · /{card.numberedTo}</span>}
                     </div>
                     <div className="mt-2">
                       <span

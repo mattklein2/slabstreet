@@ -8,15 +8,15 @@ import {
 
 type CardDetail = {
   id: string;
-  player_slug: string;
+  playerSlug: string;
   year: number;
-  set_name: string;
+  setName: string;
   parallel: string;
-  card_number: string;
-  numbered_to: number | null;
+  cardNumber: string;
+  numberedTo: number | null;
   league: string;
-  image_url: string | null;
-  cardladder_slug: string | null;
+  imageUrl: string | null;
+  cardladderSlug: string | null;
   slug: string;
 };
 
@@ -66,9 +66,9 @@ function hashCode(s: string): number {
 }
 
 function formatCardTitle(card: CardDetail): string {
-  const parts = [String(card.year), card.set_name];
+  const parts = [String(card.year), card.setName];
   if (card.parallel && card.parallel !== 'Base') parts.push(card.parallel);
-  if (card.card_number) parts.push(`#${card.card_number}`);
+  if (card.cardNumber) parts.push(`#${card.cardNumber}`);
   return parts.join(' ');
 }
 
@@ -154,8 +154,8 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
         <div className="font-body text-xs mb-6" style={{ color: c.muted }}>
           <a href="/" style={{ color: c.muted, textDecoration: 'none' }}>Home</a>
           {' / '}
-          <a href={`/search?q=${encodeURIComponent(formatPlayerName(card.player_slug))}`} style={{ color: c.muted, textDecoration: 'none' }}>
-            {formatPlayerName(card.player_slug)}
+          <a href={`/search?q=${encodeURIComponent(formatPlayerName(card.playerSlug))}`} style={{ color: c.muted, textDecoration: 'none' }}>
+            {formatPlayerName(card.playerSlug)}
           </a>
           {' / '}
           <span style={{ color: c.text }}>{formatCardTitle(card)}</span>
@@ -176,9 +176,9 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
                 justifyContent: 'center',
               }}
             >
-              {card.image_url ? (
+              {card.imageUrl ? (
                 <img
-                  src={card.image_url}
+                  src={card.imageUrl}
                   alt={formatCardTitle(card)}
                   style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                 />
@@ -197,11 +197,11 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
               {formatCardTitle(card)}
             </h1>
             <a
-              href={`/players/${card.player_slug}`}
+              href={`/players/${card.playerSlug}`}
               className="font-body text-lg no-underline hover:underline"
               style={{ color: c.muted }}
             >
-              {formatPlayerName(card.player_slug)}
+              {formatPlayerName(card.playerSlug)}
             </a>
 
             {/* Stats grid */}
@@ -214,7 +214,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
                 sub={stats.lastSale ? `${stats.lastSale.grade} · ${formatDate(stats.lastSale.date)}` : ''}
                 color={c}
               />
-              <StatBox label="Print Run" value={card.numbered_to ? `/${card.numbered_to}` : 'Unlimited'} color={c} />
+              <StatBox label="Print Run" value={card.numberedTo ? `/${card.numberedTo}` : 'Unlimited'} color={c} />
             </div>
 
             {/* Price by grade */}

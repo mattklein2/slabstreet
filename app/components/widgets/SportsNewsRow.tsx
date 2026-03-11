@@ -8,6 +8,7 @@ interface SportsNewsRowProps {
   source: string;
   time: string;
   league: string;
+  blurb?: string | null;
   featured?: boolean;
 }
 
@@ -29,6 +30,7 @@ export default function SportsNewsRow({
   source,
   time,
   league,
+  blurb,
   featured = false,
 }: SportsNewsRowProps) {
   const { colors: c } = useTheme();
@@ -56,6 +58,14 @@ export default function SportsNewsRow({
           >
             {title}
           </div>
+          {blurb && (
+            <div
+              className="font-body text-[12px] leading-relaxed mt-1.5 line-clamp-2"
+              style={{ color: c.muted }}
+            >
+              {blurb}
+            </div>
+          )}
           <div className="flex items-center gap-2 mt-2.5">
             <span
               className="font-body text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase"
@@ -96,6 +106,14 @@ export default function SportsNewsRow({
         >
           {title}
         </div>
+        {blurb && (
+          <div
+            className="font-body text-[11px] leading-relaxed mt-1 line-clamp-2"
+            style={{ color: c.muted }}
+          >
+            {blurb}
+          </div>
+        )}
         <div className="flex items-center gap-2 mt-1.5">
           <span
             className="font-body text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase"

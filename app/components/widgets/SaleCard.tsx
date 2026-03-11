@@ -42,7 +42,7 @@ export default function SaleCard({ playerName, playerSlug, title, price, date, i
 
         {/* Card title / description */}
         <div
-          className="font-mono text-[11px] line-clamp-2 mb-1"
+          className="font-body text-[11px] line-clamp-2 mb-1"
           style={{ color: c.text }}
         >
           {title}
@@ -50,7 +50,7 @@ export default function SaleCard({ playerName, playerSlug, title, price, date, i
 
         {/* Player name */}
         <div
-          className="font-mono text-[10px] mb-2"
+          className="font-body text-[10px] mb-2"
           style={{ color: c.muted }}
         >
           {playerName}
@@ -58,7 +58,7 @@ export default function SaleCard({ playerName, playerSlug, title, price, date, i
 
         {/* Price */}
         <div
-          className="font-mono text-[16px] font-bold"
+          className="font-display text-[22px] leading-none"
           style={{ color: c.green }}
         >
           ${price.toFixed(2)}
@@ -66,7 +66,7 @@ export default function SaleCard({ playerName, playerSlug, title, price, date, i
 
         {/* Date */}
         <div
-          className="font-mono text-[10px] mt-1"
+          className="font-body text-[10px] mt-1.5"
           style={{ color: c.muted }}
         >
           {date}

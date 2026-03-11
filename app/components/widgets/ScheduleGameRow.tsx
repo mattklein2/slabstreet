@@ -39,13 +39,13 @@ export default function ScheduleGameRow({
     >
       {/* Left side: teams + scores + status */}
       <div className="flex flex-col gap-0.5">
-        <div className="font-mono text-xs font-semibold" style={{ color: c.text }}>
+        <div className="font-body text-[13px] font-medium" style={{ color: c.text }}>
           {awayTeam} @ {homeTeam}
         </div>
 
         {hasScores && (
           <div
-            className="font-mono text-sm font-bold"
+            className="font-display text-xl"
             style={{ color: isFinal ? c.text : c.green }}
           >
             {awayScore} - {homeScore}
@@ -60,7 +60,7 @@ export default function ScheduleGameRow({
                 style={{ backgroundColor: c.green }}
               />
               <span
-                className="font-mono text-[10px] font-bold uppercase"
+                className="font-body text-[10px] font-bold uppercase"
                 style={{ color: c.green }}
               >
                 LIVE
@@ -68,12 +68,12 @@ export default function ScheduleGameRow({
             </span>
           )}
           {isFinal && (
-            <span className="font-mono text-[10px] uppercase" style={{ color: c.muted }}>
+            <span className="font-body text-[10px] uppercase" style={{ color: c.muted }}>
               FINAL
             </span>
           )}
           {!isLive && !isFinal && (
-            <span className="font-mono text-[10px]" style={{ color: c.muted }}>
+            <span className="font-body text-[10px]" style={{ color: c.muted }}>
               {time}
             </span>
           )}
@@ -85,7 +85,7 @@ export default function ScheduleGameRow({
         <div className="text-right flex flex-col gap-0.5">
           {spread && (
             <div>
-              <div className="font-mono text-[9px] uppercase" style={{ color: c.muted }}>
+              <div className="font-body text-[9px] uppercase tracking-wider" style={{ color: c.muted }}>
                 SPREAD
               </div>
               <div className="font-mono text-xs" style={{ color: c.text }}>
@@ -95,7 +95,7 @@ export default function ScheduleGameRow({
           )}
           {total && (
             <div>
-              <div className="font-mono text-[9px] uppercase" style={{ color: c.muted }}>
+              <div className="font-body text-[9px] uppercase tracking-wider" style={{ color: c.muted }}>
                 O/U
               </div>
               <div className="font-mono text-xs" style={{ color: c.text }}>

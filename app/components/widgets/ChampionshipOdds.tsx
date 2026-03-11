@@ -78,7 +78,7 @@ export default function ChampionshipOdds() {
               >
                 {/* Team name */}
                 <span
-                  className="font-mono text-xs shrink-0"
+                  className="font-body text-[13px] font-medium shrink-0"
                   style={{ color: c.text, minWidth: '140px' }}
                 >
                   {entry.team}

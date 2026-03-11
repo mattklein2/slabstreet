@@ -70,7 +70,7 @@ export default function MarketMovers() {
     <div className="flex gap-2">
       <button
         onClick={() => setShowRisers(true)}
-        className="font-mono text-[10px] px-2 py-0.5 rounded cursor-pointer bg-transparent"
+        className="font-body text-[10px] font-medium px-2 py-0.5 rounded cursor-pointer bg-transparent"
         style={{
           color: showRisers ? c.green : c.muted,
           border: `1px solid ${showRisers ? c.green : c.border}`,
@@ -80,7 +80,7 @@ export default function MarketMovers() {
       </button>
       <button
         onClick={() => setShowRisers(false)}
-        className="font-mono text-[10px] px-2 py-0.5 rounded cursor-pointer bg-transparent"
+        className="font-body text-[10px] font-medium px-2 py-0.5 rounded cursor-pointer bg-transparent"
         style={{
           color: !showRisers ? c.red : c.muted,
           border: `1px solid ${!showRisers ? c.red : c.border}`,

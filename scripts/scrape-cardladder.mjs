@@ -784,7 +784,7 @@ async function runImport(token) {
 async function runStandard(token) {
   // 1. Get target players from Supabase
   console.log('Fetching target players from Supabase...');
-  let players;
+  let players = [];
 
   if (PLAYER_FILTER) {
     const { data } = await supabase
@@ -794,18 +794,65 @@ async function runStandard(token) {
       .limit(1);
     players = data || [];
   } else {
+    // 2. Pre-fetch all CardLadder players and sort by daily sales volume
+    const allCL = await fetchAllCardLadderPlayers(token);
+
+    // Filter to sports and requested leagues
     const leagues = LEAGUE_FILTER ? [LEAGUE_FILTER] : ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA', 'F1'];
-    players = [];
-    for (const league of leagues) {
+    const leagueSet = new Set(leagues);
+
+    const sportsCL = allCL.filter(cl => {
+      const clLeague = CATEGORY_TO_LEAGUE[cl.category];
+      return clLeague && leagueSet.has(clLeague);
+    });
+
+    // Sort by daily sales count (most active markets first)
+    sportsCL.sort((a, b) => (b.dailySalesCount || 0) - (a.dailySalesCount || 0));
+
+    // Apply per-league limits
+    const leagueCounts = {};
+    const topCL = [];
+    for (const cl of sportsCL) {
+      const league = CATEGORY_TO_LEAGUE[cl.category];
+      leagueCounts[league] = (leagueCounts[league] || 0) + 1;
+      if (leagueCounts[league] <= LIMIT_PER_LEAGUE) {
+        topCL.push(cl);
+      }
+    }
+
+    console.log(`  ${topCL.length} CardLadder players selected (sorted by daily sales volume)\n`);
+
+    // Fetch all Supabase players for matching
+    const allSupabase = [];
+    let page = 0;
+    while (true) {
       const { data } = await supabase
         .from('players')
         .select('slug, name, league, team')
-        .eq('league', league)
         .eq('active', true)
-        .order('score', { ascending: false })
-        .limit(LIMIT_PER_LEAGUE);
-      if (data) players.push(...data);
+        .range(page * 1000, (page + 1) * 1000 - 1);
+      if (!data || data.length === 0) break;
+      allSupabase.push(...data);
+      page++;
     }
+
+    // Build Supabase lookup
+    const spByName = new Map();
+    const spByNormalized = new Map();
+    for (const sp of allSupabase) {
+      spByName.set(sp.name, sp);
+      spByNormalized.set(normalizeName(sp.name), sp);
+    }
+
+    // Match CardLadder → Supabase
+    for (const cl of topCL) {
+      const sp = spByName.get(cl.player) || spByNormalized.get(normalizeName(cl.player));
+      if (sp) {
+        players.push({ ...sp, _clDoc: cl, _clName: cl.player });
+      }
+    }
+
+    console.log(`  ${players.length} matched to Supabase players\n`);
   }
 
   console.log(`  ${players.length} players to fetch\n`);
@@ -814,19 +861,19 @@ async function runStandard(token) {
     return;
   }
 
-  // 2. Pre-fetch all CardLadder players for fast local matching
-  const allCL = await fetchAllCardLadderPlayers(token);
-
-  // Build lookup: normalized name → CardLadder doc
+  // Pre-indexed CardLadder lookups (for single-player mode fallback)
   const clByName = new Map();
   const clByNormalized = new Map();
-  for (const cl of allCL) {
-    if (cl.player) {
-      clByName.set(cl.player, cl);
-      clByNormalized.set(normalizeName(cl.player), cl);
+  if (!players[0]?._clDoc) {
+    const allCL = await fetchAllCardLadderPlayers(token);
+    for (const cl of allCL) {
+      if (cl.player) {
+        clByName.set(cl.player, cl);
+        clByNormalized.set(normalizeName(cl.player), cl);
+      }
     }
+    console.log(`  ${clByName.size} CardLadder players indexed\n`);
   }
-  console.log(`  ${clByName.size} CardLadder players indexed\n`);
 
   // 3. Match and fetch data
   let ok = 0, fail = 0, skip = 0;
@@ -836,9 +883,9 @@ async function runStandard(token) {
     process.stdout.write(`  [${i + 1}/${players.length}] ${player.name.padEnd(28)} `);
 
     try {
-      // Fast local lookup instead of per-player Firestore queries
-      let clDoc = clByName.get(player.name);
-      let clName = player.name;
+      // Use pre-attached CardLadder data if available, else fall back to map lookup
+      let clDoc = player._clDoc || clByName.get(player.name);
+      let clName = player._clName || player.name;
 
       if (!clDoc) {
         clDoc = clByNormalized.get(normalizeName(player.name));

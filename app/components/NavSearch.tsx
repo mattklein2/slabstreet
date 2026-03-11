@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import { supabase } from '../../lib/supabase';
+import { expandSearchWords } from '../../lib/search-aliases';
 
 type PlayerRow = {
   name: string;
@@ -85,13 +86,19 @@ export default function NavSearch() {
 
     const pattern = `%${q.trim()}%`;
 
-    // Build card query with AND across words, OR across columns per word
+    // Build card query with AND across words, OR across columns per word (with brand alias expansion)
+    const expanded = expandSearchWords(words);
     let cardQuery = supabase
       .from('cards')
       .select('slug, player_slug, year, set_name, parallel, card_number, league, image_url');
-    for (const word of words) {
+    for (const { word, isExpanded, expansions } of expanded) {
       const wp = `%${word}%`;
-      cardQuery = cardQuery.or(`player_slug.ilike.${wp},set_name.ilike.${wp},slug.ilike.${wp},parallel.ilike.${wp}`);
+      if (isExpanded && expansions) {
+        const setFilters = expansions.map(s => `set_name.ilike.%${s}%`).join(',');
+        cardQuery = cardQuery.or(`player_slug.ilike.${wp},slug.ilike.${wp},${setFilters}`);
+      } else {
+        cardQuery = cardQuery.or(`player_slug.ilike.${wp},set_name.ilike.${wp},slug.ilike.${wp},parallel.ilike.${wp}`);
+      }
     }
     cardQuery = cardQuery.order('year', { ascending: false }).limit(8);
 

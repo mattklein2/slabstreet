@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { expandSearchWords } from '@/lib/search-aliases';
 
 export interface CardResult {
   id: string;
@@ -42,12 +43,21 @@ export async function GET(request: NextRequest) {
   try {
     let query = supabase.from('cards').select('*', { count: 'exact' });
 
-    // AND across words, OR across columns per word
-    for (const word of words) {
+    // AND across words, OR across columns per word (with brand alias expansion)
+    const expanded = expandSearchWords(words);
+    for (const { word, isExpanded, expansions } of expanded) {
       const pattern = `%${word}%`;
-      query = query.or(
-        `player_slug.ilike.${pattern},set_name.ilike.${pattern},slug.ilike.${pattern},parallel.ilike.${pattern}`
-      );
+      if (isExpanded && expansions) {
+        // Brand keyword: match any of the expanded set names
+        const setFilters = expansions.map(s => `set_name.ilike.%${s}%`).join(',');
+        query = query.or(
+          `player_slug.ilike.${pattern},slug.ilike.${pattern},${setFilters}`
+        );
+      } else {
+        query = query.or(
+          `player_slug.ilike.${pattern},set_name.ilike.${pattern},slug.ilike.${pattern},parallel.ilike.${pattern}`
+        );
+      }
     }
 
     if (league) {

@@ -8,6 +8,7 @@ import TradeSignals from './components/widgets/TradeSignals';
 import RecentSales from './components/widgets/RecentSales';
 import SportsNews from './components/widgets/SportsNews';
 import CardNews from './components/widgets/CardNews';
+import CatalystAlerts from './components/widgets/CatalystAlerts';
 
 export default function HomePage() {
   const { colors: c } = useTheme();
@@ -19,7 +20,10 @@ export default function HomePage() {
         {/* Row 1: Market Movers — full width */}
         <MarketMovers />
 
-        {/* Row 2: 3-column layout — Scores | News | Signals */}
+        {/* Row 2: Catalyst Alerts — full width */}
+        <CatalystAlerts />
+
+        {/* Row 3: 3-column layout — Scores | News | Signals */}
         <div className="flex flex-col lg:flex-row gap-5">
           {/* Left — Scores */}
           <div className="lg:w-[340px] lg:shrink-0">

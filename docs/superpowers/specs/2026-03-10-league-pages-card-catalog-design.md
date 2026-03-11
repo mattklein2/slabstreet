@@ -44,7 +44,7 @@ Transform SlabStreet from a single-page dashboard with a league filter into a mu
 - NFL: `#16a34a` (green)
 - MLB: `#dc2626` (red)
 - NHL: `#0f172a` (dark navy)
-- F1: `#dc2626` (red)
+- F1: `#e11d48` (rose/crimson — differentiated from MLB red)
 - WNBA: `#f97316` (orange)
 - ALL: `#00ff87` (slab green)
 
@@ -96,6 +96,7 @@ CREATE TABLE cards (
   image_url TEXT,
   cardladder_slug TEXT,
   slug TEXT UNIQUE NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now(),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -105,7 +106,7 @@ CREATE INDEX idx_cards_search ON cards(player_slug, year, set_name);
 CREATE INDEX idx_cards_slug ON cards(slug);
 ```
 
-**Slug format:** `luka-doncic-2018-prizm-silver-280`
+**Slug generation:** `{player_slug}-{year}-{set_name}-{parallel}-{card_number}`, lowercased and hyphenated. On collision (same slug), append `-{n}` suffix (e.g., `-2`). The `league` column is denormalized from `players.league` for query performance — it is set once at card creation and not updated.
 
 ### New `card_sales` Table
 
@@ -113,13 +114,13 @@ CREATE INDEX idx_cards_slug ON cards(slug);
 CREATE TABLE card_sales (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   card_id UUID NOT NULL REFERENCES cards(id),
-  price FLOAT NOT NULL,
+  price NUMERIC(10,2) NOT NULL,
   grade TEXT,
   grader TEXT,
-  grade_number FLOAT,
+  grade_number NUMERIC(4,1),
   sold_date TIMESTAMPTZ NOT NULL,
   platform TEXT DEFAULT 'eBay',
-  listing_url TEXT,
+  listing_url TEXT UNIQUE,
   image_url TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
@@ -129,21 +130,37 @@ CREATE INDEX idx_card_sales_date ON card_sales(sold_date);
 CREATE INDEX idx_card_sales_grade ON card_sales(card_id, grade);
 ```
 
+The `listing_url` UNIQUE constraint prevents duplicate imports from re-running scrapers.
+
 ### Data Relationships
 - `players` 1→N `cards` (via player_slug)
 - `cards` 1→N `card_sales` (via card_id)
 
 ### Population Strategy
-1. CardLadder scraper seeds `cards` table (already has year, set, parallel, image data)
+1. CardLadder scraper seeds `cards` table (already has year, set, parallel, image data per card)
 2. eBay scraper writes to `card_sales` instead of `ebay_sales`
 3. Title parsing (`parse-card-title.mjs`) maps raw eBay titles → card records
 4. New cards auto-created when sale scraped for unrecognized card
 
+### Card Matching Pipeline (eBay title → card record)
+When processing an eBay sale:
+1. Parse title with `parse-card-title.mjs` to extract: player name, year, set, parallel, card number, grade
+2. Look up `player_slug` by matching parsed player name against `players.name` (ILIKE)
+3. Query `cards` table for match on `(player_slug, year, set_name, parallel)`
+4. If exact match found → create `card_sales` row linked to that card
+5. If no match → auto-create a new `cards` row with parsed data, then create the sale
+6. If player not found → skip (log for manual review)
+
+This is best-effort matching. Over time, CardLadder data provides the canonical card catalog, and eBay sales get matched against it. Imperfect matches are acceptable at this stage — the catalog improves as more data flows in.
+
 ## 4. Card Search
+
+### Search Implementation
+Card search uses Postgres `ILIKE` on a concatenated search column or multiple `ILIKE` conditions against `player name`, `year::text`, `set_name`, `parallel`. For autocomplete performance, limit to 8 results with `ORDER BY` on sales volume or recency. If performance degrades at scale, add `pg_trgm` extension with GIN index. Full-text search (`tsvector`) is a future optimization, not needed at launch.
 
 ### Autocomplete (NavSearch Enhancement)
 - Triggered on typing in nav search bar
-- Queries `cards` table with text search on player name + year + set_name + parallel
+- Queries `cards` table joined with `players.name`, filtered by ILIKE on search terms
 - Shows top 8 results, grouped by player name
 - Each result: card image thumbnail, "2018 Prizm Silver #280", last sale price
 - "See all results →" at bottom links to search results page
@@ -186,9 +203,11 @@ CREATE INDEX idx_card_sales_grade ON card_sales(card_id, grade);
 
 ## 6. Migration & Compatibility
 
+### App Router File Structure
+League pages use a dynamic route: `app/[league]/page.tsx` with a shared `LeaguePage` component. The `[league]` param is validated against known league IDs. F1's unique widgets are conditionally rendered within the same component based on `league === 'F1'`. No separate directories per league.
+
 ### Existing `/odds/[league]` Route
-- Absorbed into league page Odds & Futures widget
-- Route can redirect to `/nba#odds` etc. or be removed
+- Redirect to `/{league}` (e.g., `/odds/nba` → `/nba`). Championship futures and award odds are absorbed into the league page. Game-level odds (h2h, spreads, totals) remain accessible via the scores sidebar game links.
 
 ### Existing `ebay_sales` Table
 - Data migrated into `card_sales` via title parsing
@@ -198,6 +217,15 @@ CREATE INDEX idx_card_sales_grade ON card_sales(card_id, grade);
 - Still used within league pages for widget data fetching convenience
 - League pages set `activeLeague` on mount based on route param
 - `/` page sets to 'ALL' as before
+
+### Active Listings API
+The card detail page needs eBay listings for a specific card. Add a new API route `/api/ebay/listings?card_id=...` that constructs an eBay Browse API query from the card's `year + set_name + parallel + player name` to fetch current listings. This is distinct from the existing `/api/ebay` which searches by player name only.
+
+### Responsive Behavior
+On mobile (< 1024px), the sidebar collapses below the main stream content. Scores become a horizontal scrollable strip at the top. Odds and standings move into collapsible sections. Follows the existing pattern in the current homepage with `lg:` breakpoints.
+
+### Grade Distribution Data
+PSA pop data is fetched from the existing `/api/psa` endpoint, filtered to match the specific card's year/set/parallel. If the PSA API does not support card-level granularity, show player-level pop data as a fallback with a note.
 
 ## 7. Non-Goals (for this phase)
 

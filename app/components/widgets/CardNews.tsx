@@ -49,6 +49,7 @@ export default function CardNews() {
       icon="📰"
       accentColor={c.purple}
       viewAllLabel="All News →"
+      minContentHeight={200}
     >
       {loading && <WidgetSkeleton rows={2} />}
       {error && <WidgetError message="Unable to load news" />}

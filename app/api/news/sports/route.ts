@@ -66,7 +66,7 @@ function parseRSS(xml: string, source: string): { title: string; link: string; d
     const block = match[1];
 
     const titleMatch = block.match(/<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/i);
-    const linkMatch  = block.match(/<link>(.*?)<\/link>/i);
+    const linkMatch  = block.match(/<link>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/link>/i);
     const dateMatch  = block.match(/<pubDate>(.*?)<\/pubDate>/i);
 
     const title = titleMatch?.[1]?.trim() ?? '';

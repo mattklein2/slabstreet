@@ -71,6 +71,7 @@ export default function RecentSales() {
       icon="🏷️"
       accentColor={c.orange}
       badge={statsBadge}
+      minContentHeight={180}
     >
       {loading && <WidgetSkeleton rows={1} />}
       {error && <WidgetError message="Unable to load recent sales" />}

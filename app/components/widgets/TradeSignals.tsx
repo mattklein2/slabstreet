@@ -59,6 +59,7 @@ export default function TradeSignals() {
       icon="⚡"
       accentColor={c.orange}
       viewAllLabel="All Signals →"
+      minContentHeight={280}
     >
       {loading && <WidgetSkeleton rows={3} />}
       {error && <WidgetError message="Unable to load signals" />}

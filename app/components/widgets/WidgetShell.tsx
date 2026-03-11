@@ -10,6 +10,7 @@ interface WidgetShellProps {
   viewAllHref?: string;
   viewAllLabel?: string;
   badge?: ReactNode;
+  minContentHeight?: number;
   children: ReactNode;
 }
 
@@ -20,6 +21,7 @@ export default function WidgetShell({
   viewAllHref,
   viewAllLabel = 'View All →',
   badge,
+  minContentHeight,
   children,
 }: WidgetShellProps) {
   const { colors: c } = useTheme();
@@ -56,7 +58,7 @@ export default function WidgetShell({
         )}
       </div>
       {/* Content */}
-      <div className="px-6 pb-5">
+      <div className="px-6 pb-5" style={minContentHeight ? { minHeight: minContentHeight } : undefined}>
         {children}
       </div>
     </div>

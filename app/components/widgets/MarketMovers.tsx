@@ -97,6 +97,7 @@ export default function MarketMovers() {
       icon="📈"
       accentColor={c.green}
       badge={toggleBadge}
+      minContentHeight={130}
     >
       {loading && <WidgetSkeleton rows={1} />}
       {error && <WidgetError message="Unable to load market movers" />}

@@ -21,6 +21,8 @@ interface ScheduleGame {
   commence_time: string;
   home_team: string;
   away_team: string;
+  home_abbrev: string;
+  away_abbrev: string;
   home_score: string | null;
   away_score: string | null;
   status: string;
@@ -220,6 +222,8 @@ export async function GET(request: Request) {
 
       const homeName = homeComp?.team?.displayName ?? 'TBD';
       const awayName = awayComp?.team?.displayName ?? 'TBD';
+      const homeAbbrev = homeComp?.team?.abbreviation ?? '';
+      const awayAbbrev = awayComp?.team?.abbreviation ?? '';
       const homeScore = homeComp?.score ?? null;
       const awayScore = awayComp?.score ?? null;
 
@@ -245,6 +249,8 @@ export async function GET(request: Request) {
         commence_time: event.date,
         home_team: homeName,
         away_team: awayName,
+        home_abbrev: homeAbbrev,
+        away_abbrev: awayAbbrev,
         home_score: homeScore,
         away_score: awayScore,
         status: statusDesc,

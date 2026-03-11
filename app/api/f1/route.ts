@@ -1,16 +1,19 @@
 import { NextResponse } from 'next/server';
 
 /*
-  GET /api/f1?view=race|qualifying|standings
+  GET /api/f1?view=race|qualifying|standings|schedule
+  GET /api/f1?view=race&eventId=X
 
   Returns F1 data from ESPN:
-  - race: Latest race results (driver positions)
+  - race: Latest race results (or specific race if eventId provided)
   - qualifying: Latest qualifying results
   - standings: Championship standings (drivers + constructors)
+  - schedule: Full season calendar with status and winners
 
   Response varies by view:
   - race/qualifying: { raceName, results: F1Result[], status }
   - standings: { drivers: StandingEntry[], constructors: StandingEntry[] }
+  - schedule: { races: ScheduleRace[] }
 
   5-minute cache.
 */
@@ -27,6 +30,15 @@ interface StandingEntry {
   rank: number;
   name: string;
   points: number;
+}
+
+interface ScheduleRace {
+  id: string;
+  name: string;
+  shortName: string;
+  date: string;
+  status: string;
+  winner: string | null;
 }
 
 // ─── Cache ───────────────────────────────────────────────────
@@ -52,7 +64,112 @@ function setCache(key: string, data: unknown): void {
   cache.set(key, { data, timestamp: Date.now() });
 }
 
+// ─── Helpers ─────────────────────────────────────────────────
+
+function shortenRaceName(name: string): string {
+  // ESPN names like "Qatar Airways Australian Grand Prix" or "STC Saudi Arabian Grand Prix"
+  // Known location words that need the preceding word too
+  const multiWord = ['arabian', 'states', 'city', 'paulo', 'dhabi', 'vegas'];
+  const gpMatch = name.match(/(.+?)\s+Grand\s+Prix/i);
+  if (!gpMatch) return name;
+  const words = gpMatch[1].trim().split(/\s+/);
+  const last = words[words.length - 1];
+  if (words.length >= 2 && multiWord.includes(last.toLowerCase())) {
+    return `${words[words.length - 2]} ${last} GP`;
+  }
+  return `${last} GP`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ESPNEvent = any;
+
+function getSeasonYear(): number {
+  return new Date().getFullYear();
+}
+
 // ─── ESPN Fetchers ───────────────────────────────────────────
+
+async function fetchSeasonData(): Promise<ESPNEvent[]> {
+  const cacheKey = 'f1:season_raw';
+  const cached = getCached(cacheKey);
+  if (cached) return cached as ESPNEvent[];
+
+  const year = getSeasonYear();
+  const res = await fetch(
+    `https://site.api.espn.com/apis/site/v2/sports/racing/f1/scoreboard?dates=${year}`,
+    { next: { revalidate: 300 } }
+  );
+  if (!res.ok) throw new Error(`ESPN returned ${res.status}`);
+  const data = await res.json();
+
+  const events = data.events || [];
+  setCache(cacheKey, events);
+  return events;
+}
+
+async function fetchSchedule(): Promise<{ races: ScheduleRace[] }> {
+  const events = await fetchSeasonData();
+
+  const races: ScheduleRace[] = events.map((event: ESPNEvent) => {
+    const status = event.status?.type?.description || 'Unknown';
+    const competitions = event.competitions || [];
+    // Find race competition (last one, typically index 4) for winner
+    const raceComp = competitions[competitions.length - 1];
+    let winner: string | null = null;
+
+    if (status === 'Final' && raceComp?.competitors) {
+      const winnerEntry = raceComp.competitors.find(
+        (c: { winner?: boolean }) => c.winner
+      );
+      if (winnerEntry) {
+        winner = winnerEntry.athlete?.displayName || null;
+      }
+    }
+
+    return {
+      id: event.id,
+      name: event.name || 'Grand Prix',
+      shortName: shortenRaceName(event.name || 'Grand Prix'),
+      date: event.date || '',
+      status,
+      winner,
+    };
+  });
+
+  return { races };
+}
+
+async function fetchRaceByEventId(eventId: string): Promise<{
+  raceName: string;
+  results: F1Result[];
+  status: string;
+}> {
+  const events = await fetchSeasonData();
+  const event = events.find((e: ESPNEvent) => String(e.id) === eventId);
+
+  if (!event) {
+    return { raceName: '', results: [], status: 'Event not found' };
+  }
+
+  const raceName = event.name || 'Grand Prix';
+  const status = event.status?.type?.description || 'Unknown';
+  const competitions = event.competitions || [];
+  // Race competition is typically the last one
+  const raceComp = competitions[competitions.length - 1];
+  const competitors = raceComp?.competitors || [];
+
+  const results: F1Result[] = competitors.map(
+    (c: { order: number; athlete?: { displayName?: string }; team?: { displayName?: string }; winner?: boolean }) => ({
+      position: c.order,
+      driver: c.athlete?.displayName || 'Unknown',
+      team: c.team?.displayName || '',
+      winner: c.winner || false,
+    })
+  );
+
+  return { raceName, results, status };
+}
+
 async function fetchRaceResults(): Promise<{
   raceName: string;
   results: F1Result[];
@@ -83,56 +200,6 @@ async function fetchRaceResults(): Promise<{
   );
 
   return { raceName, results, status };
-}
-
-async function fetchQualifying(): Promise<{
-  raceName: string;
-  results: F1Result[];
-  status: string;
-}> {
-  // ESPN doesn't have a separate qualifying endpoint — use the race schedule
-  // and check for qualifying status. For now, return the most recent event data.
-  // A future improvement could parse qualifying sessions if ESPN exposes them.
-  const res = await fetch(
-    'https://site.api.espn.com/apis/site/v2/sports/racing/f1/scoreboard',
-    { next: { revalidate: 300 } }
-  );
-  if (!res.ok) throw new Error(`ESPN returned ${res.status}`);
-  const data = await res.json();
-
-  const event = data.events?.[0];
-  if (!event)
-    return { raceName: '', results: [], status: 'No qualifying data' };
-
-  const raceName = event.name || 'Grand Prix';
-
-  // Check if there's qualifying data in sub-competitions
-  const competitions = event.competitions || [];
-  // Try to find a qualifying competition (type text might include "Qualifying")
-  const qualiComp = competitions.find(
-    (c: { type?: { text?: string } }) =>
-      c.type?.text?.toLowerCase().includes('qualifying')
-  );
-
-  if (qualiComp) {
-    const competitors = qualiComp.competitors || [];
-    const results: F1Result[] = competitors.map(
-      (c: { order: number; athlete?: { displayName?: string }; team?: { displayName?: string }; winner?: boolean }) => ({
-        position: c.order,
-        driver: c.athlete?.displayName || 'Unknown',
-        team: c.team?.displayName || '',
-        winner: false,
-      })
-    );
-    return { raceName, results, status: 'Qualifying' };
-  }
-
-  // Fallback: use race results as grid order indicator
-  return {
-    raceName,
-    results: [],
-    status: 'Qualifying data not available for this event',
-  };
 }
 
 async function fetchStandings(): Promise<{
@@ -197,8 +264,9 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const view = searchParams.get('view') || 'race';
+    const eventId = searchParams.get('eventId');
 
-    const cacheKey = `f1:${view}`;
+    const cacheKey = eventId ? `f1:race:${eventId}` : `f1:${view}`;
     const cached = getCached(cacheKey);
     if (cached) {
       return NextResponse.json({ ...cached as Record<string, unknown>, cached: true });
@@ -207,13 +275,19 @@ export async function GET(request: Request) {
     let result: Record<string, unknown>;
 
     switch (view) {
-      case 'qualifying':
-        result = await fetchQualifying();
+      case 'schedule':
+        result = await fetchSchedule();
         break;
       case 'standings':
         result = await fetchStandings();
         break;
       case 'race':
+        if (eventId) {
+          result = await fetchRaceByEventId(eventId);
+        } else {
+          result = await fetchRaceResults();
+        }
+        break;
       default:
         result = await fetchRaceResults();
         break;

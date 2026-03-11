@@ -282,7 +282,7 @@ export default function FullSchedule() {
             className="font-body text-[11px] font-medium tracking-widest uppercase"
             style={{ color: c.muted }}
           >
-            {scoreLeague === 'F1' ? 'F1' : 'SCORES'}
+            {scoreLeague === 'F1' ? 'F1 SEASON' : 'SCORES'}
           </span>
         </div>
 

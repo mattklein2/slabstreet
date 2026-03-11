@@ -3,13 +3,22 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../ThemeProvider';
 
-type F1View = 'race' | 'qualifying' | 'standings';
+type F1View = 'schedule' | 'standings';
 
 interface F1Result {
   position: number;
   driver: string;
   team: string;
   winner: boolean;
+}
+
+interface ScheduleRace {
+  id: string;
+  name: string;
+  shortName: string;
+  date: string;
+  status: string;
+  winner: string | null;
 }
 
 interface StandingEntry {
@@ -39,16 +48,37 @@ const TEAM_COLORS: Record<string, string> = {
   Haas: '#B6BABD',
 };
 
+// F1 points system
+const POINTS: Record<number, number> = {
+  1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1,
+};
+
+function formatRaceDate(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  } catch {
+    return '';
+  }
+}
+
 export default function F1Results() {
   const { colors: c } = useTheme();
-  const [view, setView] = useState<F1View>('race');
+  const [view, setView] = useState<F1View>('schedule');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // Race/qualifying data
-  const [raceName, setRaceName] = useState('');
-  const [results, setResults] = useState<F1Result[]>([]);
-  const [raceStatus, setRaceStatus] = useState('');
+  // Schedule data
+  const [races, setRaces] = useState<ScheduleRace[]>([]);
+
+  // Race detail data
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [raceDetail, setRaceDetail] = useState<{
+    raceName: string;
+    results: F1Result[];
+    status: string;
+  } | null>(null);
+  const [raceLoading, setRaceLoading] = useState(false);
 
   // Standings data
   const [drivers, setDrivers] = useState<StandingEntry[]>([]);
@@ -57,6 +87,7 @@ export default function F1Results() {
     'drivers'
   );
 
+  // Load schedule or standings
   useEffect(() => {
     let cancelled = false;
 
@@ -64,7 +95,8 @@ export default function F1Results() {
       setLoading(true);
       setError(false);
       try {
-        const res = await fetch(`/api/f1?view=${view}`);
+        const endpoint = view === 'standings' ? '/api/f1?view=standings' : '/api/f1?view=schedule';
+        const res = await fetch(endpoint);
         if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
 
@@ -74,9 +106,7 @@ export default function F1Results() {
           setDrivers(data.drivers || []);
           setConstructors(data.constructors || []);
         } else {
-          setRaceName(data.raceName || '');
-          setResults(data.results || []);
-          setRaceStatus(data.status || '');
+          setRaces(data.races || []);
         }
       } catch {
         if (!cancelled) setError(true);
@@ -91,11 +121,181 @@ export default function F1Results() {
     };
   }, [view]);
 
+  // Load race detail when an event is selected
+  useEffect(() => {
+    if (!selectedEventId) {
+      setRaceDetail(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadRace() {
+      setRaceLoading(true);
+      try {
+        const res = await fetch(`/api/f1?view=race&eventId=${selectedEventId}`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+        if (!cancelled) {
+          setRaceDetail({
+            raceName: data.raceName || '',
+            results: data.results || [],
+            status: data.status || '',
+          });
+        }
+      } catch {
+        if (!cancelled) {
+          setRaceDetail({ raceName: '', results: [], status: 'Failed to load' });
+        }
+      } finally {
+        if (!cancelled) setRaceLoading(false);
+      }
+    }
+
+    loadRace();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedEventId]);
+
   const views: { key: F1View; label: string }[] = [
-    { key: 'race', label: 'RACE' },
-    { key: 'qualifying', label: 'QUALI' },
+    { key: 'schedule', label: 'SCHEDULE' },
     { key: 'standings', label: 'WDC' },
   ];
+
+  // If viewing a race detail, show that instead
+  if (selectedEventId) {
+    return (
+      <div>
+        {/* Back button */}
+        <div style={{ padding: '0 22px' }}>
+          <button
+            onClick={() => setSelectedEventId(null)}
+            className="font-body text-[11px] cursor-pointer mb-2"
+            style={{
+              color: c.muted,
+              background: 'transparent',
+              border: 'none',
+              padding: '2px 0',
+            }}
+          >
+            ← Schedule
+          </button>
+        </div>
+
+        <div style={{ padding: '0 22px 22px' }}>
+          {raceLoading && (
+            <div className="flex flex-col gap-1.5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded h-6"
+                  style={{
+                    background: `linear-gradient(90deg, ${c.border} 25%, ${c.surface} 50%, ${c.border} 75%)`,
+                    backgroundSize: '200% 100%',
+                    animation: 'shimmer 1.5s ease-in-out infinite',
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {!raceLoading && raceDetail && (
+            <>
+              {/* Race name header */}
+              <div
+                className="font-body text-[11px] font-semibold mb-2 pb-1.5"
+                style={{
+                  color: c.text,
+                  borderBottom: `1px solid ${c.border}`,
+                }}
+              >
+                {raceDetail.raceName}
+                {raceDetail.status && raceDetail.status !== 'Scheduled' && (
+                  <span
+                    className="font-body text-[9px] font-medium ml-2 px-1.5 py-0.5 rounded"
+                    style={{
+                      color:
+                        raceDetail.status === 'In Progress'
+                          ? c.green
+                          : c.muted,
+                      background:
+                        raceDetail.status === 'In Progress'
+                          ? `${c.green}20`
+                          : `${c.muted}15`,
+                    }}
+                  >
+                    {raceDetail.status === 'In Progress' ? 'LIVE' : raceDetail.status.toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              {raceDetail.results.length === 0 && (
+                <div
+                  className="py-6 text-center font-body text-xs"
+                  style={{ color: c.muted }}
+                >
+                  {raceDetail.status === 'Scheduled' ? 'Race has not started yet' : 'No results available'}
+                </div>
+              )}
+
+              {/* Driver results grid */}
+              {raceDetail.results.length > 0 && (
+                <div className="flex flex-col gap-0.5">
+                  {raceDetail.results.map((r) => {
+                    const posColor = POSITION_COLORS[r.position];
+                    const teamColor = TEAM_COLORS[r.team] || c.muted;
+                    return (
+                      <div
+                        key={r.position}
+                        className="flex items-center gap-2 px-3 py-1.5"
+                        style={{
+                          borderRadius: 8,
+                          background:
+                            r.position <= 3 ? `${posColor}10` : 'transparent',
+                        }}
+                      >
+                        <span
+                          className="font-display text-[13px] w-5 text-right leading-none"
+                          style={{
+                            color: posColor || c.muted,
+                            fontWeight: r.position <= 3 ? 700 : 500,
+                          }}
+                        >
+                          {r.position}
+                        </span>
+                        <div
+                          className="w-0.5 h-4 rounded-full"
+                          style={{ background: teamColor }}
+                        />
+                        <span
+                          className="font-body text-[11px] flex-1 truncate"
+                          style={{
+                            color: r.position <= 3 ? c.text : c.muted,
+                            fontWeight: r.position <= 3 ? 600 : 400,
+                          }}
+                        >
+                          {r.driver}
+                        </span>
+                        {r.position <= 10 && (
+                          <span
+                            className="font-body text-[9px] font-medium"
+                            style={{ color: c.muted }}
+                          >
+                            +{POINTS[r.position]}pts
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -152,128 +352,115 @@ export default function F1Results() {
           </div>
         )}
 
-        {!loading && !error && view !== 'standings' && (
-          <>
-            {/* Race name header */}
-            {raceName && (
-              <div
-                className="font-body text-[11px] font-semibold mb-2 pb-1.5"
-                style={{
-                  color: c.text,
-                  borderBottom: `1px solid ${c.border}`,
-                }}
-              >
-                {raceName}
-                {raceStatus && (
+        {/* Schedule view */}
+        {!loading && !error && view === 'schedule' && (
+          <div className="flex flex-col">
+            {races.map((race, i) => {
+              const isCompleted = race.status === 'Final';
+              const isLive = race.status === 'In Progress';
+              const isScheduled = !isCompleted && !isLive;
+
+              // Find if this is the next upcoming race
+              const isNext = isScheduled && (i === 0 || races[i - 1]?.status === 'Final' || races[i - 1]?.status === 'In Progress');
+
+              return (
+                <button
+                  key={race.id}
+                  onClick={() => {
+                    if (isCompleted || isLive) {
+                      setSelectedEventId(race.id);
+                    }
+                  }}
+                  className="flex items-center gap-2 text-left w-full"
+                  style={{
+                    padding: '7px 8px',
+                    borderRadius: 8,
+                    background: isNext ? `${c.cyan}08` : 'transparent',
+                    borderBottom: `1px solid ${c.border}`,
+                    cursor: isCompleted || isLive ? 'pointer' : 'default',
+                    border: 'none',
+                    borderBottomWidth: 1,
+                    borderBottomStyle: 'solid',
+                    borderBottomColor: c.border,
+                  }}
+                >
+                  {/* Round number */}
                   <span
-                    className="font-body text-[9px] font-medium ml-2 px-1.5 py-0.5 rounded"
+                    className="font-display text-[11px] w-4 text-right shrink-0"
                     style={{
-                      color:
-                        raceStatus === 'Final'
-                          ? c.muted
-                          : raceStatus === 'In Progress'
-                            ? c.green
-                            : c.muted,
-                      background:
-                        raceStatus === 'In Progress'
-                          ? `${c.green}20`
-                          : `${c.muted}15`,
+                      color: isCompleted ? c.muted : isNext ? c.cyan : c.muted,
+                      fontWeight: isNext ? 700 : 500,
+                      opacity: isScheduled && !isNext ? 0.5 : 1,
                     }}
                   >
-                    {raceStatus === 'In Progress' ? 'LIVE' : raceStatus.toUpperCase()}
+                    {i + 1}
                   </span>
-                )}
-              </div>
-            )}
 
-            {results.length === 0 && (
-              <div
-                className="py-6 text-center font-body text-xs"
-                style={{ color: c.muted }}
-              >
-                {raceStatus || 'No results available'}
-              </div>
-            )}
+                  {/* Race name */}
+                  <span
+                    className="font-body text-[11px] flex-1 truncate"
+                    style={{
+                      color: isCompleted || isLive ? c.text : c.muted,
+                      fontWeight: isNext ? 600 : 400,
+                    }}
+                  >
+                    {race.shortName}
+                  </span>
 
-            {/* Driver results grid */}
-            {results.length > 0 && (
-              <div className="flex flex-col gap-0.5">
-                {results.map((r) => {
-                  const posColor = POSITION_COLORS[r.position];
-                  const teamColor = TEAM_COLORS[r.team] || c.muted;
-                  return (
-                    <div
-                      key={r.position}
-                      className="flex items-center gap-2 px-3 py-1.5"
+                  {/* Date */}
+                  <span
+                    className="font-body text-[9px] shrink-0"
+                    style={{ color: c.muted }}
+                  >
+                    {formatRaceDate(race.date)}
+                  </span>
+
+                  {/* Status or winner */}
+                  {isLive && (
+                    <span
+                      className="font-body text-[9px] font-semibold px-1.5 py-0.5 rounded shrink-0"
                       style={{
-                        borderRadius: 8,
-                        background:
-                          r.position <= 3 ? `${posColor}10` : 'transparent',
+                        color: c.green,
+                        background: `${c.green}18`,
                       }}
                     >
-                      {/* Position */}
-                      <span
-                        className="font-display text-[13px] w-5 text-right leading-none"
-                        style={{
-                          color: posColor || c.muted,
-                          fontWeight: r.position <= 3 ? 700 : 500,
-                        }}
-                      >
-                        {r.position}
-                      </span>
-
-                      {/* Team color bar */}
-                      <div
-                        className="w-0.5 h-4 rounded-full"
-                        style={{ background: teamColor }}
-                      />
-
-                      {/* Driver name */}
-                      <span
-                        className="font-body text-[11px] flex-1 truncate"
-                        style={{
-                          color: r.position <= 3 ? c.text : c.muted,
-                          fontWeight: r.position <= 3 ? 600 : 400,
-                        }}
-                      >
-                        {r.driver}
-                      </span>
-
-                      {/* Points indicator for top 10 */}
-                      {r.position <= 10 && (
-                        <span
-                          className="font-body text-[9px] font-medium"
-                          style={{ color: c.muted }}
-                        >
-                          +
-                          {r.position === 1
-                            ? 25
-                            : r.position === 2
-                              ? 18
-                              : r.position === 3
-                                ? 15
-                                : r.position === 4
-                                  ? 12
-                                  : r.position === 5
-                                    ? 10
-                                    : r.position === 6
-                                      ? 8
-                                      : r.position === 7
-                                        ? 6
-                                        : r.position === 8
-                                          ? 4
-                                          : r.position === 9
-                                            ? 2
-                                            : 1}
-                          pts
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </>
+                      LIVE
+                    </span>
+                  )}
+                  {isCompleted && race.winner && (
+                    <span
+                      className="font-body text-[9px] shrink-0 truncate"
+                      style={{
+                        color: c.muted,
+                        maxWidth: 80,
+                      }}
+                    >
+                      {race.winner.split(' ').pop()}
+                    </span>
+                  )}
+                  {isScheduled && !isNext && (
+                    <span
+                      className="font-body text-[9px] shrink-0"
+                      style={{ color: c.muted, opacity: 0.5 }}
+                    >
+                      —
+                    </span>
+                  )}
+                  {isNext && (
+                    <span
+                      className="font-body text-[9px] font-semibold px-1.5 py-0.5 rounded shrink-0"
+                      style={{
+                        color: c.cyan,
+                        background: `${c.cyan}18`,
+                      }}
+                    >
+                      NEXT
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         )}
 
         {/* Standings view */}
@@ -305,7 +492,7 @@ export default function F1Results() {
               })}
             </div>
 
-            {/* Standings list — grid so points column aligns vertically */}
+            {/* Standings list */}
             <div
               className="grid px-2"
               style={{

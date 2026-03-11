@@ -15,30 +15,35 @@ export default function HomePage() {
   return (
     <LeagueProvider>
     <div className="min-h-screen" style={{ color: c.text }}>
-      <main className="max-w-[1800px] mx-auto px-8 md:px-12 lg:px-16 py-6 flex flex-col gap-5">
-        {/* Row 1: Market Movers — full width, always on top */}
+      <main className="max-w-[1600px] mx-auto px-7 py-8 flex flex-col gap-6">
+        {/* Row 1: Market Movers — full width */}
         <MarketMovers />
 
-        {/* Row 2+: Scores sidebar + main content */}
+        {/* Row 2: 3-column layout — Scores | News | Signals */}
         <div className="flex flex-col lg:flex-row gap-5">
-          {/* Left sidebar — Scores */}
-          <div className="lg:w-[300px] lg:shrink-0">
-            <div className="lg:sticky lg:top-4">
+          {/* Left — Scores */}
+          <div className="lg:w-[340px] lg:shrink-0">
+            <div className="lg:sticky lg:top-[72px]">
               <FullSchedule />
             </div>
           </div>
 
-          {/* Main content */}
-          <div className="flex-1 min-w-0 flex flex-col gap-5">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-              <SportsNews />
-              <TradeSignals />
-            </div>
+          {/* Center — News */}
+          <div className="flex-1 min-w-0">
+            <SportsNews />
+          </div>
 
-            <RecentSales />
-            <CardNews />
+          {/* Right — Signals */}
+          <div className="lg:w-[380px] lg:shrink-0">
+            <TradeSignals />
           </div>
         </div>
+
+        {/* Row 3: Recent Sales — horizontal strip */}
+        <RecentSales />
+
+        {/* Row 4: Card News — grid */}
+        <CardNews />
       </main>
 
       {/* Footer */}

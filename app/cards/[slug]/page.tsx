@@ -149,7 +149,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="min-h-screen" style={{ color: c.text }}>
-      <main className="max-w-[1400px] mx-auto px-8 md:px-12 lg:px-16 py-8">
+      <main className="max-w-[1400px] mx-auto px-7 py-8">
         {/* Breadcrumb */}
         <div className="font-body text-xs mb-6" style={{ color: c.muted }}>
           <a href="/" style={{ color: c.muted, textDecoration: 'none' }}>Home</a>
@@ -166,10 +166,11 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
           {/* Card image */}
           <div className="lg:w-[350px] shrink-0">
             <div
-              className="rounded-lg overflow-hidden"
+              className="overflow-hidden"
               style={{
                 background: c.surface,
                 border: `1px solid ${c.border}`,
+                borderRadius: 16,
                 aspectRatio: '2.5/3.5',
                 display: 'flex',
                 alignItems: 'center',
@@ -227,11 +228,11 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
                   {stats.priceByGrade.map(g => (
                     <div
                       key={g.grade}
-                      className="rounded px-4 py-3"
+                      className="px-4 py-3"
                       style={{
                         background: c.surface,
                         border: `1px solid ${c.border}`,
-                        borderLeft: `3px solid ${getGradeColor(g.grade)}`,
+                        borderRadius: 12,
                       }}
                     >
                       <div className="font-mono text-[10px] mb-1" style={{ color: getGradeColor(g.grade) }}>
@@ -254,8 +255,8 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
         {/* Price chart */}
         {chartData.length > 0 && (
           <div
-            className="rounded-lg p-6 mb-8"
-            style={{ background: c.surface, border: `1px solid ${c.border}` }}
+            className="p-6 mb-8"
+            style={{ borderRadius: 16, background: c.surface, border: `1px solid ${c.border}` }}
           >
             <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: c.muted }}>
               Price History
@@ -278,7 +279,7 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
                   contentStyle={{
                     background: c.bg,
                     border: `1px solid ${c.border}`,
-                    borderRadius: 4,
+                    borderRadius: 12,
                     fontSize: 11,
                     fontFamily: 'IBM Plex Mono, monospace',
                   }}
@@ -308,8 +309,8 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
         {/* Recent sales table */}
         {stats.totalSales > 0 && (
           <div
-            className="rounded-lg overflow-hidden mb-8"
-            style={{ background: c.surface, border: `1px solid ${c.border}` }}
+            className="overflow-hidden mb-8"
+            style={{ borderRadius: 16, background: c.surface, border: `1px solid ${c.border}` }}
           >
             <div className="px-6 py-4">
               <div className="font-body text-xs uppercase tracking-widest" style={{ color: c.muted }}>
@@ -370,8 +371,8 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
         {/* Active eBay Listings */}
         {!listingsLoading && listings.length > 0 && (
           <div
-            className="rounded-lg p-6 mb-8"
-            style={{ background: c.surface, border: `1px solid ${c.border}` }}
+            className="p-6 mb-8"
+            style={{ borderRadius: 16, background: c.surface, border: `1px solid ${c.border}` }}
           >
             <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: c.muted }}>
               Active eBay Listings
@@ -383,8 +384,9 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
                   href={listing.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded overflow-hidden no-underline"
+                  className="overflow-hidden no-underline"
                   style={{
+                    borderRadius: 12,
                     background: c.bg,
                     border: `1px solid ${c.border}`,
                     transition: 'border-color 0.15s',
@@ -419,8 +421,8 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
         {/* PSA Grade Distribution */}
         {stats.priceByGrade.length > 1 && (
           <div
-            className="rounded-lg p-6 mb-8"
-            style={{ background: c.surface, border: `1px solid ${c.border}` }}
+            className="p-6 mb-8"
+            style={{ borderRadius: 16, background: c.surface, border: `1px solid ${c.border}` }}
           >
             <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: c.muted }}>
               Grade Distribution
@@ -462,8 +464,8 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
 function StatBox({ label, value, sub, color: c }: { label: string; value: string; sub?: string; color: Record<string, string> }) {
   return (
     <div
-      className="rounded-md p-4"
-      style={{ background: c.surface, border: `1px solid ${c.border}` }}
+      className="p-4"
+      style={{ borderRadius: 12, background: c.surface, border: `1px solid ${c.border}` }}
     >
       <div className="font-body text-[10px] uppercase tracking-wider mb-1" style={{ color: c.muted }}>
         {label}

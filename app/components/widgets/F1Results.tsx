@@ -308,8 +308,8 @@ export default function F1Results() {
               })}
             </div>
 
-            {/* Standings list */}
-            <div className="flex flex-col gap-0.5">
+            {/* Standings list — all drivers, tight layout */}
+            <div className="flex flex-col gap-0">
               {(standingsTab === 'drivers' ? drivers : constructors).map(
                 (entry) => {
                   const posColor = POSITION_COLORS[entry.rank];
@@ -320,14 +320,14 @@ export default function F1Results() {
                   return (
                     <div
                       key={entry.rank}
-                      className="flex items-center gap-2 rounded px-2 py-1"
+                      className="flex items-center gap-1.5 px-2 py-[3px]"
                       style={{
                         background:
                           entry.rank <= 3 ? `${posColor}10` : 'transparent',
                       }}
                     >
                       <span
-                        className="font-display text-[13px] w-5 text-right leading-none"
+                        className="font-display text-[12px] w-4 text-right leading-none"
                         style={{
                           color: posColor || c.muted,
                           fontWeight: entry.rank <= 3 ? 700 : 500,
@@ -338,13 +338,13 @@ export default function F1Results() {
 
                       {teamColor && (
                         <div
-                          className="w-0.5 h-4 rounded-full"
+                          className="w-0.5 h-3 rounded-full"
                           style={{ background: teamColor }}
                         />
                       )}
 
                       <span
-                        className="font-body text-[11px] flex-1 truncate"
+                        className="font-body text-[11px] truncate"
                         style={{
                           color: entry.rank <= 3 ? c.text : c.muted,
                           fontWeight: entry.rank <= 3 ? 600 : 400,
@@ -354,16 +354,10 @@ export default function F1Results() {
                       </span>
 
                       <span
-                        className="font-body text-[11px] font-semibold"
+                        className="font-body text-[10px] font-semibold ml-auto shrink-0 tabular-nums"
                         style={{ color: entry.rank <= 3 ? c.text : c.muted }}
                       >
                         {entry.points}
-                        <span
-                          className="text-[9px] font-normal ml-0.5"
-                          style={{ color: c.muted }}
-                        >
-                          pts
-                        </span>
                       </span>
                     </div>
                   );

@@ -129,7 +129,7 @@ export default function NavSearch() {
   };
 
   return (
-    <div ref={searchRef} style={{ position: 'relative', width: '100%', maxWidth: isMobile ? '100%' : 480, minWidth: 0 }}>
+    <div ref={searchRef} style={{ position: 'relative', width: '100%', maxWidth: isMobile ? '100%' : 560, minWidth: 0 }}>
       <span style={{
         position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
         color: c.green, fontSize: isMobile ? 15 : 17, pointerEvents: 'none', zIndex: 1,

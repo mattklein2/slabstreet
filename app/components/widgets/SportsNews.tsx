@@ -12,6 +12,7 @@ type SportsNewsItem = {
   source: string;
   time: string;
   league: string;
+  blurb?: string | null;
 };
 
 export default function SportsNews() {
@@ -26,7 +27,8 @@ export default function SportsNews() {
       setLoading(true);
       setError(false);
       try {
-        const res = await fetch(`/api/news/sports?league=${activeLeague}&limit=10`);
+        // Try blurbs endpoint first (includes AI summaries when available)
+        const res = await fetch(`/api/news/blurbs?league=${activeLeague}&limit=10`);
         const data = await res.json();
         setNews(data.news || []);
       } catch {

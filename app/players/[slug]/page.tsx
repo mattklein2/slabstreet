@@ -252,7 +252,7 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   return (
     <div style={{ color: c.text, fontFamily: 'IBM Plex Sans, sans-serif' }}>
 
-      <div style={{ maxWidth: gameLog.length > 0 && isWide ? 1200 : 900, margin: '0 auto', padding: '32px 20px', transition: 'max-width 0.3s' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 20px' }}>
 
         {/* PLAYER HEADER */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderTop: `3px solid ${c.green}`, borderRadius: 4, padding: '24px 28px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 24, flexWrap: 'wrap', marginBottom: 20 }}>

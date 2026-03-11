@@ -86,12 +86,23 @@ function formatShortDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
+type EbayListing = {
+  title: string;
+  price: string;
+  currency: string;
+  image: string;
+  url: string;
+  condition: string;
+};
+
 export default function CardDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const { colors: c } = useTheme();
   const [data, setData] = useState<CardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [listings, setListings] = useState<EbayListing[]>([]);
+  const [listingsLoading, setListingsLoading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/cards/${slug}`)
@@ -101,6 +112,13 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
       })
       .then(d => { setData(d); setLoading(false); })
       .catch(() => { setError(true); setLoading(false); });
+
+    // Fetch active eBay listings
+    setListingsLoading(true);
+    fetch(`/api/ebay/listings?cardSlug=${slug}&limit=12`)
+      .then(r => r.ok ? r.json() : { listings: [] })
+      .then(d => { setListings(d.listings || []); setListingsLoading(false); })
+      .catch(() => setListingsLoading(false));
   }, [slug]);
 
   if (loading) {
@@ -345,6 +363,94 @@ export default function CardDetailPage({ params }: { params: Promise<{ slug: str
                     ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* Active eBay Listings */}
+        {!listingsLoading && listings.length > 0 && (
+          <div
+            className="rounded-lg p-6 mb-8"
+            style={{ background: c.surface, border: `1px solid ${c.border}` }}
+          >
+            <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: c.muted }}>
+              Active eBay Listings
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {listings.map((listing, i) => (
+                <a
+                  key={i}
+                  href={listing.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded overflow-hidden no-underline"
+                  style={{
+                    background: c.bg,
+                    border: `1px solid ${c.border}`,
+                    transition: 'border-color 0.15s',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = c.green; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = c.border; }}
+                >
+                  {listing.image && (
+                    <div style={{ height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', background: c.bg }}>
+                      <img src={listing.image} alt="" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                    </div>
+                  )}
+                  <div className="p-3">
+                    <div className="font-body text-[10px] line-clamp-2 mb-1.5" style={{ color: c.text }}>
+                      {listing.title}
+                    </div>
+                    <div className="font-display text-lg" style={{ color: c.green }}>
+                      ${listing.price}
+                    </div>
+                    {listing.condition && (
+                      <div className="font-body text-[9px] mt-1" style={{ color: c.muted }}>
+                        {listing.condition}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* PSA Grade Distribution */}
+        {stats.priceByGrade.length > 1 && (
+          <div
+            className="rounded-lg p-6 mb-8"
+            style={{ background: c.surface, border: `1px solid ${c.border}` }}
+          >
+            <div className="font-body text-xs uppercase tracking-widest mb-4" style={{ color: c.muted }}>
+              Grade Distribution
+            </div>
+            <div className="flex flex-col gap-2">
+              {stats.priceByGrade
+                .sort((a, b) => b.count - a.count)
+                .map(g => {
+                  const maxCount = Math.max(...stats.priceByGrade.map(x => x.count));
+                  const barPct = Math.max(4, (g.count / maxCount) * 100);
+                  return (
+                    <div key={g.grade} className="flex items-center gap-3">
+                      <span
+                        className="font-mono text-[11px] shrink-0"
+                        style={{ color: getGradeColor(g.grade), minWidth: 60 }}
+                      >
+                        {g.grade}
+                      </span>
+                      <div className="flex-1 h-5 rounded-full overflow-hidden" style={{ background: c.bg }}>
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${barPct}%`, background: getGradeColor(g.grade), opacity: 0.7 }}
+                        />
+                      </div>
+                      <span className="font-mono text-[10px] shrink-0" style={{ color: c.muted, minWidth: 30, textAlign: 'right' }}>
+                        {g.count}
+                      </span>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         )}

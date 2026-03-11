@@ -20,25 +20,30 @@ export default function HomePage() {
       <Nav />
       <LeagueTabs />
 
-      {/* Widget Grid — 5 rows, scrollable */}
       <main className="max-w-[1800px] mx-auto px-8 md:px-12 lg:px-16 py-6 flex flex-col gap-5">
-        {/* Row 1: Market Movers — full width horizontal scroll */}
+        {/* Row 1: Market Movers — full width, always on top */}
         <MarketMovers />
 
-        {/* Row 2: Full Schedule — full width with date nav + league tabs */}
-        <FullSchedule />
+        {/* Row 2+: Scores sidebar + main content */}
+        <div className="flex flex-col lg:flex-row gap-5">
+          {/* Left sidebar — Scores */}
+          <div className="lg:w-[300px] lg:shrink-0">
+            <div className="lg:sticky lg:top-4">
+              <FullSchedule />
+            </div>
+          </div>
 
-        {/* Row 3: Sports News + Trade Signals — side by side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <SportsNews />
-          <TradeSignals />
+          {/* Main content */}
+          <div className="flex-1 min-w-0 flex flex-col gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <SportsNews />
+              <TradeSignals />
+            </div>
+
+            <RecentSales />
+            <CardNews />
+          </div>
         </div>
-
-        {/* Row 4: Recent eBay Sales — full width horizontal scroll */}
-        <RecentSales />
-
-        {/* Row 5: Card Market News — full width */}
-        <CardNews />
       </main>
 
       {/* Footer */}

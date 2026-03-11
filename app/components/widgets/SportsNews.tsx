@@ -47,6 +47,7 @@ export default function SportsNews() {
       title="SPORTS NEWS"
       icon="📰"
       accentColor={c.green}
+      minContentHeight={400}
     >
       {loading && <WidgetSkeleton rows={4} />}
       {error && <WidgetError message="Unable to load sports news" />}

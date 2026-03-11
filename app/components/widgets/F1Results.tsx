@@ -344,7 +344,7 @@ export default function F1Results() {
                       )}
 
                       <span
-                        className="font-body text-[11px] truncate"
+                        className="font-body text-[11px] flex-1 truncate"
                         style={{
                           color: entry.rank <= 3 ? c.text : c.muted,
                           fontWeight: entry.rank <= 3 ? 600 : 400,
@@ -354,8 +354,8 @@ export default function F1Results() {
                       </span>
 
                       <span
-                        className="font-body text-[10px] font-semibold ml-auto shrink-0 tabular-nums"
-                        style={{ color: entry.rank <= 3 ? c.text : c.muted }}
+                        className="font-body text-[10px] font-semibold shrink-0 tabular-nums text-right"
+                        style={{ color: entry.rank <= 3 ? c.text : c.muted, width: 28 }}
                       >
                         {entry.points}
                       </span>

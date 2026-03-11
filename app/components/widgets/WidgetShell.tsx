@@ -28,20 +28,19 @@ export default function WidgetShell({
 
   return (
     <div
-      className="rounded-md"
       style={{
         background: c.surface,
         border: `1px solid ${c.border}`,
-        borderTop: `2px solid ${accentColor}`,
+        borderRadius: 16,
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between" style={{ padding: '18px 22px' }}>
         <div className="flex items-center gap-2.5">
           <span className="text-base leading-none">{icon}</span>
           <span
-            className="font-body text-[13px] font-medium tracking-widest uppercase"
-            style={{ color: accentColor }}
+            className="font-body text-[11px] font-medium tracking-widest uppercase"
+            style={{ color: c.muted }}
           >
             {title}
           </span>
@@ -58,7 +57,7 @@ export default function WidgetShell({
         )}
       </div>
       {/* Content */}
-      <div className="px-6 pb-5" style={minContentHeight ? { minHeight: minContentHeight } : undefined}>
+      <div style={{ padding: '0 22px 22px', ...(minContentHeight ? { minHeight: minContentHeight } : {}) }}>
         {children}
       </div>
     </div>
@@ -71,7 +70,7 @@ export function WidgetSkeleton({ rows = 3 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="rounded h-12"
+          className="rounded-xl h-12"
           style={{
             background: 'linear-gradient(90deg, var(--border) 25%, var(--surface) 50%, var(--border) 75%)',
             backgroundSize: '200% 100%',

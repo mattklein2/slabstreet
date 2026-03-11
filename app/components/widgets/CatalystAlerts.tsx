@@ -59,13 +59,13 @@ function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: n
       }}
     >
       {/* Main row */}
-      <div className="flex items-start gap-3" style={{ padding: '12px 14px' }}>
+      <div className="flex items-start gap-3" style={{ padding: '14px 16px' }}>
         {/* Rank number */}
         <div
-          className="flex items-center justify-center shrink-0 font-mono text-[13px] font-bold"
+          className="flex items-center justify-center shrink-0 font-mono text-[15px] font-bold"
           style={{
-            width: 28,
-            height: 28,
+            width: 32,
+            height: 32,
             borderRadius: 8,
             background: `${accent}14`,
             color: accent,
@@ -79,48 +79,33 @@ function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: n
           <div className="flex items-center gap-2 mb-0.5">
             <a
               href={`/players/${player.slug}`}
-              className="font-body text-[13px] font-semibold no-underline hover:underline truncate"
+              className="font-body text-[15px] font-semibold no-underline hover:underline truncate"
               style={{ color: c.text }}
             >
               {player.name}
             </a>
-            <span className="font-body text-[10px] shrink-0" style={{ color: c.muted }}>
+            <span className="font-body text-[12px] shrink-0" style={{ color: c.muted }}>
               {player.team} · {player.league}
             </span>
           </div>
           {/* Blurb */}
-          <div className="font-body text-[11px] leading-relaxed mt-1" style={{ color: c.text, opacity: 0.8 }}>
+          <div className="font-body text-[13px] leading-relaxed mt-1" style={{ color: c.text, opacity: 0.8 }}>
             {player.blurb}
           </div>
-          {/* Market data inline */}
-          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
-            {player.marketData.marketCap && (
-              <span className="font-mono text-[9px]" style={{ color: c.muted }}>
+          {/* Market cap only */}
+          {player.marketData.marketCap && (
+            <div className="mt-1.5">
+              <span className="font-mono text-[11px]" style={{ color: c.muted }}>
                 {player.marketData.marketCap}
               </span>
-            )}
-            {player.marketData.weeklyChange != null && (
-              <span className="font-mono text-[9px]" style={{ color: Number(player.marketData.weeklyChange) >= 0 ? '#00ff87' : '#ff3b5c' }}>
-                W: {Number(player.marketData.weeklyChange) >= 0 ? '+' : ''}{Number(player.marketData.weeklyChange).toFixed(1)}%
-              </span>
-            )}
-            {player.marketData.monthlyChange != null && (
-              <span className="font-mono text-[9px]" style={{ color: Number(player.marketData.monthlyChange) >= 0 ? '#00ff87' : '#ff3b5c' }}>
-                M: {Number(player.marketData.monthlyChange) >= 0 ? '+' : ''}{Number(player.marketData.monthlyChange).toFixed(1)}%
-              </span>
-            )}
-            {player.marketData.sales24h !== null && (
-              <span className="font-mono text-[9px]" style={{ color: c.muted }}>
-                {player.marketData.sales24h} sales/24h
-              </span>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Catalyst score + expand */}
         <div className="flex flex-col items-center gap-1 shrink-0">
           <div
-            className="font-mono text-[14px] font-bold leading-none"
+            className="font-mono text-[18px] font-bold leading-none"
             style={{ color: accent }}
           >
             {player.catalystScore}
@@ -132,7 +117,7 @@ function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: n
               background: 'none',
               border: 'none',
               color: c.muted,
-              fontSize: 10,
+              fontSize: 12,
               padding: '2px',
               transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
               transition: 'transform 0.15s',
@@ -145,20 +130,20 @@ function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: n
 
       {/* Expanded detail */}
       {expanded && (
-        <div style={{ padding: '0 14px 12px', borderTop: `1px solid ${c.border}` }}>
-          <div className="font-body text-[9px] font-medium tracking-widest uppercase mt-3 mb-2" style={{ color: c.muted }}>
+        <div style={{ padding: '0 16px 14px', borderTop: `1px solid ${c.border}` }}>
+          <div className="font-body text-[11px] font-medium tracking-widest uppercase mt-3 mb-2" style={{ color: c.muted }}>
             CATALYST BREAKDOWN
           </div>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             {Object.entries(player.factors)
               .filter(([, v]) => v > 0)
               .sort(([, a], [, b]) => b - a)
               .map(([key, val]) => (
                 <div key={key} className="flex items-center gap-2">
-                  <div className="font-body text-[10px] w-[72px] shrink-0" style={{ color: c.muted }}>
+                  <div className="font-body text-[12px] w-[80px] shrink-0" style={{ color: c.muted }}>
                     {FACTOR_LABELS[key]}
                   </div>
-                  <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: c.border }}>
+                  <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: c.border }}>
                     <div
                       className="h-full rounded-full"
                       style={{
@@ -168,7 +153,7 @@ function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: n
                       }}
                     />
                   </div>
-                  <div className="font-mono text-[10px] w-[28px] text-right" style={{ color: accent }}>
+                  <div className="font-mono text-[12px] w-[28px] text-right" style={{ color: accent }}>
                     {val}
                   </div>
                 </div>
@@ -200,10 +185,10 @@ function CatalystColumn({
   return (
     <div className="flex-1 min-w-0">
       <div className="mb-3">
-        <div className="font-display text-[13px] tracking-[2px] font-bold" style={{ color: accent }}>
+        <div className="font-display text-[15px] tracking-[2px] font-bold" style={{ color: accent }}>
           {title}
         </div>
-        <div className="font-body text-[10px] mt-0.5" style={{ color: c.muted }}>
+        <div className="font-body text-[12px] mt-0.5" style={{ color: c.muted }}>
           {subtitle}
         </div>
       </div>
@@ -213,7 +198,7 @@ function CatalystColumn({
         <WidgetEmpty message="No alerts right now" />
       )}
       {!loading && !error && players.length > 0 && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2.5">
           {players.map((p, i) => (
             <CatalystRow key={p.slug} player={p} rank={i + 1} accent={accent} />
           ))}
@@ -231,15 +216,15 @@ function WatchlistSection({ title, players, accent }: { title: string; players: 
 
   return (
     <div className="flex-1 min-w-0">
-      <div className="font-display text-[11px] tracking-[2px] font-bold mb-2" style={{ color: accent, opacity: 0.7 }}>
+      <div className="font-display text-[13px] tracking-[2px] font-bold mb-2" style={{ color: accent, opacity: 0.7 }}>
         {title}
       </div>
-      <div className="flex flex-wrap gap-x-1 gap-y-1">
+      <div className="flex flex-wrap gap-x-1.5 gap-y-1.5">
         {players.map((p) => (
           <a
             key={p.slug}
             href={`/players/${p.slug}`}
-            className="font-body text-[11px] no-underline hover:underline px-2 py-1"
+            className="font-body text-[13px] no-underline hover:underline px-2.5 py-1.5"
             style={{
               color: c.text,
               background: `${accent}08`,
@@ -247,7 +232,7 @@ function WatchlistSection({ title, players, accent }: { title: string; players: 
               borderRadius: 8,
             }}
           >
-            {p.name} <span style={{ color: c.muted, fontSize: 9 }}>{p.team}</span>
+            {p.name} <span style={{ color: c.muted, fontSize: 11 }}>{p.team}</span>
           </a>
         ))}
       </div>
@@ -292,6 +277,10 @@ export default function CatalystAlerts() {
   const filteredWatchBuys = activeLeague === 'ALL' ? watchBuys : watchBuys.filter(p => p.league === activeLeague);
   const filteredWatchSells = activeLeague === 'ALL' ? watchSells : watchSells.filter(p => p.league === activeLeague);
 
+  // Use theme-aware colors (readable on both dark and light backgrounds)
+  const buyAccent = c.green;
+  const sellAccent = c.red;
+
   return (
     <WidgetShell
       title="CATALYST ALERTS"
@@ -304,7 +293,7 @@ export default function CatalystAlerts() {
           title="UNDERVALUED"
           subtitle="Players with catalysts the card market hasn't priced in yet."
           players={filteredBuys}
-          accent="#00ff87"
+          accent={buyAccent}
           loading={loading}
           error={error}
         />
@@ -312,7 +301,7 @@ export default function CatalystAlerts() {
           title="OVERVALUED"
           subtitle="Players whose market activity may not be justified by current performance."
           players={filteredSells}
-          accent="#ff3b5c"
+          accent={sellAccent}
           loading={loading}
           error={error}
         />
@@ -321,15 +310,15 @@ export default function CatalystAlerts() {
       {/* Keep an Eye On — compact watchlist */}
       {!loading && !error && (filteredWatchBuys.length > 0 || filteredWatchSells.length > 0) && (
         <div style={{ borderTop: `1px solid ${c.border}`, marginTop: 24, paddingTop: 20 }}>
-          <div className="font-display text-[12px] tracking-[2px] mb-1" style={{ color: c.muted }}>
+          <div className="font-display text-[14px] tracking-[2px] mb-1" style={{ color: c.muted }}>
             KEEP AN EYE ON
           </div>
-          <div className="font-body text-[10px] mb-4" style={{ color: c.muted, opacity: 0.7 }}>
+          <div className="font-body text-[12px] mb-4" style={{ color: c.muted, opacity: 0.7 }}>
             Not strong enough to make our lists yet, but showing early signals worth watching.
           </div>
           <div className="flex flex-col lg:flex-row gap-6">
-            <WatchlistSection title="LEANS BUY" players={filteredWatchBuys} accent="#00ff87" />
-            <WatchlistSection title="LEANS SELL" players={filteredWatchSells} accent="#ff3b5c" />
+            <WatchlistSection title="LEANS BUY" players={filteredWatchBuys} accent={buyAccent} />
+            <WatchlistSection title="LEANS SELL" players={filteredWatchSells} accent={sellAccent} />
           </div>
         </div>
       )}

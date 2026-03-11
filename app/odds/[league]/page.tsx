@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../components/ThemeProvider';
-import NavSearch from '../../components/NavSearch';
 
 type BookmakerOdds = {
   title: string;
@@ -28,7 +27,7 @@ export default function OddsDashboard({
 }) {
   const { league: rawLeague } = use(params);
   const league = rawLeague.toUpperCase();
-  const { theme, toggle, colors: c } = useTheme();
+  const { colors: c } = useTheme();
   const [games, setGames] = useState<GameOdds[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -182,24 +181,6 @@ export default function OddsDashboard({
 
   return (
     <div style={{ minHeight: '100vh', background: c.bg, color: c.text }}>
-      {/* Nav */}
-      <nav style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: isMobile ? '12px 16px' : '14px 28px', borderBottom: `1px solid ${c.border}`,
-        position: 'sticky', top: 0, zIndex: 100, background: c.bg, gap: 12,
-      }}>
-        <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: isMobile ? 20 : 26, color: c.green, textDecoration: 'none', letterSpacing: 3, flexShrink: 0 }}>
-          SLABSTREET
-        </a>
-        <NavSearch />
-        <button onClick={toggle} style={{
-          background: 'none', border: `1px solid ${c.border}`, borderRadius: '50%',
-          width: 32, height: 32, cursor: 'pointer', color: c.text, fontSize: 16, flexShrink: 0,
-        }}>
-          {theme === 'dark' ? '☀' : '☾'}
-        </button>
-      </nav>
-
       <div style={{ maxWidth: 900, margin: '0 auto', padding: isMobile ? '20px 12px' : '28px 20px' }}>
         {/* Page header */}
         <div style={{ marginBottom: 24 }}>

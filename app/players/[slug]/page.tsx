@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../components/ThemeProvider';
-import NavSearch from '../../components/NavSearch';
 import { supabase } from '../../../lib/supabase';
 import { getLeagueConfig } from '../../../lib/leagues';
 
@@ -55,7 +54,7 @@ const tierBorder: Record<string, string> = { COMMON: '#8899aa', MID: '#38bdf8', 
 // ─── PAGE ─────────────────────────────────────────────────────
 export default function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const { theme, toggle, colors: c } = useTheme();
+  const { colors: c } = useTheme();
 
   const [p, setP]                   = useState<any>(null);
   const [loading, setLoading]       = useState(true);
@@ -252,19 +251,6 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
 
   return (
     <div style={{ color: c.text, fontFamily: 'IBM Plex Sans, sans-serif' }}>
-
-      {/* NAV */}
-      <nav style={{ borderBottom: `1px solid ${c.border}`, padding: '0 24px', height: 58, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', position: 'sticky', top: 0, background: c.navBg, zIndex: 100, boxShadow: theme === 'light' ? '0 1px 8px rgba(0,0,0,0.06)' : 'none', gap: 16 }}>
-        <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, letterSpacing: 3, color: c.green, textDecoration: 'none' }}>SLABSTREET</a>
-        <NavSearch />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, justifyContent: 'flex-end' }}>
-          <button onClick={toggle} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, width: 44, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 3px', transition: 'all 0.2s', flexShrink: 0 }}>
-            <div style={{ width: 18, height: 18, borderRadius: '50%', background: c.green, transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>
-              {theme === 'dark' ? '🌙' : '☀️'}
-            </div>
-          </button>
-        </div>
-      </nav>
 
       <div style={{ maxWidth: gameLog.length > 0 && isWide ? 1200 : 900, margin: '0 auto', padding: '32px 20px', transition: 'max-width 0.3s' }}>
 

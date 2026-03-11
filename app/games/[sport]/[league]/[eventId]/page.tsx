@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import { useTheme } from '../../../../components/ThemeProvider';
-import NavSearch from '../../../../components/NavSearch';
 
 type Player = {
   name: string;
@@ -45,7 +44,7 @@ export default function BoxScorePage({
   params: Promise<{ sport: string; league: string; eventId: string }>;
 }) {
   const { sport, league, eventId } = use(params);
-  const { theme, toggle, colors: c } = useTheme();
+  const { colors: c } = useTheme();
   const [data, setData] = useState<BoxScore | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -201,24 +200,6 @@ export default function BoxScorePage({
 
   return (
     <div style={{ minHeight: '100vh', background: c.bg, color: c.text }}>
-      {/* Nav */}
-      <nav style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 28px', borderBottom: `1px solid ${c.border}`,
-        position: 'sticky', top: 0, zIndex: 100, background: c.bg,
-      }}>
-        <a href="/" style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 26, color: c.green, textDecoration: 'none', letterSpacing: 3 }}>
-          SLABSTREET
-        </a>
-        <NavSearch />
-        <button onClick={toggle} style={{
-          background: 'none', border: `1px solid ${c.border}`, borderRadius: '50%',
-          width: 32, height: 32, cursor: 'pointer', color: c.text, fontSize: 16,
-        }}>
-          {theme === 'dark' ? '☀' : '☾'}
-        </button>
-      </nav>
-
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '28px 20px' }}>
         {loading ? (
           <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 13, color: c.muted, textAlign: 'center', padding: 60 }}>

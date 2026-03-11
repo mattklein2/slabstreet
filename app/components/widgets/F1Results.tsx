@@ -308,8 +308,18 @@ export default function F1Results() {
               })}
             </div>
 
-            {/* Standings list — all drivers, tight layout */}
-            <div className="flex flex-col gap-0">
+            {/* Standings list — grid so points column aligns vertically */}
+            <div
+              className="grid px-2"
+              style={{
+                gridTemplateColumns: standingsTab === 'constructors'
+                  ? '16px 2px auto auto'
+                  : '16px auto auto',
+                rowGap: 0,
+                columnGap: 6,
+                width: 'fit-content',
+              }}
+            >
               {(standingsTab === 'drivers' ? drivers : constructors).map(
                 (entry) => {
                   const posColor = POSITION_COLORS[entry.rank];
@@ -317,45 +327,52 @@ export default function F1Results() {
                     standingsTab === 'constructors'
                       ? TEAM_COLORS[entry.name] || c.muted
                       : undefined;
+                  const bg = entry.rank <= 3 ? `${posColor}10` : 'transparent';
                   return (
                     <div
                       key={entry.rank}
-                      className="flex items-center gap-1.5 px-2 py-[3px]"
-                      style={{
-                        background:
-                          entry.rank <= 3 ? `${posColor}10` : 'transparent',
-                      }}
+                      className="contents"
                     >
                       <span
-                        className="font-display text-[12px] w-4 text-right leading-none"
+                        className="font-display text-[12px] text-right leading-none py-[3px]"
                         style={{
                           color: posColor || c.muted,
                           fontWeight: entry.rank <= 3 ? 700 : 500,
+                          background: bg,
                         }}
                       >
                         {entry.rank}
                       </span>
 
-                      {teamColor && (
+                      {standingsTab === 'constructors' && (
                         <div
-                          className="w-0.5 h-3 rounded-full"
-                          style={{ background: teamColor }}
-                        />
+                          className="py-[3px] flex items-center"
+                          style={{ background: bg }}
+                        >
+                          <div
+                            className="w-0.5 h-3 rounded-full"
+                            style={{ background: teamColor }}
+                          />
+                        </div>
                       )}
 
                       <span
-                        className="font-body text-[11px] truncate"
+                        className="font-body text-[11px] py-[3px] whitespace-nowrap"
                         style={{
                           color: entry.rank <= 3 ? c.text : c.muted,
                           fontWeight: entry.rank <= 3 ? 600 : 400,
+                          background: bg,
                         }}
                       >
                         {entry.name}
                       </span>
 
                       <span
-                        className="font-body text-[10px] font-semibold shrink-0 tabular-nums"
-                        style={{ color: entry.rank <= 3 ? c.text : c.muted }}
+                        className="font-body text-[10px] font-semibold tabular-nums text-right py-[3px]"
+                        style={{
+                          color: entry.rank <= 3 ? c.text : c.muted,
+                          background: bg,
+                        }}
                       >
                         {entry.points}
                       </span>

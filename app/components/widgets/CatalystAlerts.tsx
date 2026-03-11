@@ -87,16 +87,30 @@ function CatalystRow({ player, rank, accent }: { player: CatalystPlayer; rank: n
             <span className="font-body text-[12px] shrink-0" style={{ color: c.muted }}>
               {player.team} · {player.league}
             </span>
+            <a
+              href={`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(player.name + ' sports card')}&_sacat=212&LH_All=1&_sop=12`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-body text-[11px] shrink-0 no-underline hover:underline"
+              style={{ color: c.muted, opacity: 0.7 }}
+              title={`Search eBay for ${player.name} cards`}
+            >
+              eBay ↗
+            </a>
           </div>
           {/* Blurb */}
           <div className="font-body text-[13px] leading-relaxed mt-1" style={{ color: c.text, opacity: 0.8 }}>
             {player.blurb}
           </div>
-          {/* Market cap only */}
+          {/* Market cap with tooltip */}
           {player.marketData.marketCap && (
-            <div className="mt-1.5">
-              <span className="font-mono text-[11px]" style={{ color: c.muted }}>
-                {player.marketData.marketCap}
+            <div className="mt-1.5 relative group inline-block">
+              <span
+                className="font-mono text-[11px] cursor-help"
+                style={{ color: c.muted, borderBottom: `1px dotted ${c.muted}` }}
+                title={`Market Cap — the total estimated value of all ${player.name}'s cards currently in circulation, based on recent sales data from CardLadder.`}
+              >
+                {player.marketData.marketCap} mkt cap
               </span>
             </div>
           )}

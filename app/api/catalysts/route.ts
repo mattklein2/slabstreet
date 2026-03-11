@@ -194,72 +194,199 @@ function generateBlurb(
     teamSeed: number | null;
     inPlayoffs: boolean;
     weeklyChange: number | null;
+    monthlyChange: number | null;
+    sales24h: number | null;
+    marketCap: string | null;
     minutesTrend: string | null;
+    gamesPlayed: number;
   },
   signal: 'BUY' | 'SELL',
 ): string {
-  const parts: string[] = [];
-  const firstName = p.name.split(' ')[0];
+  const sentences: string[] = [];
+  // Use name hash for deterministic but varied phrasing per player
+  const nameHash = p.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const pick = (opts: string[]) => opts[nameHash % opts.length];
 
   if (signal === 'BUY') {
-    // Performance breakout
-    if (details.recentAvg && details.seasonAvg && details.recentAvg > details.seasonAvg * 1.1) {
-      const pctUp = Math.round(((details.recentAvg - details.seasonAvg) / details.seasonAvg) * 100);
-      parts.push(`averaging ${details.recentAvg.toFixed(1)} ${details.statLabel} over last 5 games (+${pctUp}% vs season)`);
-    }
-
-    // Team trajectory
-    if (details.inPlayoffs && details.teamSeed) {
-      if (details.teamSeed <= 4) {
-        parts.push(`${p.team} is a top-${details.teamSeed} seed — playoff spotlight incoming`);
-      } else {
-        parts.push(`${p.team} in playoff position (${details.teamSeed} seed)`);
+    // Lead with performance data when available
+    if (details.recentAvg && details.seasonAvg && details.seasonAvg > 0) {
+      const pctDiff = Math.round(((details.recentAvg - details.seasonAvg) / details.seasonAvg) * 100);
+      if (pctDiff > 5) {
+        sentences.push(pick([
+          `Averaging ${details.recentAvg.toFixed(1)} ${details.statLabel} over his last 5 games, up ${pctDiff}% from his ${details.seasonAvg.toFixed(1)} season average.`,
+          `His recent stretch of ${details.recentAvg.toFixed(1)} ${details.statLabel} per game marks a ${pctDiff}% jump over his ${details.seasonAvg.toFixed(1)} season baseline.`,
+          `Putting up ${details.recentAvg.toFixed(1)} ${details.statLabel} lately — a ${pctDiff}% spike compared to his ${details.seasonAvg.toFixed(1)} average across the full season.`,
+        ]));
+      } else if (details.gamesPlayed > 0) {
+        sentences.push(pick([
+          `Producing ${details.recentAvg.toFixed(1)} ${details.statLabel} per game over his last 5, steady with his ${details.seasonAvg.toFixed(1)} season average across ${details.gamesPlayed} games.`,
+          `Consistent at ${details.recentAvg.toFixed(1)} ${details.statLabel} recently, in line with his ${details.seasonAvg.toFixed(1)} average over ${details.gamesPlayed} games this year.`,
+          `Holding steady at ${details.recentAvg.toFixed(1)} ${details.statLabel} per game — reliable production across ${details.gamesPlayed} games this season.`,
+        ]));
       }
     }
 
-    // Youth — only mention if truly young (real upside)
-    if (details.age && details.age <= 24) {
-      parts.push(`just ${details.age} years old with upside still ahead`);
-    }
-
-    // Minutes trend
+    // Minutes/opportunity context
     if (details.minutesTrend) {
-      parts.push(details.minutesTrend);
+      sentences.push(pick([
+        `His role is expanding — ${details.minutesTrend}, suggesting the coaching staff is leaning on him more.`,
+        `Worth noting: ${details.minutesTrend}. An increased workload usually precedes a bump in card interest.`,
+        `The opportunity is growing — ${details.minutesTrend}, a sign his team sees him as a bigger piece going forward.`,
+      ]));
     }
 
-    // Market lag
-    if (details.weeklyChange !== null && Math.abs(details.weeklyChange) < 2) {
-      parts.push('card market hasn\'t moved yet');
+    // Team context
+    if (details.inPlayoffs && details.teamSeed) {
+      if (details.teamSeed <= 2) {
+        sentences.push(pick([
+          `${p.team} holds the #${details.teamSeed} seed, which means primetime games and deep playoff exposure that drives card demand.`,
+          `With ${p.team} locked into the #${details.teamSeed} seed, he's about to get the kind of national spotlight that moves markets.`,
+        ]));
+      } else if (details.teamSeed <= 4) {
+        sentences.push(pick([
+          `${p.team} sits at the #${details.teamSeed} seed with home court advantage in the playoffs — that kind of visibility moves cards.`,
+          `${p.team} as the #${details.teamSeed} seed means guaranteed playoff home games and the media attention that follows.`,
+        ]));
+      } else if (details.teamSeed <= 8) {
+        sentences.push(pick([
+          `${p.team} is in the playoff mix as the #${details.teamSeed} seed, and a postseason run would boost his card market.`,
+          `With ${p.team} holding the #${details.teamSeed} seed, a strong playoff showing could be the spark his card prices need.`,
+        ]));
+      }
+    } else if (details.inPlayoffs === false && details.teamSeed) {
+      sentences.push(pick([
+        `${p.team} is outside the playoff picture, which is dragging his card prices down — but his individual numbers say the market is overcorrecting.`,
+        `${p.team}'s struggles are weighing on his card value, but team record aside, his personal output doesn't deserve this discount.`,
+        `The ${p.team} rebuild is suppressing his market, creating a disconnect between his on-field production and what collectors are willing to pay.`,
+      ]));
     }
+
+    // Age/youth context
+    if (details.age) {
+      if (details.age <= 22) {
+        sentences.push(pick([
+          `At just ${details.age}, he's still developing and hasn't hit his ceiling yet — early entry point before a potential breakout.`,
+          `Only ${details.age} years old. The upside hasn't been fully realized yet, and early investors stand to benefit the most.`,
+          `He's ${details.age} with years of growth ahead — the kind of age profile where card values compound with each leap forward.`,
+        ]));
+      } else if (details.age <= 24) {
+        sentences.push(pick([
+          `At ${details.age}, his prime years are still ahead, meaning there's room for card values to grow alongside his career.`,
+          `Still just ${details.age} — right in the window where breakout seasons happen and card prices follow.`,
+        ]));
+      } else if (details.age >= 27 && details.age <= 30) {
+        sentences.push(pick([
+          `He's ${details.age} and in his prime window — not a long-term hold, but the current price doesn't reflect his output.`,
+          `At ${details.age}, this is a peak-production play. The value is in the short-term upside relative to where the market has him priced.`,
+        ]));
+      }
+    }
+
+    // Market data — what makes this an opportunity (varied endings)
+    if (details.sales24h !== null && details.sales24h < 3 && details.marketCap) {
+      sentences.push(pick([
+        `Only ${details.sales24h} card sales in the last 24 hours despite a ${details.marketCap} market cap — thin volume means there's room to get in before demand picks up.`,
+        `Just ${details.sales24h} sales in the past day on a ${details.marketCap} market cap. Low activity at this valuation suggests the market is sleeping on him.`,
+        `With only ${details.sales24h} transactions in 24 hours and a ${details.marketCap} market cap, there's a window here before broader attention arrives.`,
+      ]));
+    } else if (details.weeklyChange !== null && details.monthlyChange !== null) {
+      if (Math.abs(details.weeklyChange) < 3 && Math.abs(details.monthlyChange) < 5) {
+        sentences.push(pick([
+          `Card prices have barely moved — ${details.weeklyChange > 0 ? '+' : ''}${details.weeklyChange.toFixed(1)}% this week, ${details.monthlyChange > 0 ? '+' : ''}${details.monthlyChange.toFixed(1)}% this month — while his on-field numbers tell a different story.`,
+          `Flat market action (${details.weeklyChange > 0 ? '+' : ''}${details.weeklyChange.toFixed(1)}% weekly, ${details.monthlyChange > 0 ? '+' : ''}${details.monthlyChange.toFixed(1)}% monthly) despite what the stat sheet shows. The disconnect won't last forever.`,
+        ]));
+      }
+    }
+
   } else {
-    // SELL signal - overvalued or declining
-    if (details.recentAvg && details.seasonAvg && details.recentAvg < details.seasonAvg * 0.85) {
+    // SELL signal
+
+    // Lead with declining production
+    if (details.recentAvg && details.seasonAvg && details.seasonAvg > 0) {
       const pctDown = Math.round(((details.seasonAvg - details.recentAvg) / details.seasonAvg) * 100);
-      parts.push(`production down ${pctDown}% over last 5 games`);
+      if (pctDown > 5) {
+        sentences.push(pick([
+          `Production has dropped to ${details.recentAvg.toFixed(1)} ${details.statLabel} over his last 5 games, down ${pctDown}% from his ${details.seasonAvg.toFixed(1)} season average.`,
+          `He's fallen off to ${details.recentAvg.toFixed(1)} ${details.statLabel} recently — a ${pctDown}% dip from his ${details.seasonAvg.toFixed(1)} season average that's hard to ignore.`,
+          `Down to ${details.recentAvg.toFixed(1)} ${details.statLabel} per game over his last 5, a ${pctDown}% slide from the ${details.seasonAvg.toFixed(1)} he was averaging on the season.`,
+        ]));
+      } else {
+        sentences.push(pick([
+          `Averaging ${details.recentAvg.toFixed(1)} ${details.statLabel} recently, roughly flat with his ${details.seasonAvg.toFixed(1)} season line — nothing to justify the current market premium.`,
+          `Holding at ${details.recentAvg.toFixed(1)} ${details.statLabel} per game, right around his ${details.seasonAvg.toFixed(1)} season average. Steady, but the market is pricing in upside that isn't materializing.`,
+        ]));
+      }
     }
 
-    if (details.inPlayoffs === false) {
-      parts.push(`${p.team} outside playoff picture`);
+    // Minutes declining
+    if (details.minutesTrend) {
+      sentences.push(pick([
+        `His usage is trending down — ${details.minutesTrend}, which often signals a reduced role going forward.`,
+        `Red flag: ${details.minutesTrend}. Declining opportunity usually precedes declining card values.`,
+        `The workload is shrinking — ${details.minutesTrend}. Less time on the field means fewer highlight moments to sustain prices.`,
+      ]));
     }
 
+    // Team context — varied phrasing for "outside playoff picture"
+    if (details.inPlayoffs === false && details.teamSeed) {
+      sentences.push(pick([
+        `${p.team} is outside the playoff picture, which limits the kind of national exposure that sustains card values through the spring.`,
+        `With ${p.team} out of contention, there's no postseason narrative to prop up his card prices heading into the offseason.`,
+        `${p.team}'s season is winding down without a playoff berth — historically, that's when overvalued card markets start to correct.`,
+        `No playoffs for ${p.team} means less spotlight, fewer highlights, and typically a pullback in card demand.`,
+      ]));
+    } else if (details.inPlayoffs && details.teamSeed && details.teamSeed >= 7) {
+      sentences.push(pick([
+        `${p.team} is barely clinging to the #${details.teamSeed} seed — an early exit could trigger a sell-off.`,
+        `${p.team} as the #${details.teamSeed} seed is one bad week from falling out, and a missed postseason would hit his card market hard.`,
+      ]));
+    }
+
+    // Market running hot
     if (details.weeklyChange !== null && details.weeklyChange > 5) {
-      parts.push(`card market up ${details.weeklyChange.toFixed(1)}% this week despite declining play`);
+      sentences.push(pick([
+        `Cards are up ${details.weeklyChange.toFixed(1)}% this week despite the numbers — this looks like a sell-the-news window.`,
+        `His market is up ${details.weeklyChange.toFixed(1)}% weekly, but the stat line doesn't back it. Prices and performance are diverging.`,
+      ]));
+    } else if (details.monthlyChange !== null && details.monthlyChange > 10) {
+      sentences.push(pick([
+        `Up ${details.monthlyChange.toFixed(1)}% over the past month without a performance catalyst to back it — prices may have gotten ahead of reality.`,
+        `A ${details.monthlyChange.toFixed(1)}% monthly gain without matching production is the kind of run that tends to give back.`,
+      ]));
     }
 
-    if (details.age && details.age >= 32) {
-      parts.push(`age ${details.age} — declining window`);
+    // Age factor
+    if (details.age) {
+      if (details.age >= 34) {
+        sentences.push(pick([
+          `At ${details.age}, the window is closing. Card values for players this age rarely bounce back after a sustained dip.`,
+          `He's ${details.age} — at this stage, any production decline tends to be permanent, and the card market usually follows.`,
+        ]));
+      } else if (details.age >= 31) {
+        sentences.push(pick([
+          `At ${details.age}, he's entering the age range where collectors start pricing in decline, especially without a championship push.`,
+          `He's ${details.age} — not old, but the market tends to get nervous about players on the wrong side of 30 without a title narrative.`,
+        ]));
+      }
+    }
+
+    // High sales volume on a declining player
+    if (details.sales24h !== null && details.sales24h > 15) {
+      sentences.push(pick([
+        `${details.sales24h} sales in the last 24 hours suggests heavy activity — smart money may already be rotating out.`,
+        `High turnover with ${details.sales24h} sales yesterday. When volume spikes on a declining player, it's often a sign of distribution.`,
+      ]));
     }
   }
 
-  if (parts.length === 0) {
+  // Fallback if we couldn't build a real blurb
+  if (sentences.length === 0) {
     return signal === 'BUY'
-      ? `${firstName} showing catalyst signals the market hasn't priced in yet.`
-      : `${firstName}'s market position may be overvalued relative to current trajectory.`;
+      ? `Multiple catalyst factors are lining up here — the data suggests this market is underpriced relative to what's happening on the field.`
+      : `The market appears to be overvaluing current trajectory. Several indicators suggest prices have room to correct downward.`;
   }
 
-  // Capitalize first part and join
-  const joined = parts.join(', ');
-  return `${firstName}: ${joined[0].toUpperCase()}${joined.slice(1)}.`;
+  return sentences.join(' ');
 }
 
 // ── Main handler ──────────────────────────────────────────────
@@ -521,7 +648,11 @@ export async function GET() {
           teamSeed: sp.teamData?.seed ?? null,
           inPlayoffs: sp.teamData?.inPlayoffs ?? false,
           weeklyChange: weekly,
+          monthlyChange: monthly,
+          sales24h,
+          marketCap: cl.marketCap || null,
           minutesTrend,
+          gamesPlayed: gameLogData.gamesPlayed,
         },
         signal,
       );

@@ -80,7 +80,20 @@ export default function NavSearch() {
   const search = useCallback(async (q: string) => {
     if (q.trim().length < 2) { setResults([]); setCardResults([]); setOpen(false); return; }
 
+    const words = q.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 0);
+    if (words.length === 0) { setResults([]); setCardResults([]); setOpen(false); return; }
+
     const pattern = `%${q.trim()}%`;
+
+    // Build card query with AND across words, OR across columns per word
+    let cardQuery = supabase
+      .from('cards')
+      .select('slug, player_slug, year, set_name, parallel, card_number, league, image_url');
+    for (const word of words) {
+      const wp = `%${word}%`;
+      cardQuery = cardQuery.or(`player_slug.ilike.${wp},set_name.ilike.${wp},slug.ilike.${wp},parallel.ilike.${wp}`);
+    }
+    cardQuery = cardQuery.order('year', { ascending: false }).limit(8);
 
     // Search players and cards in parallel
     const [playersRes, cardsRes] = await Promise.all([
@@ -90,16 +103,19 @@ export default function NavSearch() {
         .eq('active', true)
         .or(`name.ilike.${pattern},slug.ilike.${pattern},team.ilike.${pattern}`)
         .order('score', { ascending: false })
-        .limit(8),
-      supabase
-        .from('cards')
-        .select('slug, player_slug, year, set_name, parallel, card_number, league, image_url')
-        .or(`player_slug.ilike.${pattern},set_name.ilike.${pattern},slug.ilike.${pattern}`)
-        .order('year', { ascending: false })
-        .limit(5),
+        .limit(20),
+      cardQuery,
     ]);
 
-    const players = (playersRes.data || []) as PlayerRow[];
+    // Deduplicate players by name (keep highest score)
+    const seenNames = new Set<string>();
+    const players = ((playersRes.data || []) as PlayerRow[]).filter(p => {
+      const key = p.name.toLowerCase();
+      if (seenNames.has(key)) return false;
+      seenNames.add(key);
+      return true;
+    }).slice(0, 8);
+
     const cards = (cardsRes.data || []) as CardRow[];
 
     setResults(players);

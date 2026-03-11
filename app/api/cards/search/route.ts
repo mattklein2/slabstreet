@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     for (const word of words) {
       const pattern = `%${word}%`;
       query = query.or(
-        `player_slug.ilike.${pattern},set_name.ilike.${pattern},slug.ilike.${pattern}`
+        `player_slug.ilike.${pattern},set_name.ilike.${pattern},slug.ilike.${pattern},parallel.ilike.${pattern}`
       );
     }
 

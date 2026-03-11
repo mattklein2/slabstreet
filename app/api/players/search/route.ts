@@ -18,14 +18,23 @@ export async function GET(request: NextRequest) {
       .eq('active', true)
       .or(`name.ilike.${pattern},slug.ilike.${pattern},team.ilike.${pattern}`)
       .order('score', { ascending: false })
-      .limit(20);
+      .limit(40);
 
     if (error) {
       console.error('[players/search] Supabase error:', error);
       return NextResponse.json({ error: 'Database query failed' }, { status: 500 });
     }
 
-    return NextResponse.json({ players: data ?? [] });
+    // Deduplicate by player name (keep highest score entry)
+    const seenNames = new Set<string>();
+    const deduped = (data ?? []).filter((p: { name: string }) => {
+      const key = p.name.toLowerCase();
+      if (seenNames.has(key)) return false;
+      seenNames.add(key);
+      return true;
+    }).slice(0, 20);
+
+    return NextResponse.json({ players: deduped });
   } catch (err) {
     console.error('[players/search] Unexpected error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

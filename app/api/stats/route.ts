@@ -151,7 +151,7 @@ async function fetchEspnAthleteOverview(
 // ── Fetch F1 stats from ESPN F1 standings ────────────────────
 async function fetchF1Stats(driverName: string): Promise<{ label: string; val: string }[]> {
   try {
-    const url = 'https://site.api.espn.com/apis/v2/sports/racing/f1/standings?season=2025';
+    const url = `https://site.api.espn.com/apis/v2/sports/racing/f1/standings?season=${new Date().getFullYear()}`;
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const data = await res.json();

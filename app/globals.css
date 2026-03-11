@@ -11,19 +11,19 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #090b0f;
-  --surface: #0f1318;
-  --border: #1e2530;
-  --green: #00ff87;
-  --green-dim: #00c96a;
-  --red: #ff3b5c;
-  --gold: #f0b429;
-  --text: #e8edf5;
-  --muted: #8899aa;
-  --cyan: #38bdf8;
-  --purple: #a78bfa;
-  --orange: #fb923c;
-  --amber: #f59e0b;
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --border: #dde3ec;
+  --green: #00b86b;
+  --green-dim: #00a05e;
+  --red: #e11d48;
+  --gold: #d97706;
+  --text: #0a0f1a;
+  --muted: #64748b;
+  --cyan: #0284c7;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+  --amber: #d97706;
 }
 
 html { scroll-behavior: smooth; }

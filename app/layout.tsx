@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('slabstreet-theme') || 'dark';
+                  var theme = localStorage.getItem('slabstreet-theme') || 'light';
                   document.documentElement.setAttribute('data-theme', theme);
                 } catch(e) {}
               })();

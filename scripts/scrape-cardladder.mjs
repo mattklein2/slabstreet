@@ -449,7 +449,13 @@ async function ensureCardInDB(cardInfo, playerSlug, league) {
       slug,
     });
 
-  return !error; // true if new card inserted
+  if (error) {
+    if (error.code !== '23505') {
+      console.error(`    ensureCardInDB INSERT error for ${slug}: [${error.code}] ${error.message}`);
+    }
+    return false;
+  }
+  return true; // new card inserted
 }
 
 // ── Write CardLadder sales to card_sales + cards tables ──────

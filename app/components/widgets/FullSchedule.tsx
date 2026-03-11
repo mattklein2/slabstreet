@@ -2,23 +2,35 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../ThemeProvider';
-import WidgetShell, { WidgetSkeleton, WidgetError, WidgetEmpty } from './WidgetShell';
-import ScheduleGameRow from './ScheduleGameRow';
+import { useLeague } from '../LeagueProvider';
+import { WidgetSkeleton, WidgetError, WidgetEmpty } from './WidgetShell';
+import ScoreBugCard from './ScoreBugCard';
 
-const LEAGUES = ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA'] as const;
+// ESPN league slug mapping for logo URLs
+const LEAGUE_TO_ESPN: Record<string, string> = {
+  NBA: 'nba',
+  NFL: 'nfl',
+  MLB: 'mlb',
+  NHL: 'nhl',
+  WNBA: 'wnba',
+  F1: 'f1',
+};
 
 interface ScheduleGame {
   id: string;
   home_team: string;
   away_team: string;
-  time: string;
-  home_score?: string;
-  away_score?: string;
+  home_abbrev: string;
+  away_abbrev: string;
+  home_score: string | null;
+  away_score: string | null;
   status: string;
-  spread?: string;
-  total?: string;
-  boxscore_url?: string;
-  league: string;
+  period: number | null;
+  clock: string | null;
+  commence_time: string;
+  spread: string | null;
+  total: string | null;
+  boxscoreUrl: string | null;
 }
 
 function formatDateDisplay(date: Date): string {
@@ -57,14 +69,31 @@ function daysDiff(a: Date, b: Date): number {
   return Math.round((aStart.getTime() - bStart.getTime()) / msPerDay);
 }
 
+function formatGameTime(commenceTime: string): string {
+  try {
+    const d = new Date(commenceTime);
+    return d.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  } catch {
+    return '';
+  }
+}
+
 export default function FullSchedule() {
   const { colors: c } = useTheme();
+  const { activeLeague } = useLeague();
   const [today] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState(() => new Date());
-  const [selectedLeague, setSelectedLeague] = useState<string>('NBA');
   const [games, setGames] = useState<ScheduleGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  // Schedule needs a specific league — default to NBA when global filter is ALL
+  const scheduleLeague = activeLeague === 'ALL' ? 'NBA' : activeLeague;
+  const espnLeague = LEAGUE_TO_ESPN[scheduleLeague] || 'nba';
 
   const canGoPrev = daysDiff(selectedDate, today) > -7;
   const canGoNext = daysDiff(selectedDate, today) < 7;
@@ -91,7 +120,7 @@ export default function FullSchedule() {
       try {
         const dateStr = formatDateApi(selectedDate);
         const res = await fetch(
-          `/api/schedule?league=${selectedLeague}&date=${dateStr}`
+          `/api/schedule?league=${scheduleLeague}&date=${dateStr}`
         );
         if (!res.ok) throw new Error('Failed to fetch schedule');
         const data = await res.json();
@@ -109,39 +138,56 @@ export default function FullSchedule() {
     return () => {
       cancelled = true;
     };
-  }, [selectedDate, selectedLeague]);
+  }, [selectedDate, scheduleLeague]);
 
   return (
-    <WidgetShell title="SCHEDULE" icon="📅" accentColor={c.cyan}>
-      {/* Date navigation bar */}
-      <div
-        className="flex items-center justify-between rounded px-4 py-2.5 mb-3"
-        style={{ background: c.bg, border: `1px solid ${c.border}` }}
-      >
-        <button
-          onClick={goToPrev}
-          disabled={!canGoPrev}
-          className="font-body text-sm px-2 py-1 rounded transition-opacity"
-          style={{
-            color: canGoPrev ? c.text : c.muted,
-            opacity: canGoPrev ? 1 : 0.4,
-            background: 'transparent',
-            border: 'none',
-            cursor: canGoPrev ? 'pointer' : 'default',
-          }}
-          aria-label="Previous day"
-        >
-          ←
-        </button>
+    <div
+      className="rounded-md"
+      style={{
+        background: c.surface,
+        border: `1px solid ${c.border}`,
+        borderTop: `2px solid ${c.cyan}`,
+      }}
+    >
+      {/* Compact header with icon, title, date nav */}
+      <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex items-center gap-2.5">
+          <span className="text-base leading-none">📅</span>
+          <span
+            className="font-body text-[13px] font-medium tracking-widest uppercase"
+            style={{ color: c.cyan }}
+          >
+            SCORES
+          </span>
+        </div>
 
-        <div className="flex items-center gap-3">
-          <span className="font-body text-[13px] font-medium" style={{ color: c.text }}>
+        {/* Date navigation — inline in header */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={goToPrev}
+            disabled={!canGoPrev}
+            className="font-body text-sm px-1.5 py-0.5 rounded"
+            style={{
+              color: canGoPrev ? c.text : c.muted,
+              opacity: canGoPrev ? 1 : 0.4,
+              background: 'transparent',
+              border: 'none',
+              cursor: canGoPrev ? 'pointer' : 'default',
+            }}
+            aria-label="Previous day"
+          >
+            ←
+          </button>
+          <span
+            className="font-body text-[12px] font-medium"
+            style={{ color: c.text }}
+          >
             {formatDateDisplay(selectedDate)}
           </span>
           {!isToday && (
             <button
               onClick={goToToday}
-              className="font-body text-[10px] font-medium px-2 py-0.5 rounded"
+              className="font-body text-[9px] font-medium px-1.5 py-0.5 rounded"
               style={{
                 color: c.cyan,
                 background: 'transparent',
@@ -152,74 +198,58 @@ export default function FullSchedule() {
               Today
             </button>
           )}
+          <button
+            onClick={goToNext}
+            disabled={!canGoNext}
+            className="font-body text-sm px-1.5 py-0.5 rounded"
+            style={{
+              color: canGoNext ? c.text : c.muted,
+              opacity: canGoNext ? 1 : 0.4,
+              background: 'transparent',
+              border: 'none',
+              cursor: canGoNext ? 'pointer' : 'default',
+            }}
+            aria-label="Next day"
+          >
+            →
+          </button>
         </div>
-
-        <button
-          onClick={goToNext}
-          disabled={!canGoNext}
-          className="font-body text-sm px-2 py-1 rounded transition-opacity"
-          style={{
-            color: canGoNext ? c.text : c.muted,
-            opacity: canGoNext ? 1 : 0.4,
-            background: 'transparent',
-            border: 'none',
-            cursor: canGoNext ? 'pointer' : 'default',
-          }}
-          aria-label="Next day"
-        >
-          →
-        </button>
       </div>
 
-      {/* League filter mini-tabs */}
-      <div className="flex items-center gap-1.5 mb-4 flex-wrap">
-        {LEAGUES.map((league) => {
-          const isActive = selectedLeague === league;
-          return (
-            <button
-              key={league}
-              onClick={() => setSelectedLeague(league)}
-              className="font-body text-[10px] font-semibold px-3 py-1 rounded-full transition-colors"
-              style={{
-                background: isActive ? c.cyan : 'transparent',
-                color: isActive ? c.bg : c.muted,
-                border: isActive ? 'none' : `1px solid ${c.border}`,
-                cursor: 'pointer',
-              }}
-            >
-              {league}
-            </button>
-          );
-        })}
+      {/* Score bug cards — horizontal scroll */}
+      <div className="px-6 pb-5">
+        {loading && <WidgetSkeleton rows={1} />}
+        {error && <WidgetError message="Unable to load scores" />}
+        {!loading && !error && games.length === 0 && (
+          <WidgetEmpty
+            message={`No ${scheduleLeague} games on ${formatDateDisplay(selectedDate)}`}
+          />
+        )}
+        {!loading && !error && games.length > 0 && (
+          <div
+            className="flex gap-3 overflow-x-auto pb-1"
+            style={{ scrollbarWidth: 'thin' }}
+          >
+            {games.map((g) => (
+              <ScoreBugCard
+                key={g.id}
+                homeTeam={g.home_team}
+                awayTeam={g.away_team}
+                homeAbbrev={g.home_abbrev || ''}
+                awayAbbrev={g.away_abbrev || ''}
+                homeScore={g.home_score}
+                awayScore={g.away_score}
+                status={g.status}
+                period={g.period}
+                clock={g.clock}
+                time={formatGameTime(g.commence_time)}
+                boxscoreUrl={g.boxscoreUrl}
+                espnLeague={espnLeague}
+              />
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Content area */}
-      {loading && <WidgetSkeleton rows={4} />}
-      {error && <WidgetError message="Unable to load schedule" />}
-      {!loading && !error && games.length === 0 && (
-        <WidgetEmpty
-          message={`No ${selectedLeague} games on ${formatDateDisplay(selectedDate)}`}
-        />
-      )}
-      {!loading && !error && games.length > 0 && (
-        <div className="flex flex-col gap-2.5">
-          {games.map((g) => (
-            <ScheduleGameRow
-              key={g.id}
-              homeTeam={g.home_team}
-              awayTeam={g.away_team}
-              time={g.time}
-              homeScore={g.home_score}
-              awayScore={g.away_score}
-              status={g.status}
-              spread={g.spread}
-              total={g.total}
-              boxscoreUrl={g.boxscore_url}
-              league={g.league}
-            />
-          ))}
-        </div>
-      )}
-    </WidgetShell>
+    </div>
   );
 }

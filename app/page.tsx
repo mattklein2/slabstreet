@@ -2,7 +2,6 @@
 
 import { useTheme } from './components/ThemeProvider';
 import { LeagueProvider } from './components/LeagueProvider';
-import Ticker from './components/layout/Ticker';
 import Nav from './components/layout/Nav';
 import LeagueTabs from './components/layout/LeagueTabs';
 import MarketMovers from './components/widgets/MarketMovers';
@@ -19,7 +18,6 @@ export default function HomePage() {
   return (
     <LeagueProvider>
     <div className="min-h-screen" style={{ color: c.text }}>
-      <Ticker />
       <Nav />
       <LeagueTabs />
 

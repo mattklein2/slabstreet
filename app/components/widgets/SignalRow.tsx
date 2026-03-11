@@ -29,8 +29,7 @@ export default function SignalRow({ signal, name, slug, team, score }: SignalRow
       <div className="flex items-center gap-2.5">
         <span
           className="font-mono text-[10px] font-bold px-1.5 py-0.5"
-          style={{ borderRadius: 6 }}
-          style={{ background: sc.bg, color: sc.text }}
+          style={{ borderRadius: 6, background: sc.bg, color: sc.text }}
         >
           {signal}
         </span>

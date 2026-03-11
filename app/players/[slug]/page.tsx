@@ -71,6 +71,8 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   const [psaData, setPsaData]       = useState<any>(null);
   const [ebayListings, setEbayListings] = useState<any>(null);
   const [ebayLoading, setEbayLoading] = useState(true);
+  const [ebaySort, setEbaySort] = useState('newlyListed');
+  const [ebayExpanded, setEbayExpanded] = useState(false);
   const [espnId, setEspnId]           = useState<string | null>(null);
   const [gameLog, setGameLog]         = useState<any[]>([]);
   const [gameLogLabels, setGameLogLabels] = useState<string[]>([]);
@@ -196,11 +198,11 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
   useEffect(() => {
     if (!p) return;
     setEbayLoading(true);
-    fetch(`/api/ebay?player=${encodeURIComponent(p.fullName)}&league=${playerLeague}`)
+    fetch(`/api/ebay?player=${encodeURIComponent(p.fullName)}&league=${playerLeague}&sort=${ebaySort}&limit=30`)
       .then(r => r.json())
       .then(data => { setEbayListings(data); setEbayLoading(false); })
       .catch(() => setEbayLoading(false));
-  }, [p]);
+  }, [p, ebaySort, playerLeague]);
 
   // Merge live momentum score into pillars
   const pillars = p?.pillars?.map((pl: any) => {
@@ -539,37 +541,72 @@ export default function PlayerPage({ params }: { params: Promise<{ slug: string 
           </div>
         )}
 
-        {/* EBAY MARKET LISTINGS */}
-        {!ebayLoading && ebayListings?.listings?.length > 0 && (
-          <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid #f59e0b`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
-            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#f59e0b', letterSpacing: 3, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 12 }}>
-              MARKET · EBAY LISTINGS
-              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block' }}></span>LIVE</span>
-              <span style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginLeft: 'auto' }}>{ebayListings.total} results</span>
+        {/* EBAY MARKET — FOR SALE NOW */}
+        <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid #f59e0b`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4, flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: '#f59e0b', letterSpacing: 3, display: 'flex', alignItems: 'center', gap: 12 }}>
+              FOR SALE NOW · EBAY
+              <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 9, color: c.green }}><span style={{ width: 5, height: 5, borderRadius: '50%', background: c.green, display: 'inline-block', animation: 'pulse 2s ease-in-out infinite' }}></span>LIVE</span>
             </div>
-            {ebayListings.price_stats && (
-              <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 14, display: 'flex', gap: 16 }}>
-                <span>LOW: <span style={{ color: c.text }}>${ebayListings.price_stats.low?.toFixed(2)}</span></span>
-                <span>MEDIAN: <span style={{ color: '#f59e0b' }}>${ebayListings.price_stats.median?.toFixed(2)}</span></span>
-                <span>HIGH: <span style={{ color: c.text }}>${ebayListings.price_stats.high?.toFixed(2)}</span></span>
-              </div>
-            )}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 10 }}>
-              {ebayListings.listings.slice(0, 8).map((item: any, i: number) => (
-                <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 3, padding: '10px 14px', textDecoration: 'none', display: 'flex', gap: 10, alignItems: 'center', transition: 'border-color 0.15s', cursor: 'pointer' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = '#f59e0b')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = c.border)}
-                >
-                  {item.image && <img src={item.image} alt="" style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 2, flexShrink: 0 }} />}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.text, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
-                    <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 20, color: '#f59e0b', lineHeight: 1, marginTop: 4 }}>${item.price}</div>
-                  </div>
-                </a>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[
+                { key: 'newlyListed', label: 'NEWEST' },
+                { key: 'price', label: 'CHEAPEST' },
+                { key: '-price', label: 'PRICIEST' },
+                { key: 'endingSoonest', label: 'ENDING SOON' },
+              ].map(s => (
+                <button key={s.key} onClick={() => setEbaySort(s.key)} style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, letterSpacing: 1, padding: '3px 8px', background: ebaySort === s.key ? '#f59e0b' : 'transparent', color: ebaySort === s.key ? '#090b0f' : c.muted, border: `1px solid ${ebaySort === s.key ? '#f59e0b' : c.border}`, borderRadius: 2, cursor: 'pointer' }}>{s.label}</button>
               ))}
             </div>
           </div>
-        )}
+          {ebayListings?.price_stats && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: c.muted, marginBottom: 14, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <span>LOW: <span style={{ color: c.text }}>${ebayListings.price_stats.low?.toFixed(2)}</span></span>
+              <span>MEDIAN: <span style={{ color: '#f59e0b' }}>${ebayListings.price_stats.median?.toFixed(2)}</span></span>
+              <span>HIGH: <span style={{ color: c.text }}>${ebayListings.price_stats.high?.toFixed(2)}</span></span>
+              <span style={{ marginLeft: 'auto' }}>{ebayListings.total?.toLocaleString()} results</span>
+            </div>
+          )}
+          {ebayLoading && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '20px 0', textAlign: 'center' }}>Searching eBay...</div>
+          )}
+          {!ebayLoading && (!ebayListings?.listings?.length) && (
+            <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.muted, padding: '20px 0', textAlign: 'center' }}>
+              {ebayListings?.configured === false ? 'eBay API not configured' : 'No active listings found'}
+            </div>
+          )}
+          {!ebayLoading && ebayListings?.listings?.length > 0 && (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {ebayListings.listings.slice(0, ebayExpanded ? 30 : 8).map((item: any, i: number) => (
+                  <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '8px 10px', borderRadius: 6, textDecoration: 'none', transition: 'background 0.1s' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = `${c.border}44`)}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    {item.image ? (
+                      <img src={item.image} alt="" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                    ) : (
+                      <div style={{ width: 44, height: 44, borderRadius: 6, background: `${c.border}60`, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, opacity: 0.4 }}>🃏</div>
+                    )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 11, color: c.text, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</div>
+                      <div style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 9, color: c.muted, marginTop: 2 }}>{item.condition}</div>
+                    </div>
+                    <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, color: '#f59e0b', flexShrink: 0 }}>${item.price}</div>
+                  </a>
+                ))}
+              </div>
+              {ebayListings.listings.length > 8 && (
+                <button
+                  onClick={() => setEbayExpanded(!ebayExpanded)}
+                  style={{ fontFamily: 'IBM Plex Mono, monospace', fontSize: 10, color: '#f59e0b', background: 'transparent', border: `1px solid ${c.border}`, borderRadius: 4, padding: '8px 16px', cursor: 'pointer', width: '100%', marginTop: 10, letterSpacing: 1 }}
+                >
+                  {ebayExpanded ? '▲ SHOW LESS' : `▼ SHOW ALL ${ebayListings.listings.length} LISTINGS`}
+                </button>
+              )}
+            </>
+          )}
+        </div>
 
         {/* BETTING ODDS */}
         <div style={{ background: c.surface, border: `1px solid ${c.border}`, borderLeft: `4px solid ${c.amber}`, borderRadius: 4, padding: '20px 28px', marginBottom: 20 }}>

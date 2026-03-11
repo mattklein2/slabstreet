@@ -67,13 +67,14 @@ async function searchEbay(
   query: string,
   token: string,
   limit: number = 12,
+  sort: string = 'newlyListed',
 ): Promise<{ listings: EbayListing[]; total: number }> {
   try {
     const params = new URLSearchParams({
       q: query,
       category_ids: SPORTS_CARD_CATEGORY,
       limit: String(limit),
-      sort: 'price',
+      sort,
     });
 
     const res = await fetch(
@@ -137,9 +138,11 @@ export async function GET(request: Request) {
 
   // Build search query — focus on graded cards (PSA, BGS, SGC)
   const sportLabel = league === 'F1' ? 'F1 racing' : league || 'sports';
-  const query = `${player} ${sportLabel} card PSA`;
+  const sort = searchParams.get('sort') || 'newlyListed';
+  const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10) || 20, 50);
+  const query = `${player} ${sportLabel} card`;
 
-  const { listings, total } = await searchEbay(query, token);
+  const { listings, total } = await searchEbay(query, token, limit, sort);
 
   // Calculate price stats
   const prices = listings

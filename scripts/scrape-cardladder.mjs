@@ -407,6 +407,51 @@ async function fetchCardSales(token, cardFirestoreId) {
   return allSales;
 }
 
+// ── Ensure a card exists in the cards table (upsert without sales) ──────
+async function ensureCardInDB(cardInfo, playerSlug, league) {
+  const slug = generateCardSlug(
+    playerSlug,
+    cardInfo.year || '0',
+    cardInfo.set || 'Unknown',
+    cardInfo.variation || 'Base',
+    cardInfo.number || ''
+  );
+
+  const { data: existing } = await supabase
+    .from('cards')
+    .select('id')
+    .eq('slug', slug)
+    .limit(1)
+    .single();
+
+  if (existing) {
+    // Update image if we have one and existing might not
+    if (cardInfo.image) {
+      await supabase.from('cards').update({ image_url: cardInfo.image }).eq('id', existing.id);
+    }
+    return false; // already existed
+  }
+
+  const numberedTo = cardInfo.numberedTo ? parseInt(cardInfo.numberedTo) : null;
+
+  const { error } = await supabase
+    .from('cards')
+    .insert({
+      player_slug: playerSlug,
+      year: parseInt(cardInfo.year) || 0,
+      set_name: cardInfo.set || 'Unknown',
+      parallel: cardInfo.variation || 'Base',
+      card_number: cardInfo.number || null,
+      numbered_to: numberedTo || null,
+      league,
+      image_url: cardInfo.image || null,
+      cardladder_slug: cardInfo.slug || null,
+      slug,
+    });
+
+  return !error; // true if new card inserted
+}
+
 // ── Write CardLadder sales to card_sales + cards tables ──────
 async function writeCardSalesToDB(sales, cardInfo, playerSlug, league) {
   if (sales.length === 0) return 0;
@@ -933,8 +978,20 @@ async function runStandard(token) {
           }
           salesMsg = `, ${totalSalesWritten} sales`;
         }
+
+        // Write cards to cards table (for --all-cards, --cards, or default mode)
+        let cardsMsg = '';
+        if (cards.length > 0) {
+          let newCards = 0;
+          for (const card of cards) {
+            const isNew = await ensureCardInDB(card, player.slug, player.league);
+            if (isNew) newCards++;
+          }
+          if (newCards > 0) cardsMsg = `, ${newCards} new cards added`;
+        }
+
         const mktCap = formatMoney(clDoc.totalMarketCap) || 'N/A';
-        console.log(`${cards.length} cards${salesMsg}, mktcap=${mktCap} — saved`);
+        console.log(`${cards.length} cards${salesMsg}${cardsMsg}, mktcap=${mktCap} — saved`);
         ok++;
       }
     } catch (err) {

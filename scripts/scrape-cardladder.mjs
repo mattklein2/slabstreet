@@ -903,7 +903,7 @@ async function runStandard(token) {
       }
 
       // Fetch cards (still requires per-player Firestore query)
-      const cardLimit = FETCH_SALES ? 9999 : (ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 20));
+      const cardLimit = FETCH_SALES ? 9999 : (ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 100));
       const cards = await fetchPlayerCards(token, clName, cardLimit);
 
       const cardladderData = buildCardLadderData(clDoc, cards);

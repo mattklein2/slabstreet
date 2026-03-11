@@ -29,6 +29,9 @@ export interface LeagueConfig {
     usesConferences: boolean;
   };
 
+  // Accent color for league branding (tab underlines, widget borders, etc.)
+  accentColor: string;
+
   // News RSS feeds (league-specific; card market feeds are always included)
   rssFeeds: { url: string; source: string }[];
 
@@ -38,6 +41,9 @@ export interface LeagueConfig {
     teams: string[];
   };
 }
+
+// Accent color for the ALL/firehose view (slab green)
+export const ALL_ACCENT_COLOR = '#00ff87';
 
 // ─── SHARED CARD MARKET ACCOUNTS (used by all leagues) ───
 export const SHARED_SOCIAL_ACCOUNTS = {
@@ -76,6 +82,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     espnSport: 'basketball',
     espnLeague: 'nba',
     espnStandingsSeason: '2025',
+    accentColor: '#1d4ed8',
     teamSuccess: { playoffSeeds: 10, usesConferences: true },
     rssFeeds: [
       { url: 'https://www.espn.com/espn/rss/nba/news', source: 'ESPN' },
@@ -104,6 +111,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     espnSport: 'football',
     espnLeague: 'nfl',
     espnStandingsSeason: '2025',
+    accentColor: '#16a34a',
     teamSuccess: { playoffSeeds: 7, usesConferences: true },
     rssFeeds: [
       { url: 'https://www.espn.com/espn/rss/nfl/news', source: 'ESPN' },
@@ -130,6 +138,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     espnSport: 'baseball',
     espnLeague: 'mlb',
     espnStandingsSeason: '2025',
+    accentColor: '#dc2626',
     teamSuccess: { playoffSeeds: 6, usesConferences: false },
     rssFeeds: [
       { url: 'https://www.espn.com/espn/rss/mlb/news', source: 'ESPN' },
@@ -156,6 +165,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     espnSport: 'racing',
     espnLeague: 'f1',
     espnStandingsSeason: '2025',
+    accentColor: '#e11d48',
     teamSuccess: { playoffSeeds: 0, usesConferences: false },
     rssFeeds: [
       { url: 'https://www.espn.com/espn/rss/f1/news', source: 'ESPN' },
@@ -182,6 +192,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     espnSport: 'hockey',
     espnLeague: 'nhl',
     espnStandingsSeason: '2025',
+    accentColor: '#0f172a',
     teamSuccess: { playoffSeeds: 8, usesConferences: true },
     rssFeeds: [
       { url: 'https://www.espn.com/espn/rss/nhl/news', source: 'ESPN' },
@@ -207,6 +218,7 @@ const LEAGUES: Record<LeagueId, LeagueConfig> = {
     espnSport: 'basketball',
     espnLeague: 'wnba',
     espnStandingsSeason: '2025',
+    accentColor: '#f97316',
     teamSuccess: { playoffSeeds: 8, usesConferences: false },
     rssFeeds: [
       { url: 'https://www.espn.com/espn/rss/wnba/news', source: 'ESPN' },

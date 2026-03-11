@@ -100,21 +100,31 @@ export default function F1Results() {
   return (
     <div>
       {/* F1 view tabs */}
-      <div className="flex gap-1 px-5 pb-2">
-        {views.map((v) => (
-          <button
-            key={v.key}
-            onClick={() => setView(v.key)}
-            className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
-            style={{
-              color: view === v.key ? '#fff' : c.muted,
-              background: view === v.key ? '#E8002D' : 'transparent',
-              border: `1px solid ${view === v.key ? '#E8002D' : c.border}`,
-            }}
-          >
-            {v.label}
-          </button>
-        ))}
+      <div
+        className="flex items-center gap-0 px-3 overflow-x-auto"
+        style={{ borderBottom: `1px solid ${c.border}` }}
+      >
+        {views.map((v) => {
+          const active = view === v.key;
+          return (
+            <button
+              key={v.key}
+              onClick={() => setView(v.key)}
+              className="font-body text-[11px] tracking-wider uppercase cursor-pointer whitespace-nowrap shrink-0"
+              style={{
+                fontWeight: active ? 700 : 500,
+                padding: '8px 12px',
+                color: active ? '#E8002D' : c.muted,
+                background: 'transparent',
+                border: 'none',
+                borderBottom: active ? '2px solid #E8002D' : '2px solid transparent',
+                marginBottom: '-1px',
+              }}
+            >
+              {v.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Content */}
@@ -271,29 +281,31 @@ export default function F1Results() {
         {!loading && !error && view === 'standings' && (
           <>
             {/* Driver/Constructor sub-tabs */}
-            <div className="flex gap-1 mb-2">
-              <button
-                onClick={() => setStandingsTab('drivers')}
-                className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
-                style={{
-                  color: standingsTab === 'drivers' ? c.text : c.muted,
-                  background: 'transparent',
-                  border: `1px solid ${standingsTab === 'drivers' ? c.text : c.border}`,
-                }}
-              >
-                DRIVERS
-              </button>
-              <button
-                onClick={() => setStandingsTab('constructors')}
-                className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
-                style={{
-                  color: standingsTab === 'constructors' ? c.text : c.muted,
-                  background: 'transparent',
-                  border: `1px solid ${standingsTab === 'constructors' ? c.text : c.border}`,
-                }}
-              >
-                CONSTRUCTORS
-              </button>
+            <div
+              className="flex items-center gap-0 mb-3"
+              style={{ borderBottom: `1px solid ${c.border}` }}
+            >
+              {(['drivers', 'constructors'] as const).map((tab) => {
+                const active = standingsTab === tab;
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setStandingsTab(tab)}
+                    className="font-body text-[11px] tracking-wider uppercase cursor-pointer whitespace-nowrap"
+                    style={{
+                      fontWeight: active ? 700 : 500,
+                      padding: '6px 12px',
+                      color: active ? '#E8002D' : c.muted,
+                      background: 'transparent',
+                      border: 'none',
+                      borderBottom: active ? '2px solid #E8002D' : '2px solid transparent',
+                      marginBottom: '-1px',
+                    }}
+                  >
+                    {tab}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Standings list */}

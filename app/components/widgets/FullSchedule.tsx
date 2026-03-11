@@ -344,32 +344,32 @@ export default function FullSchedule() {
       </div>
 
       {/* League toggle tabs */}
-      <div className="flex flex-wrap gap-1 px-5 pb-2">
-        {SCORE_LEAGUES.map((lg) => (
-          <button
-            key={lg}
-            onClick={() => setScoreLeague(lg)}
-            className="font-body text-[9px] font-semibold px-2 py-0.5 rounded cursor-pointer"
-            style={{
-              color: scoreLeague === lg ? '#fff' : c.muted,
-              background:
-                scoreLeague === lg
-                  ? lg === 'F1'
-                    ? '#E8002D'
-                    : c.cyan
-                  : 'transparent',
-              border: `1px solid ${
-                scoreLeague === lg
-                  ? lg === 'F1'
-                    ? '#E8002D'
-                    : c.cyan
-                  : c.border
-              }`,
-            }}
-          >
-            {lg}
-          </button>
-        ))}
+      <div
+        className="flex items-center gap-0 px-3 overflow-x-auto"
+        style={{ borderBottom: `1px solid ${c.border}` }}
+      >
+        {SCORE_LEAGUES.map((lg) => {
+          const active = scoreLeague === lg;
+          const accentColor = lg === 'F1' ? '#E8002D' : c.cyan;
+          return (
+            <button
+              key={lg}
+              onClick={() => setScoreLeague(lg)}
+              className="font-body text-[11px] tracking-wider uppercase cursor-pointer whitespace-nowrap shrink-0"
+              style={{
+                fontWeight: active ? 700 : 500,
+                padding: '8px 12px',
+                color: active ? accentColor : c.muted,
+                background: 'transparent',
+                border: 'none',
+                borderBottom: active ? `2px solid ${accentColor}` : '2px solid transparent',
+                marginBottom: '-1px',
+              }}
+            >
+              {lg}
+            </button>
+          );
+        })}
       </div>
 
       {/* F1 view — race results, qualifying, standings */}

@@ -136,7 +136,7 @@ function MiniCalendar({
   return (
     <div
       ref={ref}
-      className="absolute top-full left-0 mt-1 z-50 rounded-md shadow-lg p-2"
+      className="absolute top-full left-0 mt-1 z-50 rounded-xl shadow-lg p-2"
       style={{ background: c.surface, border: `1px solid ${c.border}`, width: 220 }}
     >
       {/* Month nav */}
@@ -268,20 +268,19 @@ export default function FullSchedule() {
 
   return (
     <div
-      className="rounded-md"
       style={{
         background: c.surface,
         border: `1px solid ${c.border}`,
-        borderTop: `2px solid ${c.cyan}`,
+        borderRadius: 16,
       }}
     >
       {/* Header: title + calendar toggle (hidden for F1) */}
-      <div className="flex items-center justify-between px-5 pt-3 pb-1">
+      <div className="flex items-center justify-between" style={{ padding: '18px 22px 8px' }}>
         <div className="flex items-center gap-2">
           <span className="text-sm leading-none">{scoreLeague === 'F1' ? '🏎️' : '📅'}</span>
           <span
-            className="font-body text-[12px] font-medium tracking-widest uppercase"
-            style={{ color: c.cyan }}
+            className="font-body text-[11px] font-medium tracking-widest uppercase"
+            style={{ color: c.muted }}
           >
             {scoreLeague === 'F1' ? 'F1' : 'SCORES'}
           </span>
@@ -345,8 +344,7 @@ export default function FullSchedule() {
 
       {/* League toggle tabs */}
       <div
-        className="flex items-center gap-0 px-3 overflow-x-auto"
-        style={{ borderBottom: `1px solid ${c.border}` }}
+        className="flex items-center gap-1 px-5 overflow-x-auto pb-2"
       >
         {SCORE_LEAGUES.map((lg) => {
           const active = scoreLeague === lg;
@@ -355,15 +353,14 @@ export default function FullSchedule() {
             <button
               key={lg}
               onClick={() => setScoreLeague(lg)}
-              className="font-body text-[11px] tracking-wider uppercase cursor-pointer whitespace-nowrap shrink-0"
+              className="font-body text-[10px] tracking-wider uppercase cursor-pointer whitespace-nowrap shrink-0"
               style={{
-                fontWeight: active ? 700 : 500,
-                padding: '8px 12px',
+                fontWeight: active ? 600 : 500,
+                padding: '4px 10px',
+                borderRadius: 6,
                 color: active ? accentColor : c.muted,
-                background: 'transparent',
+                background: active ? `${accentColor}12` : 'transparent',
                 border: 'none',
-                borderBottom: active ? `2px solid ${accentColor}` : '2px solid transparent',
-                marginBottom: '-1px',
               }}
             >
               {lg}
@@ -377,7 +374,7 @@ export default function FullSchedule() {
 
       {/* Standard scores — vertical list */}
       {scoreLeague !== 'F1' && (
-        <div className="px-5 pb-4">
+        <div style={{ padding: '0 22px 22px' }}>
           {loading && <WidgetSkeleton rows={3} />}
           {error && <WidgetError message="Unable to load scores" />}
           {!loading && !error && games.length === 0 && (

@@ -52,8 +52,8 @@ export default function MoverCard({ name, slug, team, score, signal }: MoverCard
             <div
               key={i}
               className="rounded-[3px]"
-              style={{ width: 7 }}
               style={{
+                width: 7,
                 height: `${h}%`,
                 background: i >= 4 ? accentColor : c.border,
                 opacity: i >= 4 ? (i === 5 ? 1 : 0.6) : 0.4,

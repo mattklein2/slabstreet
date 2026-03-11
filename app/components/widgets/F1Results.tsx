@@ -101,8 +101,7 @@ export default function F1Results() {
     <div>
       {/* F1 view tabs */}
       <div
-        className="flex items-center gap-0 px-3 overflow-x-auto"
-        style={{ borderBottom: `1px solid ${c.border}` }}
+        className="flex items-center gap-1 px-5 overflow-x-auto pb-2"
       >
         {views.map((v) => {
           const active = view === v.key;
@@ -110,15 +109,14 @@ export default function F1Results() {
             <button
               key={v.key}
               onClick={() => setView(v.key)}
-              className="font-body text-[11px] tracking-wider uppercase cursor-pointer whitespace-nowrap shrink-0"
+              className="font-body text-[10px] tracking-wider uppercase cursor-pointer whitespace-nowrap shrink-0"
               style={{
-                fontWeight: active ? 700 : 500,
-                padding: '8px 12px',
+                fontWeight: active ? 600 : 500,
+                padding: '4px 10px',
+                borderRadius: 6,
                 color: active ? '#E8002D' : c.muted,
-                background: 'transparent',
+                background: active ? '#E8002D12' : 'transparent',
                 border: 'none',
-                borderBottom: active ? '2px solid #E8002D' : '2px solid transparent',
-                marginBottom: '-1px',
               }}
             >
               {v.label}
@@ -128,7 +126,7 @@ export default function F1Results() {
       </div>
 
       {/* Content */}
-      <div className="px-5 pb-4">
+      <div style={{ padding: '0 22px 22px' }}>
         {loading && (
           <div className="flex flex-col gap-1.5">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -206,7 +204,8 @@ export default function F1Results() {
                   return (
                     <div
                       key={r.position}
-                      className="flex items-center gap-2 rounded px-2 py-1"
+                      className="flex items-center gap-2 px-3 py-1.5"
+                      style={{ borderRadius: 8 }}
                       style={{
                         background:
                           r.position <= 3 ? `${posColor}10` : 'transparent',
@@ -282,8 +281,7 @@ export default function F1Results() {
           <>
             {/* Driver/Constructor sub-tabs */}
             <div
-              className="flex items-center gap-0 mb-3"
-              style={{ borderBottom: `1px solid ${c.border}` }}
+              className="flex items-center gap-1 mb-3"
             >
               {(['drivers', 'constructors'] as const).map((tab) => {
                 const active = standingsTab === tab;
@@ -291,15 +289,14 @@ export default function F1Results() {
                   <button
                     key={tab}
                     onClick={() => setStandingsTab(tab)}
-                    className="font-body text-[11px] tracking-wider uppercase cursor-pointer whitespace-nowrap"
+                    className="font-body text-[10px] tracking-wider uppercase cursor-pointer whitespace-nowrap"
                     style={{
-                      fontWeight: active ? 700 : 500,
-                      padding: '6px 12px',
+                      fontWeight: active ? 600 : 500,
+                      padding: '4px 10px',
+                      borderRadius: 6,
                       color: active ? '#E8002D' : c.muted,
-                      background: 'transparent',
+                      background: active ? '#E8002D12' : 'transparent',
                       border: 'none',
-                      borderBottom: active ? '2px solid #E8002D' : '2px solid transparent',
-                      marginBottom: '-1px',
                     }}
                   >
                     {tab}

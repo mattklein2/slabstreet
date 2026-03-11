@@ -70,9 +70,11 @@ export default function MarketMovers() {
     <div className="flex gap-2">
       <button
         onClick={() => setShowRisers(true)}
-        className="font-body text-[10px] font-medium px-2 py-0.5 rounded cursor-pointer bg-transparent"
+        className="font-body text-[10px] font-medium px-2.5 py-1 cursor-pointer"
         style={{
+          borderRadius: 6,
           color: showRisers ? c.green : c.muted,
+          background: showRisers ? `${c.green}12` : 'transparent',
           border: `1px solid ${showRisers ? c.green : c.border}`,
         }}
       >
@@ -80,9 +82,11 @@ export default function MarketMovers() {
       </button>
       <button
         onClick={() => setShowRisers(false)}
-        className="font-body text-[10px] font-medium px-2 py-0.5 rounded cursor-pointer bg-transparent"
+        className="font-body text-[10px] font-medium px-2.5 py-1 cursor-pointer"
         style={{
+          borderRadius: 6,
           color: !showRisers ? c.red : c.muted,
+          background: !showRisers ? `${c.red}12` : 'transparent',
           border: `1px solid ${!showRisers ? c.red : c.border}`,
         }}
       >
@@ -105,7 +109,7 @@ export default function MarketMovers() {
         <WidgetEmpty message={`No ${leagueLabel}movers data available`} />
       )}
       {!loading && !error && movers.length > 0 && (
-        <div className="flex gap-3 overflow-x-auto pb-2 md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:overflow-x-visible md:gap-4">
+        <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:overflow-x-visible md:gap-5">
           {movers.map((m) => (
             <div key={m.slug} className="min-w-[160px] md:min-w-0 shrink-0 md:shrink">
               <MoverCard {...m} />

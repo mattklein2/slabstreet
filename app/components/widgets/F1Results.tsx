@@ -205,8 +205,8 @@ export default function F1Results() {
                     <div
                       key={r.position}
                       className="flex items-center gap-2 px-3 py-1.5"
-                      style={{ borderRadius: 8 }}
                       style={{
+                        borderRadius: 8,
                         background:
                           r.position <= 3 ? `${posColor}10` : 'transparent',
                       }}

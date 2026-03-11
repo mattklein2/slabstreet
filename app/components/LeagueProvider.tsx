@@ -12,8 +12,10 @@ interface LeagueContextType {
 
 const LeagueContext = createContext<LeagueContextType | null>(null);
 
-export function LeagueProvider({ children }: { children: ReactNode }) {
-  const [activeLeague, setActiveLeague] = useState<LeagueFilter>('ALL');
+export function LeagueProvider({ children, initialLeague }: { children: ReactNode; initialLeague?: string }) {
+  const [activeLeague, setActiveLeague] = useState<LeagueFilter>(
+    (initialLeague as LeagueFilter) ?? 'ALL'
+  );
 
   const handleSetLeague = useCallback((league: LeagueFilter) => {
     setActiveLeague(league);

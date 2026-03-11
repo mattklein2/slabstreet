@@ -143,7 +143,7 @@ export default function NavSearch() {
           width: '100%',
           background: c.surface,
           border: `1px solid ${open ? c.green : c.border}`,
-          borderRadius: open && results.length > 0 && !isMobile ? '4px 4px 0 0' : 4,
+          borderRadius: open && results.length > 0 && !isMobile ? '12px 12px 0 0' : 12,
           padding: isMobile ? '8px 10px 8px 34px' : '10px 14px 10px 40px',
           color: c.text,
           fontFamily: 'IBM Plex Mono, monospace',
@@ -151,7 +151,7 @@ export default function NavSearch() {
           outline: 'none',
           boxSizing: 'border-box',
           transition: 'border-color 0.15s, box-shadow 0.15s',
-          boxShadow: open ? `0 0 0 2px ${c.green}22` : 'none',
+          boxShadow: open ? '0 8px 32px rgba(0,0,0,0.3)' : 'none',
         }}
       />
       {open && (
@@ -162,9 +162,9 @@ export default function NavSearch() {
           right: isMobile ? 12 : 'auto',
           width: isMobile ? undefined : 'max(100%, 520px)',
           background: c.surface,
-          border: `1px solid ${c.green}`,
-          borderTop: isMobile ? `1px solid ${c.green}` : 'none',
-          borderRadius: isMobile ? 4 : '0 0 4px 4px',
+          border: `1px solid ${c.border}`,
+          borderTop: isMobile ? `1px solid ${c.border}` : 'none',
+          borderRadius: isMobile ? 12 : '0 0 12px 12px',
           zIndex: 9999,
           boxShadow: '0 12px 32px rgba(0,0,0,0.45)',
           maxHeight: isMobile ? '60vh' : 480,

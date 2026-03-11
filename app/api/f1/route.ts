@@ -139,6 +139,17 @@ async function fetchSchedule(): Promise<{ races: ScheduleRace[] }> {
   return { races };
 }
 
+function extractResults(competitors: ESPNEvent[]): F1Result[] {
+  return (competitors || []).map(
+    (c: { order: number; athlete?: { displayName?: string }; team?: { displayName?: string }; winner?: boolean }) => ({
+      position: c.order,
+      driver: c.athlete?.displayName || 'Unknown',
+      team: c.team?.displayName || '',
+      winner: c.winner || false,
+    })
+  );
+}
+
 async function fetchRaceByEventId(eventId: string): Promise<{
   raceName: string;
   results: F1Result[];
@@ -156,18 +167,37 @@ async function fetchRaceByEventId(eventId: string): Promise<{
   const competitions = event.competitions || [];
   // Race competition is typically the last one
   const raceComp = competitions[competitions.length - 1];
-  const competitors = raceComp?.competitors || [];
 
-  const results: F1Result[] = competitors.map(
-    (c: { order: number; athlete?: { displayName?: string }; team?: { displayName?: string }; winner?: boolean }) => ({
-      position: c.order,
-      driver: c.athlete?.displayName || 'Unknown',
-      team: c.team?.displayName || '',
-      winner: c.winner || false,
-    })
+  return { raceName, results: extractResults(raceComp?.competitors), status };
+}
+
+async function fetchQualifyingByEventId(eventId: string): Promise<{
+  raceName: string;
+  results: F1Result[];
+  status: string;
+}> {
+  const events = await fetchSeasonData();
+  const event = events.find((e: ESPNEvent) => String(e.id) === eventId);
+
+  if (!event) {
+    return { raceName: '', results: [], status: 'Event not found' };
+  }
+
+  const raceName = event.name || 'Grand Prix';
+  const competitions = event.competitions || [];
+
+  // Find qualifying competition by abbreviation "Qual" or type text
+  const qualiComp = competitions.find(
+    (c: { type?: { abbreviation?: string; text?: string } }) =>
+      c.type?.abbreviation?.toLowerCase() === 'qual' ||
+      c.type?.text?.toLowerCase().includes('qualifying')
   );
 
-  return { raceName, results, status };
+  if (qualiComp?.competitors?.length) {
+    return { raceName, results: extractResults(qualiComp.competitors), status: 'Qualifying' };
+  }
+
+  return { raceName, results: [], status: 'Qualifying data not available' };
 }
 
 async function fetchRaceResults(): Promise<{
@@ -280,6 +310,13 @@ export async function GET(request: Request) {
         break;
       case 'standings':
         result = await fetchStandings();
+        break;
+      case 'qualifying':
+        if (eventId) {
+          result = await fetchQualifyingByEventId(eventId);
+        } else {
+          result = { raceName: '', results: [], status: 'Select a race to view qualifying' };
+        }
         break;
       case 'race':
         if (eventId) {

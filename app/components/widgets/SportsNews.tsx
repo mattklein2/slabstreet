@@ -54,7 +54,7 @@ export default function SportsNews() {
       {!loading && !error && news.length > 0 && (
         <div className="flex flex-col gap-2.5">
           {news.map((item, i) => (
-            <SportsNewsRow key={i} {...item} />
+            <SportsNewsRow key={i} {...item} featured={i === 0} />
           ))}
         </div>
       )}

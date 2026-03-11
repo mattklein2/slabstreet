@@ -11,7 +11,8 @@
  *   node scripts/scrape-cardladder.mjs --league=NBA         # NBA only
  *   node scripts/scrape-cardladder.mjs --player=victor-wembanyama  # single player
  *   node scripts/scrape-cardladder.mjs --limit=50           # top 50 per league
- *   node scripts/scrape-cardladder.mjs --cards              # also fetch individual card details
+ *   node scripts/scrape-cardladder.mjs --cards              # also fetch individual card details (50/player)
+ *   node scripts/scrape-cardladder.mjs --all-cards          # fetch ALL cards per player (paginated)
  *   node scripts/scrape-cardladder.mjs --import             # import ALL CardLadder sports players
  *   node scripts/scrape-cardladder.mjs --import --dry-run   # preview import without writing
  *
@@ -51,6 +52,7 @@ const LEAGUE_FILTER = args.league?.toUpperCase() || '';
 const PLAYER_FILTER = args.player || '';
 const LIMIT_PER_LEAGUE = parseInt(args.limit || '20');
 const SCRAPE_CARDS = args.cards === 'true';
+const ALL_CARDS = args['all-cards'] === 'true';
 const IMPORT_MODE = args.import === 'true';
 const DRY_RUN = args['dry-run'] === 'true';
 
@@ -280,13 +282,79 @@ async function fetchAllCardLadderPlayers(token) {
 
 // ── Fetch player's cards from CardLadder Firestore ───────────
 async function fetchPlayerCards(token, playerName, limit = 30) {
-  const results = await firestoreQuery(token, 'cards', {
-    field: 'player',
-    op: 'EQUAL',
-    value: { stringValue: playerName },
-  }, null, limit);
+  if (!ALL_CARDS) {
+    // Original behavior: single query with limit
+    const results = await firestoreQuery(token, 'cards', {
+      field: 'player',
+      op: 'EQUAL',
+      value: { stringValue: playerName },
+    }, null, limit);
+    return results;
+  }
 
-  return results;
+  // ALL_CARDS mode: paginate through all cards for this player
+  const allCards = [];
+  const PAGE_SIZE = 100;
+  let lastDocName = null;
+
+  while (true) {
+    const url = `${FIRESTORE_BASE}:runQuery`;
+    const query = {
+      structuredQuery: {
+        from: [{ collectionId: 'cards' }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: 'player' },
+            op: 'EQUAL',
+            value: { stringValue: playerName },
+          },
+        },
+        orderBy: [{ field: { fieldPath: '__name__' }, direction: 'ASCENDING' }],
+        limit: PAGE_SIZE,
+      },
+    };
+
+    if (lastDocName) {
+      query.structuredQuery.startAt = {
+        values: [{ referenceValue: lastDocName }],
+        before: false,
+      };
+    }
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(query),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(`Firestore query failed: ${err?.error?.message || res.statusText}`);
+    }
+
+    const results = await res.json();
+    const docs = results.filter(r => r.document);
+
+    if (docs.length === 0) break;
+
+    for (const r of docs) {
+      const fields = {};
+      for (const [k, v] of Object.entries(r.document.fields || {})) {
+        fields[k] = fsVal(v);
+      }
+      fields._id = r.document.name.split('/').pop();
+      allCards.push(fields);
+      lastDocName = r.document.name;
+    }
+
+    if (docs.length < PAGE_SIZE) break;
+    await sleep(50); // small delay between pages
+  }
+
+  return allCards;
 }
 
 // ── Build cardladder data object for Supabase ────────────────
@@ -542,7 +610,7 @@ async function runImport(token) {
 
     try {
       // Fetch cards for this player
-      const cards = await fetchPlayerCards(token, clName, SCRAPE_CARDS ? 50 : 20);
+      const cards = await fetchPlayerCards(token, clName, ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 20));
 
       // Build and save
       const cardladderData = buildCardLadderData(clDoc, cards);
@@ -646,7 +714,7 @@ async function runStandard(token) {
       }
 
       // Fetch cards (still requires per-player Firestore query)
-      const cards = await fetchPlayerCards(token, clName, SCRAPE_CARDS ? 50 : 20);
+      const cards = await fetchPlayerCards(token, clName, ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 20));
 
       const cardladderData = buildCardLadderData(clDoc, cards);
 

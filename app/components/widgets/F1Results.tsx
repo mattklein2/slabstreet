@@ -313,8 +313,8 @@ export default function F1Results() {
               className="grid px-2"
               style={{
                 gridTemplateColumns: standingsTab === 'constructors'
-                  ? '16px 2px auto auto'
-                  : '16px auto auto',
+                  ? '16px 2px max-content 32px'
+                  : '16px max-content 32px',
                 rowGap: 0,
                 columnGap: 6,
                 width: 'fit-content',

@@ -40,29 +40,45 @@ if (dryRun) {
   console.log('[dry-run] No data will be written to Supabase.');
 }
 
-async function main() {
-  // Query players with cardladder data
-  let query = supabase
-    .from('players')
-    .select('slug, league, cardladder')
-    .not('cardladder', 'is', null);
+async function fetchAllPlayers() {
+  const allPlayers = [];
+  const pageSize = 500;
+  let from = 0;
 
-  if (leagueFilter) {
-    query = query.eq('league', leagueFilter);
+  while (true) {
+    let query = supabase
+      .from('players')
+      .select('slug, league, cardladder')
+      .not('cardladder', 'is', null)
+      .range(from, from + pageSize - 1);
+
+    if (leagueFilter) {
+      query = query.eq('league', leagueFilter);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.error('Failed to fetch players:', error.message);
+      process.exit(1);
+    }
+
+    if (!data || data.length === 0) break;
+    allPlayers.push(...data);
+    if (data.length < pageSize) break;
+    from += pageSize;
   }
+
+  return allPlayers;
+}
+
+async function main() {
+  let players = await fetchAllPlayers();
 
   if (limit) {
-    query = query.limit(limit);
+    players = players.slice(0, limit);
   }
 
-  const { data: players, error } = await query;
-
-  if (error) {
-    console.error('Failed to fetch players:', error.message);
-    process.exit(1);
-  }
-
-  if (!players || players.length === 0) {
+  if (players.length === 0) {
     console.log('No players found with cardladder data.');
     return;
   }

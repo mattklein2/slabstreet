@@ -7,11 +7,13 @@
  * Requires a CardLadder account (Free or Pro).
  *
  * Usage:
- *   node scripts/scrape-cardladder.mjs                      # all leagues, top 20 per league
+ *   node scripts/scrape-cardladder.mjs                      # update existing players (top 20/league)
  *   node scripts/scrape-cardladder.mjs --league=NBA         # NBA only
  *   node scripts/scrape-cardladder.mjs --player=victor-wembanyama  # single player
- *   node scripts/scrape-cardladder.mjs --limit=5            # top 5 per league
+ *   node scripts/scrape-cardladder.mjs --limit=50           # top 50 per league
  *   node scripts/scrape-cardladder.mjs --cards              # also fetch individual card details
+ *   node scripts/scrape-cardladder.mjs --import             # import ALL CardLadder sports players
+ *   node scripts/scrape-cardladder.mjs --import --dry-run   # preview import without writing
  *
  * Environment variables (in .env.local):
  *   CARDLADDER_EMAIL     - CardLadder account email
@@ -49,23 +51,33 @@ const LEAGUE_FILTER = args.league?.toUpperCase() || '';
 const PLAYER_FILTER = args.player || '';
 const LIMIT_PER_LEAGUE = parseInt(args.limit || '20');
 const SCRAPE_CARDS = args.cards === 'true';
+const IMPORT_MODE = args.import === 'true';
+const DRY_RUN = args['dry-run'] === 'true';
 
 // ── Constants ────────────────────────────────────────────────
-const FIREBASE_API_KEY = 'AIzaSyBqbxgaaGlpeb1F6HRvEW319OcuCsbkAHM';
+const FIREBASE_API_KEY = env.FIREBASE_API_KEY;
 const FIREBASE_PROJECT = 'cardladder-71d53';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-// Map our league IDs to CardLadder categories
-const LEAGUE_TO_CATEGORY = {
-  NBA: 'Basketball',
-  NFL: 'Football',
-  MLB: 'Baseball',
-  NHL: 'Hockey',
-  WNBA: 'Basketball',
-  F1: 'Racing',
-  MLS: 'Soccer',
-  PGA: 'Golf',
+// CardLadder category → our league ID
+const CATEGORY_TO_LEAGUE = {
+  Basketball: 'NBA',
+  Football: 'NFL',
+  Baseball: 'MLB',
+  Hockey: 'NHL',
+  WNBA: 'WNBA',
+  Racing: 'F1',
+  Soccer: 'MLS',
+  Golf: 'PGA',
+  Tennis: 'TENNIS',
+  Boxing: 'BOXING',
+  'UFC/MMA': 'UFC',
+  Wrestling: 'WRESTLING',
+  Softball: 'SOFTBALL',
 };
+
+// Categories we consider "sports" (skip Pokemon, Magic, Star Wars, etc.)
+const SPORTS_CATEGORIES = new Set(Object.keys(CATEGORY_TO_LEAGUE));
 
 // ── Helpers ──────────────────────────────────────────────────
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -104,17 +116,34 @@ function formatPercent(num) {
   return `${(num * 100).toFixed(2)}%`;
 }
 
+function slugify(name) {
+  return name
+    .toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/** Normalize a name for matching: lowercase, strip suffixes, trim */
+function normalizeName(name) {
+  return name
+    .toLowerCase()
+    .replace(/\s+(ii|iii|iv|jr\.?|sr\.?)$/i, '')
+    .replace(/[^a-z\s]/g, '')
+    .trim();
+}
+
 // ── Firebase Auth ────────────────────────────────────────────
 async function firebaseSignIn() {
   const email = env.CARDLADDER_EMAIL;
   const password = env.CARDLADDER_PASSWORD;
 
-  if (!email || !password) {
+  if (!email || !password || !FIREBASE_API_KEY) {
     throw new Error(
-      'Missing CARDLADDER_EMAIL and/or CARDLADDER_PASSWORD in .env.local\n' +
-      'Add them to .env.local:\n' +
+      'Missing CardLadder credentials in .env.local. Required:\n' +
       '  CARDLADDER_EMAIL=your@email.com\n' +
-      '  CARDLADDER_PASSWORD=yourpassword'
+      '  CARDLADDER_PASSWORD=yourpassword\n' +
+      '  FIREBASE_API_KEY=your_firebase_api_key'
     );
   }
 
@@ -132,7 +161,7 @@ async function firebaseSignIn() {
   }
 
   const data = await res.json();
-  return data.idToken; // Bearer token for Firestore requests
+  return data.idToken;
 }
 
 // ── Firestore Queries ────────────────────────────────────────
@@ -202,75 +231,51 @@ async function firestoreQuery(token, collectionId, where, orderBy, limit = 100) 
     });
 }
 
-async function firestoreGet(token, path) {
-  const res = await fetch(`${FIRESTORE_BASE}/${path}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+// ── Pre-fetch ALL CardLadder players ─────────────────────────
+async function fetchAllCardLadderPlayers(token) {
+  console.log('  Fetching all CardLadder players...');
+  const allPlayers = [];
+  let pageToken = null;
+  let pages = 0;
 
-  if (!res.ok) return null;
+  while (true) {
+    let url = `${FIRESTORE_BASE}/players?pageSize=300`;
+    url += '&mask.fieldPaths=player&mask.fieldPaths=category&mask.fieldPaths=totalMarketCap';
+    url += '&mask.fieldPaths=totalCards&mask.fieldPaths=dailyIndex&mask.fieldPaths=dailySalesCount';
+    url += '&mask.fieldPaths=dailySales&mask.fieldPaths=dailyPercentChange';
+    url += '&mask.fieldPaths=weeklyPercentChange&mask.fieldPaths=monthlyPercentChange';
+    url += '&mask.fieldPaths=quarterlyPercentChange&mask.fieldPaths=annualPercentChange';
+    url += '&mask.fieldPaths=allTimePercentChange&mask.fieldPaths=totalValue';
+    url += '&mask.fieldPaths=keyCard&mask.fieldPaths=playerId&mask.fieldPaths=lastUpdated';
+    if (pageToken) url += `&pageToken=${pageToken}`;
 
-  const doc = await res.json();
-  const fields = {};
-  for (const [k, v] of Object.entries(doc.fields || {})) {
-    fields[k] = fsVal(v);
-  }
-  fields._id = doc.name.split('/').pop();
-  return fields;
-}
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    const docs = data.documents || [];
 
-// ── Fetch target players from Supabase ───────────────────────
-async function getTargetPlayers() {
-  if (PLAYER_FILTER) {
-    const { data } = await supabase
-      .from('players')
-      .select('slug, name, league, team')
-      .eq('slug', PLAYER_FILTER)
-      .limit(1);
-    return data || [];
-  }
-
-  const leagues = LEAGUE_FILTER ? [LEAGUE_FILTER] : ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA', 'F1'];
-  const all = [];
-
-  for (const league of leagues) {
-    const { data } = await supabase
-      .from('players')
-      .select('slug, name, league, team')
-      .eq('league', league)
-      .eq('active', true)
-      .order('score', { ascending: false })
-      .limit(LIMIT_PER_LEAGUE);
-    if (data) all.push(...data);
-  }
-
-  return all;
-}
-
-// ── Common name suffixes/variations to try ───────────────────
-const NAME_SUFFIXES = ['', ' II', ' III', ' IV', ' Jr.', ' Jr', ' Sr.', ' Sr'];
-
-// ── Fetch player data from CardLadder Firestore ──────────────
-async function fetchPlayerData(token, playerName) {
-  // Try exact name first, then common variations (e.g. "Patrick Mahomes" → "Patrick Mahomes II")
-  for (const suffix of NAME_SUFFIXES) {
-    const tryName = playerName + suffix;
-    const results = await firestoreQuery(token, 'players', {
-      field: 'player',
-      op: 'EQUAL',
-      value: { stringValue: tryName },
-    }, null, 1);
-
-    if (results.length > 0) {
-      if (suffix) process.stdout.write(`[as "${tryName}"] `);
-      results[0]._clName = tryName; // Store the CardLadder name for card queries
-      return results[0];
+    for (const doc of docs) {
+      const fields = {};
+      for (const [k, v] of Object.entries(doc.fields || {})) {
+        fields[k] = fsVal(v);
+      }
+      fields._id = doc.name.split('/').pop();
+      allPlayers.push(fields);
     }
 
-    // Only try suffix if this is the first (exact) attempt that failed
-    if (!suffix) continue;
+    pages++;
+    process.stdout.write('.');
+
+    if (data.nextPageToken) {
+      pageToken = data.nextPageToken;
+    } else {
+      break;
+    }
   }
 
-  return null;
+  console.log(` ${allPlayers.length} players fetched (${pages} pages)`);
+  return allPlayers;
 }
 
 // ── Fetch player's cards from CardLadder Firestore ───────────
@@ -290,16 +295,14 @@ function buildCardLadderData(playerDoc, cards) {
 
   const data = {
     updatedAt: now,
-    // Index data (from the player document)
     indexValue: playerDoc.dailyIndex || null,
-    indexStartingValue: 1000, // CardLadder starts all indices at 1000
+    indexStartingValue: 1000,
     rateOfGrowth: formatPercent(playerDoc.allTimePercentChange),
     realValueChange: null,
     lowValue: null,
     highValue: null,
     averageValue: playerDoc.totalValue ? Math.round(playerDoc.totalValue / (playerDoc.totalCards || 1)) : null,
     totalCards: playerDoc.totalCards || null,
-    // Sales volume data
     marketCap: formatMoney(playerDoc.totalMarketCap),
     marketCapNum: playerDoc.totalMarketCap || null,
     sales24h: playerDoc.dailySalesCount || null,
@@ -307,21 +310,18 @@ function buildCardLadderData(playerDoc, cards) {
     avgDailyVolumeNum: playerDoc.dailySales || null,
     lowDailyVolume: null,
     highDailyVolume: null,
-    // Percent changes
     dailyPercentChange: playerDoc.dailyPercentChange || null,
     weeklyPercentChange: playerDoc.weeklyPercentChange || null,
     monthlyPercentChange: playerDoc.monthlyPercentChange || null,
     quarterlyPercentChange: playerDoc.quarterlyPercentChange || null,
     annualPercentChange: playerDoc.annualPercentChange || null,
     allTimePercentChange: playerDoc.allTimePercentChange || null,
-    // Key card
     keyCard: playerDoc.keyCard ? {
       id: playerDoc.keyCard.id || null,
       image: playerDoc.keyCard.image || null,
     } : null,
   };
 
-  // Cards
   if (cards && cards.length > 0) {
     data.cards = cards.map(c => ({
       cardId: c._id || null,
@@ -345,26 +345,280 @@ function buildCardLadderData(playerDoc, cards) {
   return data;
 }
 
-// ── Main ─────────────────────────────────────────────────────
-async function main() {
-  console.log('SlabStreet CardLadder Scraper (Firestore API)\n');
+// ── Match CardLadder players against Supabase ────────────────
+function matchPlayers(clPlayers, supabasePlayers) {
+  // Build lookup maps from Supabase players
+  const byExactName = new Map();   // "Patrick Mahomes" → player
+  const byNormalized = new Map();  // "patrick mahomes" → player
 
+  for (const sp of supabasePlayers) {
+    byExactName.set(sp.name, sp);
+    byNormalized.set(normalizeName(sp.name), sp);
+  }
+
+  const matched = [];   // { clDoc, supabaseSlug } — existing player, update cardladder
+  const newPlayers = []; // { clDoc } — not in Supabase, need to insert
+
+  for (const cl of clPlayers) {
+    const clName = cl.player;
+    if (!clName) continue;
+
+    // Try exact match
+    let sp = byExactName.get(clName);
+    if (sp) {
+      matched.push({ clDoc: cl, supabaseSlug: sp.slug, clName });
+      continue;
+    }
+
+    // Try normalized match (strips suffixes like II, Jr.)
+    sp = byNormalized.get(normalizeName(clName));
+    if (sp) {
+      matched.push({ clDoc: cl, supabaseSlug: sp.slug, clName });
+      continue;
+    }
+
+    // No match → new player to import
+    newPlayers.push({ clDoc: cl, clName });
+  }
+
+  return { matched, newPlayers };
+}
+
+// ── IMPORT MODE ──────────────────────────────────────────────
+async function runImport(token) {
+  console.log('=== IMPORT MODE ===\n');
+
+  // 1. Pre-fetch all CardLadder players
+  const allCL = await fetchAllCardLadderPlayers(token);
+
+  // 2. Filter to sports categories only
+  const sportsCL = allCL.filter(p => {
+    const cat = p.category || 'Unknown';
+    return SPORTS_CATEGORIES.has(cat);
+  });
+  console.log(`  ${sportsCL.length} sports players (of ${allCL.length} total)\n`);
+
+  // Apply league filter if specified
+  const filteredCL = LEAGUE_FILTER
+    ? sportsCL.filter(p => CATEGORY_TO_LEAGUE[p.category] === LEAGUE_FILTER)
+    : sportsCL;
+
+  if (LEAGUE_FILTER) {
+    console.log(`  Filtered to ${LEAGUE_FILTER}: ${filteredCL.length} players\n`);
+  }
+
+  // 3. Fetch ALL Supabase players for matching
+  console.log('  Fetching all Supabase players for matching...');
+  const allSupabase = [];
+  let page = 0;
+  while (true) {
+    const { data } = await supabase
+      .from('players')
+      .select('slug, name, league')
+      .range(page * 1000, (page + 1) * 1000 - 1);
+    if (!data || data.length === 0) break;
+    allSupabase.push(...data);
+    page++;
+  }
+  console.log(`  ${allSupabase.length} Supabase players loaded\n`);
+
+  // 4. Match
+  const { matched, newPlayers } = matchPlayers(filteredCL, allSupabase);
+
+  // Sort new players by market cap descending (most valuable first)
+  newPlayers.sort((a, b) => (b.clDoc.totalMarketCap || 0) - (a.clDoc.totalMarketCap || 0));
+
+  console.log(`  Matched (existing): ${matched.length}`);
+  console.log(`  New (to import):    ${newPlayers.length}\n`);
+
+  // Show top new players
+  if (newPlayers.length > 0) {
+    console.log('  Top 20 new players to import:');
+    for (const np of newPlayers.slice(0, 20)) {
+      const mktCap = formatMoney(np.clDoc.totalMarketCap) || '$0';
+      const cat = np.clDoc.category || '?';
+      console.log(`    ${np.clName.padEnd(30)} ${cat.padEnd(12)} mktcap=${mktCap}`);
+    }
+    if (newPlayers.length > 20) console.log(`    ... and ${newPlayers.length - 20} more`);
+    console.log('');
+  }
+
+  if (DRY_RUN) {
+    console.log('DRY RUN — no changes written.\n');
+
+    // Show category breakdown of new players
+    const catCounts = {};
+    for (const np of newPlayers) {
+      const cat = np.clDoc.category || 'Unknown';
+      catCounts[cat] = (catCounts[cat] || 0) + 1;
+    }
+    console.log('New players by category:', JSON.stringify(catCounts, null, 2));
+    return;
+  }
+
+  // 5. Insert new players into Supabase
+  let inserted = 0, insertFailed = 0;
+
+  if (newPlayers.length > 0) {
+    console.log('Inserting new players into Supabase...');
+
+    // Batch insert in chunks of 50
+    const BATCH_SIZE = 50;
+    for (let i = 0; i < newPlayers.length; i += BATCH_SIZE) {
+      const batch = newPlayers.slice(i, i + BATCH_SIZE);
+      const rows = batch.map(np => {
+        const cl = np.clDoc;
+        const name = np.clName;
+        const league = CATEGORY_TO_LEAGUE[cl.category] || 'OTHER';
+        const slug = slugify(name);
+        const nameParts = name.split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+
+        return {
+          slug,
+          name,
+          first_name: firstName,
+          last_name: lastName,
+          last_name_search: lastName.toLowerCase(),
+          full_name: name,
+          team: '',
+          position: '',
+          number: '',
+          score: 0,
+          signal: 'HOLD',
+          pillars: [],
+          stats: [],
+          score_history: {},
+          cards: [],
+          sales: [],
+          fallback_odds: [],
+          news: [],
+          active: true,
+          retired: true,
+          sport: league === 'NBA' || league === 'WNBA' ? 'basketball'
+            : league === 'NFL' ? 'football'
+            : league === 'MLB' ? 'baseball'
+            : league === 'NHL' ? 'hockey'
+            : league === 'F1' ? 'racing'
+            : league === 'MLS' ? 'soccer'
+            : league === 'PGA' ? 'golf'
+            : 'other',
+          league,
+        };
+      });
+
+      const { error } = await supabase.from('players').upsert(rows, {
+        onConflict: 'slug',
+        ignoreDuplicates: true,
+      });
+
+      if (error) {
+        console.log(`  Batch ${Math.floor(i / BATCH_SIZE) + 1} error: ${error.message}`);
+        insertFailed += batch.length;
+      } else {
+        inserted += batch.length;
+        process.stdout.write(`  Inserted ${inserted}/${newPlayers.length}\r`);
+      }
+    }
+    console.log(`\n  Inserted: ${inserted}, Failed: ${insertFailed}\n`);
+  }
+
+  // 6. Now update CardLadder data for ALL matched + newly inserted players
+  const allToUpdate = [
+    ...matched.map(m => ({ slug: m.supabaseSlug, clDoc: m.clDoc, clName: m.clName })),
+    ...newPlayers.map(np => ({ slug: slugify(np.clName), clDoc: np.clDoc, clName: np.clName })),
+  ];
+
+  console.log(`Updating CardLadder data for ${allToUpdate.length} players...`);
+  let ok = 0, fail = 0;
+
+  for (let i = 0; i < allToUpdate.length; i++) {
+    const { slug, clDoc, clName } = allToUpdate[i];
+
+    if ((i + 1) % 100 === 0 || i + 1 === allToUpdate.length) {
+      process.stdout.write(`  Progress: ${i + 1}/${allToUpdate.length}\r`);
+    }
+
+    try {
+      // Fetch cards for this player
+      const cards = await fetchPlayerCards(token, clName, SCRAPE_CARDS ? 50 : 20);
+
+      // Build and save
+      const cardladderData = buildCardLadderData(clDoc, cards);
+
+      const { error } = await supabase
+        .from('players')
+        .update({ cardladder: cardladderData })
+        .eq('slug', slug);
+
+      if (error) {
+        fail++;
+      } else {
+        ok++;
+      }
+    } catch {
+      fail++;
+    }
+
+    // Light rate limit (Firestore is fast but don't hammer it)
+    await sleep(200);
+  }
+
+  console.log(`\n\nDone! ${ok} updated, ${fail} failed.`);
+  console.log(`  New players inserted: ${inserted}`);
+  console.log(`  Existing players matched: ${matched.length}`);
+}
+
+// ── STANDARD MODE ────────────────────────────────────────────
+async function runStandard(token) {
   // 1. Get target players from Supabase
   console.log('Fetching target players from Supabase...');
-  const players = await getTargetPlayers();
-  console.log(`  ${players.length} players to fetch\n`);
+  let players;
 
+  if (PLAYER_FILTER) {
+    const { data } = await supabase
+      .from('players')
+      .select('slug, name, league, team')
+      .eq('slug', PLAYER_FILTER)
+      .limit(1);
+    players = data || [];
+  } else {
+    const leagues = LEAGUE_FILTER ? [LEAGUE_FILTER] : ['NBA', 'NFL', 'MLB', 'NHL', 'WNBA', 'F1'];
+    players = [];
+    for (const league of leagues) {
+      const { data } = await supabase
+        .from('players')
+        .select('slug, name, league, team')
+        .eq('league', league)
+        .eq('active', true)
+        .order('score', { ascending: false })
+        .limit(LIMIT_PER_LEAGUE);
+      if (data) players.push(...data);
+    }
+  }
+
+  console.log(`  ${players.length} players to fetch\n`);
   if (players.length === 0) {
     console.log('No players found. Check --league or --player args.');
     return;
   }
 
-  // 2. Authenticate with Firebase
-  console.log('Authenticating with CardLadder (Firebase)...');
-  const token = await firebaseSignIn();
-  console.log('  Auth OK\n');
+  // 2. Pre-fetch all CardLadder players for fast local matching
+  const allCL = await fetchAllCardLadderPlayers(token);
 
-  // 3. Fetch data for each player
+  // Build lookup: normalized name → CardLadder doc
+  const clByName = new Map();
+  const clByNormalized = new Map();
+  for (const cl of allCL) {
+    if (cl.player) {
+      clByName.set(cl.player, cl);
+      clByNormalized.set(normalizeName(cl.player), cl);
+    }
+  }
+  console.log(`  ${clByName.size} CardLadder players indexed\n`);
+
+  // 3. Match and fetch data
   let ok = 0, fail = 0, skip = 0;
 
   for (let i = 0; i < players.length; i++) {
@@ -372,40 +626,41 @@ async function main() {
     process.stdout.write(`  [${i + 1}/${players.length}] ${player.name.padEnd(28)} `);
 
     try {
-      // Fetch player data from CardLadder Firestore
-      const playerDoc = await fetchPlayerData(token, player.name);
+      // Fast local lookup instead of per-player Firestore queries
+      let clDoc = clByName.get(player.name);
+      let clName = player.name;
 
-      if (!playerDoc) {
+      if (!clDoc) {
+        clDoc = clByNormalized.get(normalizeName(player.name));
+        if (clDoc) clName = clDoc.player;
+      }
+
+      if (!clDoc) {
         console.log('not found — skipped');
         skip++;
         continue;
       }
 
-      // Fetch cards using the CardLadder name (handles suffixes like "II")
-      const clName = playerDoc._clName || player.name;
+      if (clName !== player.name) {
+        process.stdout.write(`[as "${clName}"] `);
+      }
+
+      // Fetch cards (still requires per-player Firestore query)
       const cards = await fetchPlayerCards(token, clName, SCRAPE_CARDS ? 50 : 20);
 
-      // Build structured data
-      const cardladderData = buildCardLadderData(playerDoc, cards);
+      const cardladderData = buildCardLadderData(clDoc, cards);
 
-      // Write to Supabase
       const { error } = await supabase
         .from('players')
         .update({ cardladder: cardladderData })
         .eq('slug', player.slug);
 
       if (error) {
-        if (error.message.includes('cardladder')) {
-          console.log(`ERROR: 'cardladder' column not found.`);
-          console.log(`       Run: ALTER TABLE players ADD COLUMN cardladder JSONB;`);
-          process.exit(1);
-        }
         console.log(`ERROR: ${error.message}`);
         fail++;
       } else {
-        const cardCount = cards.length;
-        const mktCap = formatMoney(playerDoc.totalMarketCap) || 'N/A';
-        console.log(`${cardCount} cards, mktcap=${mktCap} — saved`);
+        const mktCap = formatMoney(clDoc.totalMarketCap) || 'N/A';
+        console.log(`${cards.length} cards, mktcap=${mktCap} — saved`);
         ok++;
       }
     } catch (err) {
@@ -413,11 +668,25 @@ async function main() {
       fail++;
     }
 
-    // Rate limit: 500ms between players (Firestore API is fast, no need for long delays)
-    await sleep(500);
+    await sleep(300);
   }
 
   console.log(`\nDone! ${ok} updated, ${skip} skipped, ${fail} failed.`);
+}
+
+// ── Main ─────────────────────────────────────────────────────
+async function main() {
+  console.log('SlabStreet CardLadder Scraper (Firestore API)\n');
+
+  console.log('Authenticating with CardLadder (Firebase)...');
+  const token = await firebaseSignIn();
+  console.log('  Auth OK\n');
+
+  if (IMPORT_MODE) {
+    await runImport(token);
+  } else {
+    await runStandard(token);
+  }
 }
 
 main().catch(err => { console.error('Fatal:', err); process.exit(1); });

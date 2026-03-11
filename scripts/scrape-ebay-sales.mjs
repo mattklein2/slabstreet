@@ -17,6 +17,7 @@ import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 import { chromium } from 'playwright';
 import { parseCardTitle, buildCardName, cardGroupKey } from './lib/parse-card-title.mjs';
+import { generateCardSlug } from './lib/card-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -202,6 +203,80 @@ function processListings(listings, playerName) {
   return { sales, cards };
 }
 
+// ── Write sales to normalized card_sales table ────────────────
+async function writeToCardSales(listings, player) {
+  let written = 0;
+  for (const l of listings) {
+    const parsed = parseCardTitle(l.title);
+    if (!parsed || !parsed.year || !parsed.set) continue;
+
+    const slug = generateCardSlug(
+      player.slug,
+      parsed.year,
+      parsed.set,
+      parsed.parallel || 'Base',
+      parsed.cardNumber || ''
+    );
+
+    // Find or create the card
+    let { data: card } = await supabase
+      .from('cards')
+      .select('id')
+      .eq('slug', slug)
+      .limit(1)
+      .single();
+
+    if (!card) {
+      const { data: newCard, error: insertErr } = await supabase
+        .from('cards')
+        .insert({
+          player_slug: player.slug,
+          year: parseInt(parsed.year) || 0,
+          set_name: parsed.set,
+          parallel: parsed.parallel || 'Base',
+          card_number: parsed.cardNumber || null,
+          numbered_to: parsed.numbered || null,
+          league: player.league,
+          slug,
+        })
+        .select('id')
+        .single();
+
+      if (insertErr) continue; // skip if duplicate slug race
+      card = newCard;
+    }
+
+    if (!card) continue;
+
+    // Parse sold date
+    let soldDate;
+    try {
+      soldDate = l.dateStr ? new Date(l.dateStr).toISOString() : new Date().toISOString();
+    } catch {
+      soldDate = new Date().toISOString();
+    }
+
+    const listingUrl = l.itemId ? `https://www.ebay.com/itm/${l.itemId}` : null;
+
+    // Insert sale (skip on duplicate listing_url)
+    const { error: saleErr } = await supabase
+      .from('card_sales')
+      .upsert({
+        card_id: card.id,
+        price: l.price,
+        grade: parsed.grade || null,
+        grader: parsed.grader || null,
+        grade_number: parsed.gradeNum || null,
+        sold_date: soldDate,
+        platform: 'eBay',
+        listing_url: listingUrl,
+      }, { onConflict: 'listing_url', ignoreDuplicates: true });
+
+    if (!saleErr) written++;
+  }
+  return written;
+}
+
 function median(arr) {
   if (arr.length === 0) return 0;
   const sorted = [...arr].sort((a, b) => a - b);
@@ -261,17 +336,20 @@ async function main() {
         continue;
       }
 
-      // Write to Supabase
+      // Write to Supabase (players table — legacy JSONB columns)
       const { error } = await supabase
         .from('players')
         .update({ sales, cards })
         .eq('slug', player.slug);
 
+      // Also write to normalized card_sales table
+      const cardSalesWritten = await writeToCardSales(listings, player);
+
       if (error) {
         console.log(`  ERROR: ${error.message}`);
         fail++;
       } else {
-        console.log(`  ${sales.length} sales, ${cards.length} cards — saved`);
+        console.log(`  ${sales.length} sales, ${cards.length} cards, ${cardSalesWritten} card_sales — saved`);
         ok++;
       }
     } catch (err) {

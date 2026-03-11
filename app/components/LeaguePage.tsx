@@ -2,8 +2,6 @@
 
 import { LeagueProvider } from './LeagueProvider';
 import { useTheme } from './ThemeProvider';
-import Nav from './layout/Nav';
-import LeagueTabs from './layout/LeagueTabs';
 import MarketMovers from './widgets/MarketMovers';
 import FullSchedule from './widgets/FullSchedule';
 import ChampionshipOdds from './widgets/ChampionshipOdds';
@@ -24,9 +22,6 @@ function LeaguePageInner({ leagueId }: { leagueId: string }) {
 
   return (
     <div className="min-h-screen" style={{ color: c.text }}>
-      <Nav />
-      <LeagueTabs />
-
       {/* League accent bar */}
       <div style={{ height: 3, background: accentColor }} />
 

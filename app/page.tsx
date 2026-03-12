@@ -8,6 +8,7 @@ import RecentSales from './components/widgets/RecentSales';
 import SportsNews from './components/widgets/SportsNews';
 import CardNews from './components/widgets/CardNews';
 import CatalystAlerts from './components/widgets/CatalystAlerts';
+import CatalystLookAhead from './components/widgets/CatalystLookAhead';
 
 export default function HomePage() {
   const { colors: c } = useTheme();
@@ -18,6 +19,9 @@ export default function HomePage() {
       <main className="max-w-[1600px] mx-auto px-7 py-8 flex flex-col gap-6">
         {/* Row 1: Catalyst Alerts — 2-column undervalued/overvalued */}
         <CatalystAlerts />
+
+        {/* Row 2: Look Ahead — upcoming market-moving events */}
+        <CatalystLookAhead />
 
         {/* Row 3: 3-column layout — Scores | News | Signals */}
         <div className="flex flex-col lg:flex-row gap-5">

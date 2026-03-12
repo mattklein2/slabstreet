@@ -1,68 +1,86 @@
-'use client';
-
-import { useTheme } from './components/ThemeProvider';
-import { LeagueProvider } from './components/LeagueProvider';
-import FullSchedule from './components/widgets/FullSchedule';
-import TradeSignals from './components/widgets/TradeSignals';
-import RecentSales from './components/widgets/RecentSales';
-import SportsNews from './components/widgets/SportsNews';
-import CardNews from './components/widgets/CardNews';
-import CatalystAlerts from './components/widgets/CatalystAlerts';
-import CatalystLookAhead from './components/widgets/CatalystLookAhead';
-
 export default function HomePage() {
-  const { colors: c } = useTheme();
-
   return (
-    <LeagueProvider>
-    <div className="min-h-screen" style={{ color: c.text }}>
-      <main className="max-w-[1600px] mx-auto px-7 py-8 flex flex-col gap-6">
-        {/* Row 1: Catalyst Alerts — 2-column undervalued/overvalued */}
-        <CatalystAlerts />
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#0a0f1a',
+        color: '#e8edf5',
+        fontFamily: "'IBM Plex Sans', sans-serif",
+        padding: '2rem',
+      }}
+    >
+      {/* Logo */}
+      <h1
+        style={{
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: 'clamp(3rem, 8vw, 6rem)',
+          letterSpacing: '8px',
+          color: '#00ff87',
+          marginBottom: '0.5rem',
+          lineHeight: 1,
+        }}
+      >
+        SLABSTREET
+      </h1>
 
-        {/* Row 2: Look Ahead — upcoming market-moving events */}
-        <CatalystLookAhead />
+      {/* Tagline */}
+      <p
+        style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: 'clamp(0.7rem, 2vw, 0.9rem)',
+          letterSpacing: '4px',
+          color: '#556677',
+          textTransform: 'uppercase',
+          marginBottom: '3rem',
+        }}
+      >
+        Something new is coming
+      </p>
 
-        {/* Row 3: 3-column layout — Scores | News | Signals */}
-        <div className="flex flex-col lg:flex-row gap-5">
-          {/* Left — Scores */}
-          <div className="lg:w-[340px] lg:shrink-0">
-            <div className="lg:sticky lg:top-[72px]">
-              <FullSchedule />
-            </div>
-          </div>
+      {/* Divider line */}
+      <div
+        style={{
+          width: 60,
+          height: 2,
+          background: '#00ff87',
+          opacity: 0.4,
+          marginBottom: '3rem',
+          borderRadius: 1,
+        }}
+      />
 
-          {/* Center — News */}
-          <div className="flex-1 min-w-0">
-            <SportsNews />
-          </div>
-
-          {/* Right — Signals */}
-          <div className="lg:w-[380px] lg:shrink-0">
-            <TradeSignals />
-          </div>
-        </div>
-
-        {/* Row 3: Recent Sales — horizontal strip */}
-        <RecentSales />
-
-        {/* Row 4: Card News — grid */}
-        <CardNews />
-      </main>
+      {/* Description */}
+      <p
+        style={{
+          fontSize: 'clamp(0.85rem, 2vw, 1rem)',
+          color: '#556677',
+          textAlign: 'center',
+          maxWidth: 420,
+          lineHeight: 1.7,
+        }}
+      >
+        We&apos;re rebuilding SlabStreet from the ground up.
+        <br />
+        Stay tuned.
+      </p>
 
       {/* Footer */}
-      <footer
-        className="mt-10 py-8 px-6 text-center"
-        style={{ borderTop: `1px solid ${c.border}`, background: c.surface }}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '2rem',
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '0.65rem',
+          color: '#333d4d',
+          letterSpacing: '2px',
+        }}
       >
-        <div className="font-display text-xl tracking-[3px] mb-1.5" style={{ color: c.green }}>
-          SLABSTREET
-        </div>
-        <div className="font-body text-[10px]" style={{ color: c.muted }}>
-          © 2026 Slab Street · slabstreet.io · All rights reserved
-        </div>
-      </footer>
+        slabstreet.io
+      </div>
     </div>
-    </LeagueProvider>
   );
 }

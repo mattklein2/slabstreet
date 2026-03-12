@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { ThemeProvider } from './components/ThemeProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'SlabStreet — Coming Soon',
-  description: 'Something new is coming to SlabStreet.',
+  title: 'SlabStreet — Smart Collecting Starts Here',
+  description: 'Sports card intelligence tools for collectors. Identify your pulls, find the best boxes, and learn the hobby.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -11,12 +12,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        {/* Fonts loaded via @import in globals.css — preconnect only here */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body style={{ margin: 0, padding: 0, background: '#0a0f1a' }}>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

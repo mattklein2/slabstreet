@@ -1,84 +1,129 @@
+'use client';
+
+import Link from 'next/link';
+import { useTheme } from './components/ThemeProvider';
+
+const tools = [
+  {
+    href: '/decoder',
+    title: 'What Did I Pull?',
+    description: 'Identify any card by matching its color and pattern',
+    icon: '🔍',
+  },
+  {
+    href: '/guide',
+    title: 'What Should I Buy?',
+    description: 'Find the best box for your budget and store',
+    icon: '🛒',
+  },
+  {
+    href: '/learn',
+    title: 'Learn the Hobby',
+    description: 'Understand products, parallels, grading, and more',
+    icon: '📚',
+  },
+];
+
 export default function HomePage() {
+  const { colors } = useTheme();
+
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#0a0f1a',
-        color: '#e8edf5',
-        fontFamily: "'IBM Plex Sans', sans-serif",
-        padding: '2rem',
-      }}
-    >
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem 1.25rem',
+      fontFamily: "'IBM Plex Sans', sans-serif",
+    }}>
       {/* Logo */}
-      <h1
-        style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: 'clamp(3rem, 8vw, 6rem)',
-          letterSpacing: '8px',
-          color: '#00ff87',
-          marginBottom: '0.5rem',
-          lineHeight: 1,
-        }}
-      >
+      <h1 style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: 'clamp(3rem, 8vw, 6rem)',
+        letterSpacing: 8,
+        color: colors.green,
+        marginBottom: 4,
+        lineHeight: 1,
+      }}>
         SLABSTREET
       </h1>
 
       {/* Tagline */}
-      <p
-        style={{
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: 'clamp(0.7rem, 2vw, 0.9rem)',
-          letterSpacing: '4px',
-          color: '#556677',
-          textTransform: 'uppercase',
-          marginBottom: '3rem',
-        }}
-      >
-        Something new is coming
+      <p style={{
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: 'clamp(0.65rem, 2vw, 0.85rem)',
+        letterSpacing: 4,
+        color: colors.muted,
+        textTransform: 'uppercase',
+        marginBottom: 48,
+      }}>
+        Smart collecting starts here
       </p>
 
-      {/* Divider line */}
-      <div
-        style={{
-          width: 60,
-          height: 2,
-          background: '#00ff87',
-          opacity: 0.4,
-          marginBottom: '3rem',
-          borderRadius: 1,
-        }}
-      />
-
-      {/* Description */}
-      <p
-        style={{
-          fontSize: 'clamp(0.85rem, 2vw, 1rem)',
-          color: '#556677',
-          textAlign: 'center',
-          maxWidth: 420,
-          lineHeight: 1.7,
-        }}
-      >
-        We&apos;re rebuilding SlabStreet from the ground up.
-        <br />
-        Stay tuned.
-      </p>
+      {/* Tool Cards */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: 20,
+        width: '100%',
+        maxWidth: 960,
+      }}>
+        {tools.map((tool) => (
+          <Link key={tool.href} href={tool.href} style={{ textDecoration: 'none' }}>
+            <div style={{
+              background: colors.surface,
+              border: `1px solid ${colors.border}`,
+              borderRadius: 16,
+              padding: '32px 24px',
+              cursor: 'pointer',
+              transition: 'border-color 0.15s, transform 0.15s',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+            }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = colors.green;
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = colors.border;
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <span style={{ fontSize: 36 }}>{tool.icon}</span>
+              <h2 style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: 28,
+                letterSpacing: 2,
+                color: colors.text,
+                margin: 0,
+              }}>
+                {tool.title}
+              </h2>
+              <p style={{
+                color: colors.muted,
+                fontSize: 14,
+                lineHeight: 1.5,
+                margin: 0,
+              }}>
+                {tool.description}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
 
       {/* Footer */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '2rem',
-          fontFamily: "'IBM Plex Mono', monospace",
-          fontSize: '0.65rem',
-          color: '#333d4d',
-          letterSpacing: '2px',
-        }}
-      >
+      <div style={{
+        marginTop: 'auto',
+        paddingTop: 48,
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '0.65rem',
+        color: colors.muted,
+        letterSpacing: 2,
+        opacity: 0.5,
+      }}>
         slabstreet.io
       </div>
     </div>

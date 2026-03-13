@@ -34,6 +34,6 @@ export async function GET(request: NextRequest) {
   }));
 
   return NextResponse.json({ parallels, totalParallels }, {
-    headers: { 'Cache-Control': 'public, max-age=3600' },
+    headers: { 'Cache-Control': 'public, max-age=60, s-maxage=60' },
   });
 }

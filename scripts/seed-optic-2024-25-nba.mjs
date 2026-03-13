@@ -2,7 +2,8 @@
 
 /**
  * Seed complete 2024-25 Donruss Optic Basketball parallel data.
- * Sources: Cardboard Connection, Beckett, community break data.
+ * Sources: Cardboard Connection, Beckett, Checklist Insider, Cardlines,
+ *          Cardsmithsbreaks, GoGTS, Fanatics Live.
  *
  * Usage:
  *   node scripts/seed-optic-2024-25-nba.mjs
@@ -34,58 +35,130 @@ const HOBBY = 'Hobby';
 const FAST_BREAK = 'Fast Break';
 const CHOICE = 'Choice';
 const FOTL = 'FOTL';
+const HOBBY_BLASTER = 'Hobby Blaster';
+const HOBBY_MEGA = 'Hobby Mega';
 const BLASTER = 'Retail Blaster';
 const MEGA = 'Retail Mega';
 const HANGER = 'Hanger';
 const FAT_PACK = 'Fat Pack/Cello';
+const INTERNATIONAL = 'International';
 const ALL = 'All';
 
+// Shorthand for standard retail formats
+const RETAIL = [BLASTER, MEGA, HANGER, FAT_PACK];
+
 // Complete parallel data for 2024-25 Donruss Optic Basketball
+// Corrected via Beckett, Checklist Insider, Cardlines, Cardsmithsbreaks, GoGTS
+// Previous version had 39 parallels with many Prizm terms mixed in; this is fully corrected
 const parallels = [
-  // ── Unnumbered Parallels ──────────────────────────────────────
-  { name: 'Base', color_hex: null, print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base Optic card' },
-  { name: 'Holo', color_hex: '#C0C0C0', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [ALL], description: 'The iconic Optic holographic parallel — rainbow shimmer' },
-  { name: 'Hyper', color_hex: '#E8E8FF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [HOBBY], description: 'Bright hyper-reflective finish — Hobby exclusive' },
-  { name: 'Wave', color_hex: '#87CEEB', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [ALL], description: 'Wavy holographic pattern across the card' },
-  { name: 'Ice', color_hex: '#B0E0E6', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [BLASTER], description: 'Frosted ice finish — Retail Blaster exclusive' },
-  { name: 'Red/White/Blue', color_hex: '#3B82F6', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [FAT_PACK, HANGER], description: 'Tri-color patriotic pattern — Fat Pack and Hanger exclusive' },
-  { name: 'Pulsar', color_hex: '#FFD700', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [FAT_PACK], description: 'Flash/pulse refractor effect — Fat Pack exclusive' },
-  { name: 'Pink', color_hex: '#FF69B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [MEGA], description: 'Pink shimmer finish — Retail Mega exclusive' },
-  { name: 'Snakeskin', color_hex: '#556B2F', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [HOBBY], description: 'Snakeskin texture pattern — Hobby exclusive' },
-  { name: 'Fast Break', color_hex: '#6A5ACD', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [FAST_BREAK], description: 'Circle background pattern — Fast Break exclusive' },
-  { name: 'Green', color_hex: '#22C55E', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [ALL], description: 'Green shimmer finish' },
-  { name: 'Choice', color_hex: '#0055A4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [CHOICE], description: 'Choice pattern — Choice exclusive' },
-  { name: 'Scope', color_hex: '#4682B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 13, box_exclusivity: [HOBBY], description: 'Scope crosshair pattern overlay — Hobby exclusive' },
+  // ── Base ────────────────────────────────────────────────────────
+  { name: 'Base', color_hex: '#FFFFFF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base Optic card' },
 
-  // ── Numbered Parallels ────────────────────────────────────────
-  { name: 'Red', color_hex: '#CC0000', print_run: 299, serial_numbered: true, is_one_of_one: false, rarity_rank: 14, box_exclusivity: [ALL], description: 'Red shimmer numbered to 299' },
-  { name: 'Blue', color_hex: '#0055A4', print_run: 249, serial_numbered: true, is_one_of_one: false, rarity_rank: 15, box_exclusivity: [ALL], description: 'Blue shimmer numbered to 249' },
-  { name: 'Purple', color_hex: '#800080', print_run: 199, serial_numbered: true, is_one_of_one: false, rarity_rank: 16, box_exclusivity: [ALL], description: 'Purple shimmer /199' },
-  { name: 'Teal', color_hex: '#008080', print_run: 175, serial_numbered: true, is_one_of_one: false, rarity_rank: 17, box_exclusivity: [ALL], description: 'Teal shimmer /175' },
-  { name: 'Fast Break Blue', color_hex: '#4169E1', print_run: 150, serial_numbered: true, is_one_of_one: false, rarity_rank: 18, box_exclusivity: [FAST_BREAK], description: 'Blue Fast Break /150 — Fast Break exclusive' },
-  { name: 'White', color_hex: '#FFFFFF', print_run: 125, serial_numbered: true, is_one_of_one: false, rarity_rank: 19, box_exclusivity: [HOBBY], description: 'White shimmer /125 — Hobby exclusive' },
-  { name: 'Fast Break Orange', color_hex: '#FF8C00', print_run: 125, serial_numbered: true, is_one_of_one: false, rarity_rank: 20, box_exclusivity: [FAST_BREAK], description: 'Orange Fast Break /125 — Fast Break exclusive' },
-  { name: 'Fast Break Red', color_hex: '#CC0000', print_run: 100, serial_numbered: true, is_one_of_one: false, rarity_rank: 21, box_exclusivity: [FAST_BREAK], description: 'Red Fast Break /100 — Fast Break exclusive' },
-  { name: 'Choice Red', color_hex: '#CC0000', print_run: 88, serial_numbered: true, is_one_of_one: false, rarity_rank: 22, box_exclusivity: [CHOICE], description: 'Red Choice /88 — Choice exclusive' },
-  { name: 'Fast Break Purple', color_hex: '#800080', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 23, box_exclusivity: [FAST_BREAK], description: 'Purple Fast Break /75 — Fast Break exclusive' },
-  { name: 'Orange', color_hex: '#FF8C00', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 24, box_exclusivity: [ALL], description: 'Orange shimmer /75' },
-  { name: 'Fast Break Pink', color_hex: '#FF69B4', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 25, box_exclusivity: [FAST_BREAK], description: 'Pink Fast Break /50 — Fast Break exclusive' },
-  { name: 'Choice Blue', color_hex: '#0055A4', print_run: 49, serial_numbered: true, is_one_of_one: false, rarity_rank: 26, box_exclusivity: [CHOICE], description: 'Blue Choice /49 — Choice exclusive' },
-  { name: 'Blue Shimmer FOTL', color_hex: '#4169E1', print_run: 35, serial_numbered: true, is_one_of_one: false, rarity_rank: 27, box_exclusivity: [FOTL], description: 'Blue shimmer /35 — First Off The Line exclusive' },
-  { name: 'Mojo', color_hex: '#FFD700', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 28, box_exclusivity: [ALL], description: 'Swirl mojo pattern /25' },
-  { name: 'Choice Cherry Blossom', color_hex: '#FFB7C5', print_run: 20, serial_numbered: true, is_one_of_one: false, rarity_rank: 29, box_exclusivity: [CHOICE], description: 'Cherry blossom pattern /20 — Choice exclusive' },
-  { name: 'Fast Break Bronze', color_hex: '#CD7F32', print_run: 20, serial_numbered: true, is_one_of_one: false, rarity_rank: 30, box_exclusivity: [FAST_BREAK], description: 'Bronze Fast Break /20 — Fast Break exclusive' },
-  { name: 'Gold', color_hex: '#FFD700', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 31, box_exclusivity: [ALL], description: 'Gold shimmer numbered to 10' },
-  { name: 'Gold Shimmer FOTL', color_hex: '#FFD700', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 32, box_exclusivity: [FOTL], description: 'Gold shimmer /10 — First Off The Line exclusive' },
-  { name: 'Choice Green', color_hex: '#228B22', print_run: 8, serial_numbered: true, is_one_of_one: false, rarity_rank: 33, box_exclusivity: [CHOICE], description: 'Green Choice /8 — Choice exclusive' },
-  { name: 'Black Gold', color_hex: '#1A1A1A', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 34, box_exclusivity: [ALL], description: 'Black with gold accents /5' },
-  { name: 'Fast Break Neon Green', color_hex: '#39FF14', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 35, box_exclusivity: [FAST_BREAK], description: 'Neon green Fast Break /5 — Fast Break exclusive' },
-  { name: 'Green Shimmer FOTL', color_hex: '#228B22', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 36, box_exclusivity: [FOTL], description: 'Green shimmer /5 — First Off The Line exclusive' },
+  // ── Hobby Unnumbered (3) ────────────────────────────────────────
+  { name: 'Holo', color_hex: '#C0C0C0', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [HOBBY], description: 'Iconic Optic holographic rainbow shimmer; Hobby exclusive' },
+  { name: 'Jazz', color_hex: '#DAA520', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [HOBBY], description: 'Jazz pattern overlay; Hobby exclusive' },
+  { name: 'Photon', color_hex: '#E0E7FF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [HOBBY], description: 'Light-burst photon effect; Hobby exclusive SSP' },
 
-  // ── 1-of-1 Parallels ─────────────────────────────────────────
-  { name: 'Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 37, box_exclusivity: [ALL], description: 'Black shimmer — 1 of 1. The rarest standard parallel.' },
-  { name: 'Black Shimmer FOTL', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 38, box_exclusivity: [FOTL], description: 'Black shimmer 1/1 — First Off The Line exclusive' },
-  { name: 'Choice Nebula', color_hex: '#4B0082', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 39, box_exclusivity: [CHOICE], description: 'Nebula swirl pattern 1/1 — Choice exclusive' },
+  // ── Hobby Numbered (14) ─────────────────────────────────────────
+  { name: 'Aqua', color_hex: '#00CED1', print_run: 225, serial_numbered: true, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [HOBBY], description: 'Aqua shimmer /225; Hobby exclusive' },
+  { name: 'Orange', color_hex: '#FF8C00', print_run: 175, serial_numbered: true, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [HOBBY], description: 'Orange shimmer /175; Hobby exclusive' },
+  { name: 'Lime Green', color_hex: '#32CD32', print_run: 149, serial_numbered: true, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [HOBBY], description: 'Lime green shimmer /149; Hobby exclusive' },
+  { name: 'Red', color_hex: '#CC0000', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [HOBBY], description: 'Red shimmer /99; Hobby exclusive' },
+  { name: 'Pink Velocity', color_hex: '#FF69B4', print_run: 79, serial_numbered: true, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [HOBBY], description: 'Pink velocity finish /79; Hobby exclusive' },
+  { name: 'Blue Shimmer', color_hex: '#4169E1', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [HOBBY], description: 'Blue shimmer finish /75; Hobby exclusive' },
+  { name: 'Blue', color_hex: '#0055A4', print_run: 49, serial_numbered: true, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [HOBBY], description: 'Blue shimmer /49; Hobby exclusive' },
+  { name: 'Black Velocity', color_hex: '#1A1A2E', print_run: 39, serial_numbered: true, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [HOBBY], description: 'Black velocity finish /39; Hobby exclusive' },
+  { name: 'Cracked Ice', color_hex: '#B0E0E6', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 13, box_exclusivity: [HOBBY], description: 'Cracked ice refractor pattern /25; Hobby exclusive' },
+  { name: 'Black Pandora', color_hex: '#0D0D0D', print_run: 15, serial_numbered: true, is_one_of_one: false, rarity_rank: 14, box_exclusivity: [HOBBY], description: 'Black Pandora pattern /15; Hobby exclusive' },
+  { name: 'Gold', color_hex: '#FFD700', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 15, box_exclusivity: [HOBBY], description: 'Gold shimmer /10; Hobby exclusive' },
+  { name: 'Lucky Envelopes', color_hex: '#FF2400', print_run: 8, serial_numbered: true, is_one_of_one: false, rarity_rank: 16, box_exclusivity: [HOBBY], description: 'Lucky envelopes red & gold /8; Hobby exclusive' },
+  { name: 'Green', color_hex: '#228B22', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 17, box_exclusivity: [HOBBY], description: 'Green shimmer /5; Hobby exclusive' },
+
+  // ── Hobby 1-of-1 (2) ───────────────────────────────────────────
+  { name: 'Gold Vinyl', color_hex: '#FFD700', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 18, box_exclusivity: [HOBBY], description: 'Gold vinyl finish — true 1/1; Hobby exclusive' },
+  { name: 'Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 19, box_exclusivity: [HOBBY], description: 'Black shimmer — true 1/1; the rarest Hobby parallel' },
+
+  // ── Fast Break Unnumbered (1) ───────────────────────────────────
+  { name: 'Fast Break Holo', color_hex: '#6A5ACD', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 20, box_exclusivity: [FAST_BREAK], description: 'Holographic Fast Break parallel; Fast Break exclusive' },
+
+  // ── Fast Break Numbered (7) ─────────────────────────────────────
+  { name: 'Fast Break Purple', color_hex: '#800080', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 21, box_exclusivity: [FAST_BREAK], description: 'Purple Fast Break /99; Fast Break exclusive' },
+  { name: 'Fast Break Red', color_hex: '#CC0000', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 22, box_exclusivity: [FAST_BREAK], description: 'Red Fast Break /75; Fast Break exclusive' },
+  { name: 'Fast Break Blue', color_hex: '#4169E1', print_run: 49, serial_numbered: true, is_one_of_one: false, rarity_rank: 23, box_exclusivity: [FAST_BREAK], description: 'Blue Fast Break /49; Fast Break exclusive' },
+  { name: 'Fast Break Pink', color_hex: '#FF69B4', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 24, box_exclusivity: [FAST_BREAK], description: 'Pink Fast Break /25; Fast Break exclusive' },
+  { name: 'Fast Break Gold', color_hex: '#FFD700', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 25, box_exclusivity: [FAST_BREAK], description: 'Gold Fast Break /10; Fast Break exclusive' },
+  { name: 'Fast Break Red & Yellow', color_hex: '#FF4500', print_run: 7, serial_numbered: true, is_one_of_one: false, rarity_rank: 26, box_exclusivity: [FAST_BREAK], description: 'Red & Yellow Fast Break /7; Fast Break exclusive' },
+  { name: 'Fast Break Neon Green', color_hex: '#39FF14', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 27, box_exclusivity: [FAST_BREAK], description: 'Neon green Fast Break /5; Fast Break exclusive' },
+
+  // ── Fast Break 1-of-1 (1) ──────────────────────────────────────
+  { name: 'Fast Break Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 28, box_exclusivity: [FAST_BREAK], description: 'Black Fast Break — true 1/1; Fast Break exclusive' },
+
+  // ── Choice Unnumbered (1) ──────────────────────────────────────
+  { name: 'Choice Dragon', color_hex: '#8B0000', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 29, box_exclusivity: [CHOICE], description: 'Dragon scale pattern; Choice exclusive' },
+
+  // ── Choice Numbered (4) ────────────────────────────────────────
+  { name: 'Choice Red', color_hex: '#CC0000', print_run: 88, serial_numbered: true, is_one_of_one: false, rarity_rank: 30, box_exclusivity: [CHOICE], description: 'Red Choice /88; Choice exclusive' },
+  { name: 'Choice White', color_hex: '#F5F5F5', print_run: 48, serial_numbered: true, is_one_of_one: false, rarity_rank: 31, box_exclusivity: [CHOICE], description: 'White Choice /48; Choice exclusive' },
+  { name: 'Choice Blue', color_hex: '#0055A4', print_run: 24, serial_numbered: true, is_one_of_one: false, rarity_rank: 32, box_exclusivity: [CHOICE], description: 'Blue Choice /24; Choice exclusive' },
+  { name: 'Choice Black Gold', color_hex: '#1A1A1A', print_run: 8, serial_numbered: true, is_one_of_one: false, rarity_rank: 33, box_exclusivity: [CHOICE], description: 'Black with gold accents Choice /8; Choice exclusive' },
+
+  // ── Choice 1-of-1 (1) ──────────────────────────────────────────
+  { name: 'Choice Nebula', color_hex: '#4B0082', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 34, box_exclusivity: [CHOICE], description: 'Nebula swirl pattern — true 1/1; Choice exclusive' },
+
+  // ── FOTL Numbered (2) ──────────────────────────────────────────
+  { name: 'Green FOTL', color_hex: '#228B22', print_run: 14, serial_numbered: true, is_one_of_one: false, rarity_rank: 35, box_exclusivity: [FOTL], description: 'Green /14; First Off The Line exclusive' },
+  { name: 'Black FOTL', color_hex: '#000000', print_run: 3, serial_numbered: true, is_one_of_one: false, rarity_rank: 36, box_exclusivity: [FOTL], description: 'Black /3; First Off The Line exclusive' },
+
+  // ── Hobby Mega — Hyper Family (4) ──────────────────────────────
+  { name: 'Hyper Pink', color_hex: '#FF69B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 37, box_exclusivity: [HOBBY_MEGA], description: 'Pink hyper-reflective finish; Hobby Mega exclusive' },
+  { name: 'Hyper Orange', color_hex: '#FF8C00', print_run: 299, serial_numbered: true, is_one_of_one: false, rarity_rank: 38, box_exclusivity: [HOBBY_MEGA], description: 'Orange hyper-reflective /299; Hobby Mega exclusive' },
+  { name: 'Hyper Green', color_hex: '#22C55E', print_run: 249, serial_numbered: true, is_one_of_one: false, rarity_rank: 39, box_exclusivity: [HOBBY_MEGA], description: 'Green hyper-reflective /249; Hobby Mega exclusive' },
+  { name: 'Hyper Blue', color_hex: '#3B82F6', print_run: 175, serial_numbered: true, is_one_of_one: false, rarity_rank: 40, box_exclusivity: [HOBBY_MEGA], description: 'Blue hyper-reflective /175; Hobby Mega exclusive' },
+
+  // ── Hobby Mega — Seismic Family (2) ────────────────────────────
+  { name: 'Green Seismic', color_hex: '#16A34A', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 41, box_exclusivity: [HOBBY_MEGA], description: 'Green seismic wave pattern; Hobby Mega exclusive' },
+  { name: 'Red Seismic', color_hex: '#DC2626', print_run: 149, serial_numbered: true, is_one_of_one: false, rarity_rank: 42, box_exclusivity: [HOBBY_MEGA], description: 'Red seismic wave pattern /149; Hobby Mega exclusive' },
+
+  // ── Hobby Blaster — Shimmer Family (2) ─────────────────────────
+  { name: 'Purple Shimmer', color_hex: '#7C3AED', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 43, box_exclusivity: [HOBBY_BLASTER], description: 'Purple shimmer finish; Hobby Blaster exclusive' },
+  { name: 'Red Shimmer', color_hex: '#DC2626', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 44, box_exclusivity: [HOBBY_BLASTER], description: 'Red shimmer finish; Hobby Blaster exclusive' },
+
+  // ── Retail Blaster — Glitter Family (5) ────────────────────────
+  { name: 'Pink Glitter', color_hex: '#FF69B4', print_run: 275, serial_numbered: true, is_one_of_one: false, rarity_rank: 45, box_exclusivity: [BLASTER], description: 'Pink glitter finish /275; Retail Blaster exclusive' },
+  { name: 'Copper Glitter', color_hex: '#B87333', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 46, box_exclusivity: [BLASTER], description: 'Copper glitter finish /99; Retail Blaster exclusive' },
+  { name: 'Red Glitter', color_hex: '#CC0000', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 47, box_exclusivity: [BLASTER], description: 'Red glitter finish /75; Retail Blaster exclusive' },
+  { name: 'Blue Glitter', color_hex: '#0055A4', print_run: 15, serial_numbered: true, is_one_of_one: false, rarity_rank: 48, box_exclusivity: [BLASTER], description: 'Blue glitter finish /15; Retail Blaster exclusive' },
+  { name: 'Green Glitter', color_hex: '#228B22', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 49, box_exclusivity: [BLASTER], description: 'Green glitter finish /5; Retail Blaster exclusive' },
+
+  // ── Retail Blaster — Other (2) ─────────────────────────────────
+  { name: 'Checkerboard', color_hex: '#4B4B4B', print_run: 49, serial_numbered: true, is_one_of_one: false, rarity_rank: 50, box_exclusivity: [BLASTER], description: 'Checkerboard pattern /49; Retail Blaster exclusive' },
+  { name: 'Swirlorama', color_hex: '#9333EA', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 51, box_exclusivity: [BLASTER], description: 'Swirl pattern /5; Retail Blaster exclusive' },
+
+  // ── Retail Sparkle Family (5) ──────────────────────────────────
+  { name: 'Red Sparkle', color_hex: '#DC2626', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 52, box_exclusivity: [...RETAIL], description: 'Red sparkle finish; retail exclusive' },
+  { name: 'White Sparkle', color_hex: '#F5F5F5', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 53, box_exclusivity: [...RETAIL], description: 'White sparkle finish; retail exclusive' },
+  { name: 'Blue Sparkle', color_hex: '#2563EB', print_run: 180, serial_numbered: true, is_one_of_one: false, rarity_rank: 54, box_exclusivity: [...RETAIL], description: 'Blue sparkle /180; retail exclusive' },
+  { name: 'Gold Sparkle', color_hex: '#EAB308', print_run: 24, serial_numbered: true, is_one_of_one: false, rarity_rank: 55, box_exclusivity: [...RETAIL], description: 'Gold sparkle /24; retail exclusive' },
+  { name: 'Green Sparkle', color_hex: '#16A34A', print_run: 8, serial_numbered: true, is_one_of_one: false, rarity_rank: 56, box_exclusivity: [...RETAIL], description: 'Green sparkle /8; retail exclusive' },
+
+  // ── Hanger Exclusive (1) ───────────────────────────────────────
+  { name: 'Purple Velocity', color_hex: '#7C3AED', print_run: 12, serial_numbered: true, is_one_of_one: false, rarity_rank: 57, box_exclusivity: [HANGER], description: 'Purple velocity /12; Hanger exclusive' },
+
+  // ── Fat Pack / Retail (2) ──────────────────────────────────────
+  { name: 'Red Velocity', color_hex: '#CC0000', print_run: 299, serial_numbered: true, is_one_of_one: false, rarity_rank: 58, box_exclusivity: [FAT_PACK], description: 'Red velocity /299; Fat Pack exclusive' },
+  { name: 'Black Retail', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 59, box_exclusivity: [...RETAIL], description: 'Black — true 1/1; retail exclusive' },
+
+  // ── International Exclusives (7) ───────────────────────────────
+  { name: 'Red International', color_hex: '#DC2626', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 60, box_exclusivity: [INTERNATIONAL], description: 'Red finish; International box exclusive' },
+  { name: 'Red Stars International', color_hex: '#B91C1C', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 61, box_exclusivity: [INTERNATIONAL], description: 'Red with stars pattern; International box exclusive' },
+  { name: 'Red & Gold International', color_hex: '#FF4500', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 62, box_exclusivity: [INTERNATIONAL], description: 'Red & gold /99; International box exclusive' },
+  { name: 'Electricity International', color_hex: '#FFD700', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 63, box_exclusivity: [INTERNATIONAL], description: 'Electricity pattern /75; International box exclusive' },
+  { name: 'Green International', color_hex: '#228B22', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 64, box_exclusivity: [INTERNATIONAL], description: 'Green /25; International box exclusive' },
+  { name: 'White International', color_hex: '#FFFFFF', print_run: 15, serial_numbered: true, is_one_of_one: false, rarity_rank: 65, box_exclusivity: [INTERNATIONAL], description: 'White /15; International box exclusive' },
+  { name: 'Gold International', color_hex: '#FFD700', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 66, box_exclusivity: [INTERNATIONAL], description: 'Gold /10; International box exclusive' },
+
+  // ── Premium Box Set (1) ────────────────────────────────────────
+  { name: 'Premium Box Set', color_hex: '#1E293B', print_run: 249, serial_numbered: true, is_one_of_one: false, rarity_rank: 67, box_exclusivity: ['Premium Box Set'], description: 'Factory set parallel /249; every card in the 300-card set is numbered' },
 ];
 
 async function main() {

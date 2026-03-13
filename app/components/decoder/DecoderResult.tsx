@@ -53,7 +53,8 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
     if (query.length < 2) { setSuggestions([]); return; }
     debounceRef.current = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/decoder/suggest?q=${encodeURIComponent(query)}`);
+        const ctx = encodeURIComponent(`${productYear} ${productName}`);
+        const res = await fetch(`/api/decoder/suggest?q=${encodeURIComponent(query)}&context=${ctx}`);
         const data = await res.json();
         setSuggestions(data);
         setShowSuggestions(data.length > 0);

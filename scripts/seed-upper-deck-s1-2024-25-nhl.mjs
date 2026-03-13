@@ -31,37 +31,31 @@ const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPA
 const PRODUCT_ID = 'c0000000-0000-0000-0000-000000000008'; // 2024-25 Upper Deck Series 1 NHL
 
 const HOBBY = 'Hobby';
+const EPACK = 'ePack';
 const BLASTER = 'Retail Blaster';
-const MEGA = 'Retail Mega';
 const TIN = 'Tin';
 const HANGER = 'Hanger';
-const FAT_PACK = 'Fat Pack';
+const STARTER = 'Starter Kit';
 const ALL = 'All';
 
 // Complete parallel data for 2024-25 Upper Deck Series 1 Hockey
+// Corrected via Cardboard Connection, Beckett, Upper Deck official checklist
+// Note: Dazzlers are INSERTS not parallels; French variation removed (not in this year);
+// No base printing plates (only on insert sets like Canvas, A-Lines, etc.)
 const parallels = [
   // ── Unnumbered Parallels ──────────────────────────────────────
-  { name: 'Base', color_hex: null, print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card' },
-  { name: 'French Variation', color_hex: null, print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [ALL], description: 'French language version of the base card' },
-  { name: 'Silver Foil', color_hex: '#C0C0C0', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [ALL], description: 'Silver foil board parallel' },
-  { name: 'Clear Cut', color_hex: '#F0F8FF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [HOBBY], description: 'Acetate clear card — Hobby exclusive' },
-  { name: 'Dazzlers Blue', color_hex: '#4169E1', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [ALL], description: 'Blue dazzler sparkle pattern' },
-  { name: 'Dazzlers Pink', color_hex: '#FF69B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [BLASTER], description: 'Pink dazzler sparkle — Retail Blaster exclusive' },
-  { name: 'Dazzlers Orange', color_hex: '#FF8C00', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [HANGER], description: 'Orange dazzler sparkle — Hanger exclusive' },
+  { name: 'Base', color_hex: '#FFFFFF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card with white border design' },
+  { name: 'Outburst Silver', color_hex: '#C0C0C0', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [HOBBY, EPACK, BLASTER, STARTER, TIN, HANGER], description: 'Silver refractor-style parallel — ~1:30 Hobby/ePack, ~1:90 retail' },
+  { name: 'Clear Cut', color_hex: '#F0F8FF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [HOBBY], description: 'Acetate transparent card stock — Hobby exclusive (~1:96 packs)' },
 
   // ── Numbered Parallels ────────────────────────────────────────
-  { name: 'Exclusives', color_hex: '#228B22', print_run: 100, serial_numbered: true, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [ALL], description: 'Green-bordered exclusives /100' },
-  { name: 'Dazzlers Gold', color_hex: '#FFD700', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [ALL], description: 'Gold dazzler sparkle /50' },
-  { name: 'Speckled Rainbow Foil', color_hex: '#FF00FF', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [HOBBY], description: 'Speckled rainbow foil /25 — Hobby exclusive' },
-  { name: 'Gold Foil', color_hex: '#FFD700', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [ALL], description: 'Gold foil board parallel /25' },
-  { name: 'Red Foil', color_hex: '#CC0000', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [ALL], description: 'Red foil board parallel /10' },
+  { name: 'Deluxe', color_hex: '#1E3A5F', print_run: 250, serial_numbered: true, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [HOBBY, EPACK], description: 'Premium stock parallel /250 — Hobby and ePack only' },
+  { name: 'Exclusives', color_hex: '#1C1C1C', print_run: 100, serial_numbered: true, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [HOBBY, EPACK], description: 'Classic UD chase parallel /100 — Hobby and ePack only' },
+  { name: 'Outburst Red', color_hex: '#CC0000', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [HOBBY, EPACK], description: 'Red refractor-style parallel /25 — Hobby and ePack only' },
+  { name: 'High Gloss', color_hex: '#2A2A2A', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [HOBBY, EPACK], description: 'Ultra-glossy finish parallel /10 — Hobby and ePack only' },
 
   // ── 1-of-1 Parallels ─────────────────────────────────────────
-  { name: 'High Gloss', color_hex: '#E5E4E2', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 13, box_exclusivity: [ALL], description: 'High gloss finish — 1 of 1. The rarest Upper Deck base parallel.' },
-  { name: 'Printing Plates Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 14, box_exclusivity: [ALL], description: 'Black printing plate — 1 of 1' },
-  { name: 'Printing Plates Cyan', color_hex: '#00FFFF', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 15, box_exclusivity: [ALL], description: 'Cyan printing plate — 1 of 1' },
-  { name: 'Printing Plates Magenta', color_hex: '#FF00FF', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 16, box_exclusivity: [ALL], description: 'Magenta printing plate — 1 of 1' },
-  { name: 'Printing Plates Yellow', color_hex: '#FFFF00', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 17, box_exclusivity: [ALL], description: 'Yellow printing plate — 1 of 1' },
+  { name: 'Outburst Gold', color_hex: '#FFD700', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 8, box_exclusivity: [HOBBY, EPACK], description: 'Gold refractor-style 1/1 — The ultimate base chase card. Hobby and ePack only.' },
 ];
 
 async function main() {

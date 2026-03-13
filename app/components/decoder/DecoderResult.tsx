@@ -1,11 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { RarityBadge } from '../shared/RarityBadge';
 import { ExpandableSection } from '../shared/ExpandableSection';
 import { formatPrintRun } from '../../../lib/format';
 import { getRarityLevel } from '../../../lib/rarity';
 import type { ParallelItem } from '../../../lib/types';
+
+function buildEbayUrl(year: string, productName: string, parallelName: string, playerName: string): string {
+  const terms = [year, productName, parallelName, playerName].filter(Boolean).join(' ');
+  const encoded = encodeURIComponent(terms);
+  return `https://www.ebay.com/sch/i.html?_nkw=${encoded}&_sacat=261328`;
+}
 
 function ordinal(n: number): string {
   const s = ['th', 'st', 'nd', 'rd'];
@@ -24,6 +31,7 @@ interface DecoderResultProps {
 export function DecoderResult({ parallel, allParallels, productName, productYear, brandName }: DecoderResultProps) {
   const { colors } = useTheme();
   const level = getRarityLevel(parallel.rarityRank, parallel.totalParallels, parallel.isOneOfOne);
+  const [playerName, setPlayerName] = useState('');
 
   return (
     <div style={{ padding: '12px 0' }}>
@@ -74,6 +82,55 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: colors.muted, marginTop: 4, fontFamily: "'IBM Plex Mono', monospace" }}>
           <span>Common</span><span>1/1</span>
         </div>
+      </div>
+
+      {/* eBay lookup */}
+      <div style={{
+        padding: 16, background: colors.surface, borderRadius: 12,
+        border: `1px solid ${colors.border}`, marginBottom: 16,
+      }}>
+        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: colors.muted, marginBottom: 8 }}>LOOK UP VALUE</div>
+        <input
+          type="text"
+          placeholder="Enter player name..."
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+          style={{
+            width: '100%', padding: '10px 12px', fontSize: 15,
+            background: colors.bg, color: colors.text,
+            border: `1px solid ${colors.border}`, borderRadius: 8,
+            outline: 'none', boxSizing: 'border-box',
+            fontFamily: "'IBM Plex Sans', sans-serif",
+          }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = colors.green; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = colors.border; }}
+        />
+        <a
+          href={playerName.trim() ? buildEbayUrl(productYear, productName, parallel.name, playerName.trim()) : undefined}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => { if (!playerName.trim()) e.preventDefault(); }}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            marginTop: 10, padding: '11px 16px', borderRadius: 8,
+            background: playerName.trim() ? colors.green : colors.border,
+            color: playerName.trim() ? colors.bg : colors.muted,
+            fontSize: 14, fontWeight: 600, textDecoration: 'none',
+            cursor: playerName.trim() ? 'pointer' : 'not-allowed',
+            transition: 'background 0.15s, color 0.15s',
+            fontFamily: "'IBM Plex Sans', sans-serif",
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Search eBay Listings
+        </a>
+        {playerName.trim() && (
+          <p style={{ fontSize: 11, color: colors.muted, marginTop: 6, textAlign: 'center' }}>
+            Opens eBay in a new tab — {productYear} {productName} {parallel.name} {playerName.trim()}
+          </p>
+        )}
       </div>
 
       <ExpandableSection title="What does this mean?">

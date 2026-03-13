@@ -48,7 +48,7 @@ function DecoderContent() {
     if (!sportParam) return;
     setLoading(true);
     setError(null);
-    fetch(`/api/decoder/products?sport=${sportParam}`)
+    fetch(`/api/decoder/products?sport=${sportParam}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(data => {
         setProducts(data.products || []);
@@ -65,7 +65,7 @@ function DecoderContent() {
     if (!productParam) return;
     setLoading(true);
     setError(null);
-    fetch(`/api/decoder/parallels?productId=${productParam}`)
+    fetch(`/api/decoder/parallels?productId=${productParam}`, { cache: 'no-store' })
       .then(r => r.json())
       .then(data => {
         setParallels(data.parallels || []);

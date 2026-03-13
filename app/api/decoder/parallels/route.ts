@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from('parallels')
-    .select('id, name, color_hex, print_run, serial_numbered, rarity_rank, is_one_of_one, description, special_attributes')
+    .select('id, name, color_hex, print_run, serial_numbered, rarity_rank, is_one_of_one, description, special_attributes, box_exclusivity')
     .eq('product_id', productId)
     .order('rarity_rank', { ascending: true });
 
@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
     isOneOfOne: row.is_one_of_one,
     description: row.description,
     specialAttributes: row.special_attributes,
+    boxExclusivity: row.box_exclusivity,
     totalParallels,
   }));
 

@@ -59,9 +59,9 @@ export function ParallelList({ parallels, loading, onSelect }: ParallelListProps
           }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 500 }}>{p.name}</div>
-            {p.description && (
-              <div style={{ fontSize: 12, color: colors.muted, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {p.description}
+            {p.boxExclusivity && !p.boxExclusivity.includes('All') && (
+              <div style={{ fontSize: 11, color: colors.amber || '#F59E0B', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {p.boxExclusivity.join(', ')} only
               </div>
             )}
           </div>

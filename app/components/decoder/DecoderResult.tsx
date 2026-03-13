@@ -41,7 +41,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
           { label: 'Print Run', value: formatPrintRun(parallel.printRun) },
           { label: 'Rarity', value: `${parallel.rarityRank} of ${parallel.totalParallels}` },
           { label: 'Serial Numbered', value: parallel.serialNumbered ? 'Yes' : 'No' },
-          { label: 'Type', value: level },
+          { label: 'Found In', value: parallel.boxExclusivity?.includes('All') ? 'All box types' : parallel.boxExclusivity?.join(', ') || 'Unknown' },
         ].map((stat) => (
           <div key={stat.label} style={{
             padding: '10px 12px', background: colors.surface,

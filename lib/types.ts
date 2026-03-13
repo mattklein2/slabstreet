@@ -24,6 +24,7 @@ export interface DbParallel {
   is_one_of_one: boolean;
   description: string;
   special_attributes: string[] | null;
+  box_exclusivity: string[] | null;
 }
 
 export interface DbBoxConfig {
@@ -87,6 +88,7 @@ export interface ParallelItem {
   isOneOfOne: boolean;
   description: string;
   specialAttributes: string[] | null;
+  boxExclusivity: string[] | null;
   totalParallels: number;
 }
 

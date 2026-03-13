@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SlabStreet — Topps Scraper</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0f1a; color: #e0e0e0; padding: 40px; }
+    h1 { color: #00ff87; font-size: 24px; margin-bottom: 8px; }
+    .subtitle { color: #888; margin-bottom: 32px; }
+    .panel { background: #111827; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .panel h2 { color: #00ff87; font-size: 16px; margin-bottom: 16px; }
+    button { background: #00ff87; color: #0a0f1a; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-right: 8px; }
+    button:hover { background: #00cc6a; }
+    button:disabled { background: #333; color: #666; cursor: not-allowed; }
+    button.secondary { background: #1e293b; color: #e0e0e0; }
+    button.secondary:hover { background: #2d3a4d; }
+    button.danger { background: #f85149; color: white; }
+    .progress { margin-top: 16px; }
+    .progress-bar { background: #1e293b; height: 8px; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { background: #00ff87; height: 100%; transition: width 0.3s; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 12px; }
+    .stat { background: #1a2235; padding: 12px; border-radius: 8px; }
+    .stat-value { color: #00ff87; font-size: 20px; font-weight: 700; }
+    .stat-label { color: #888; font-size: 12px; }
+    #log { background: #0d1117; border-radius: 8px; padding: 16px; font-family: 'Cascadia Code', monospace; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; line-height: 1.6; margin-top: 16px; }
+    .log-info { color: #7ee787; }
+    .log-warn { color: #d29922; }
+    .log-error { color: #f85149; }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-info { color: #888; font-size: 13px; margin-bottom: 12px; }
+    .filter-info code { color: #00ff87; background: #1a2235; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>SlabStreet Topps Scraper</h1>
+  <p class="subtitle">Scrapes product data from topps.com using sitemaps + your authenticated browser session</p>
+
+  <div class="panel">
+    <h2>Phase 1 — Collect Product URLs from Sitemap</h2>
+    <p class="filter-info">
+      Fetches <code>/products/sitemap.xml</code> index (~426 sub-sitemaps) to collect all product handles.
+      No pagination needed — bypasses Cloudflare challenges entirely.
+    </p>
+    <div class="controls">
+      <button id="btn-phase1" onclick="runPhase1()">Start Phase 1</button>
+      <button class="secondary" id="btn-stop1" onclick="stop()" disabled>Stop</button>
+      <button class="danger" id="btn-clear" onclick="clearAll()">Clear All Data</button>
+    </div>
+    <div class="progress" id="prog1" style="display:none">
+      <div style="display:flex; justify-content:space-between;">
+        <span id="p1-status">Starting...</span>
+        <span id="p1-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="p1-bar" style="width:0%"></div></div>
+    </div>
+    <div class="stats" id="stats1" style="display:none">
+      <div class="stat"><div class="stat-value" id="s1-sitemaps">0</div><div class="stat-label">Sitemaps fetched</div></div>
+      <div class="stat"><div class="stat-value" id="s1-handles">0</div><div class="stat-label">Product handles</div></div>
+      <div class="stat"><div class="stat-value" id="s1-total">~426</div><div class="stat-label">Total sitemaps</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Phase 2 — Scrape Product Details</h2>
+    <p class="filter-info">
+      Visits each product page via hidden <code>iframe</code> to extract title, SKU, sport, brand, pack config, PDF links, and more.
+      Uses iframes instead of fetch to bypass Cloudflare on individual pages.
+    </p>
+    <div class="controls">
+      <button id="btn-phase2" onclick="runPhase2()" disabled>Start Phase 2</button>
+      <button class="secondary" id="btn-stop2" onclick="stop()" disabled>Stop</button>
+    </div>
+    <div class="progress" id="prog2" style="display:none">
+      <div style="display:flex; justify-content:space-between;">
+        <span id="p2-status">Starting...</span>
+        <span id="p2-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="p2-bar" style="width:0%"></div></div>
+      <div style="color:#888; font-size:12px; margin-top:4px;" id="p2-eta"></div>
+    </div>
+    <div class="stats" id="stats2" style="display:none">
+      <div class="stat"><div class="stat-value" id="s2-done">0</div><div class="stat-label">Scraped</div></div>
+      <div class="stat"><div class="stat-value" id="s2-fail">0</div><div class="stat-label">Failed</div></div>
+      <div class="stat"><div class="stat-value" id="s2-remain">0</div><div class="stat-label">Remaining</div></div>
+      <div class="stat"><div class="stat-value" id="s2-rate">0</div><div class="stat-label">Per minute</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Download Results</h2>
+    <div class="controls">
+      <button id="btn-dl-handles" onclick="downloadHandles()" disabled>Download Handles (JSON)</button>
+      <button id="btn-dl-products" onclick="downloadProducts()" disabled>Download Products (JSON)</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Log</h2>
+    <div id="log"></div>
+  </div>
+
+<script>
+// ── State ────────────────────────────────────────────────────
+let handles = [];
+let products = {};
+let errors = [];
+let running = false;
+let startTime = 0;
+
+// Try to load from localStorage (resume support)
+try {
+  const saved = localStorage.getItem('topps_handles');
+  if (saved) { handles = JSON.parse(saved); log('info', `Loaded ${handles.length} handles from previous session`); }
+  const savedProducts = localStorage.getItem('topps_products');
+  if (savedProducts) { products = JSON.parse(savedProducts); log('info', `Loaded ${Object.keys(products).length} products from previous session`); }
+} catch {}
+
+updateUI();
+
+// ── Logging ──────────────────────────────────────────────────
+function log(level, msg) {
+  const el = document.getElementById('log');
+  const span = document.createElement('span');
+  span.className = 'log-' + level;
+  span.textContent = `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateUI() {
+  document.getElementById('btn-dl-handles').disabled = handles.length === 0;
+  document.getElementById('btn-dl-products').disabled = Object.keys(products).length === 0;
+  if (handles.length > 0) document.getElementById('btn-phase2').disabled = false;
+}
+
+function stop() {
+  running = false;
+  log('warn', 'Stopping after current request...');
+}
+
+function clearAll() {
+  if (!confirm('Clear all saved handles and product data?')) return;
+  handles = [];
+  products = {};
+  errors = [];
+  localStorage.removeItem('topps_handles');
+  localStorage.removeItem('topps_products');
+  log('warn', 'All data cleared.');
+  updateUI();
+}
+
+// ── Phase 1: Collect handles from sitemap ─────────────────────
+async function runPhase1() {
+  running = true;
+  document.getElementById('btn-phase1').disabled = true;
+  document.getElementById('btn-stop1').disabled = false;
+  document.getElementById('prog1').style.display = 'block';
+  document.getElementById('stats1').style.display = 'grid';
+
+  const allHandles = new Set(handles);
+  log('info', 'Phase 1: Fetching sitemap index...');
+
+  try {
+    // Step 1: Get the sitemap index
+    const indexRes = await fetch('/products/sitemap.xml');
+    if (!indexRes.ok) throw new Error('Sitemap index HTTP ' + indexRes.status);
+    const indexXml = await indexRes.text();
+
+    // Extract sub-sitemap URLs
+    const sitemapUrls = [];
+    const locRegex = /<loc>([^<]+)<\/loc>/g;
+    let match;
+    while ((match = locRegex.exec(indexXml)) !== null) {
+      const url = match[1];
+      // Convert absolute URL to relative path
+      const path = url.replace(/^https?:\/\/[^/]+/, '');
+      if (path.includes('/sitemap/') || path.includes('/sitemap.xml')) {
+        sitemapUrls.push(path);
+      }
+    }
+
+    const totalSitemaps = sitemapUrls.length;
+    log('info', `Found ${totalSitemaps} sub-sitemaps in index`);
+    document.getElementById('s1-total').textContent = totalSitemaps;
+
+    // Step 2: Fetch each sub-sitemap
+    let fetched = 0;
+    let cfBlocked = 0;
+
+    for (let i = 0; i < sitemapUrls.length && running; i++) {
+      const url = sitemapUrls[i];
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          log('warn', `Sitemap ${i}: HTTP ${res.status}`);
+          continue;
+        }
+        const xml = await res.text();
+
+        // Check for CF challenge
+        if (xml.includes('cf-turnstile') || xml.includes('challenge-platform')) {
+          cfBlocked++;
+          if (cfBlocked >= 5) {
+            log('error', `CF blocking detected (${cfBlocked} blocked). Slowing down...`);
+            await new Promise(r => setTimeout(r, 5000));
+          }
+          continue;
+        }
+
+        // Extract product handles
+        const urlRegex = /<loc>([^<]+)<\/loc>/g;
+        let m;
+        while ((m = urlRegex.exec(xml)) !== null) {
+          const prodUrl = m[1];
+          const handleMatch = prodUrl.match(/\/products\/([^<\s?#]+)/);
+          if (handleMatch) {
+            const handle = decodeURIComponent(handleMatch[1]);
+            // Skip sub-paths like sitemap/0.xml
+            if (!handle.includes('/')) {
+              allHandles.add(handle);
+            }
+          }
+        }
+
+        fetched++;
+      } catch (e) {
+        log('error', `Sitemap ${i}: ${e.message}`);
+      }
+
+      // Update UI
+      const pct = ((i + 1) / totalSitemaps * 100).toFixed(1);
+      document.getElementById('p1-status').textContent = `Sitemap ${i + 1}/${totalSitemaps}`;
+      document.getElementById('p1-pct').textContent = pct + '%';
+      document.getElementById('p1-bar').style.width = pct + '%';
+      document.getElementById('s1-sitemaps').textContent = fetched;
+      document.getElementById('s1-handles').textContent = allHandles.size.toLocaleString();
+
+      // Save every 50 sitemaps
+      if (i % 50 === 0 && i > 0) {
+        handles = [...allHandles];
+        localStorage.setItem('topps_handles', JSON.stringify(handles));
+        log('info', `Checkpoint: ${fetched} sitemaps, ${allHandles.size} handles`);
+      }
+
+      // Small delay to be polite
+      await new Promise(r => setTimeout(r, 200));
+    }
+
+    handles = [...allHandles];
+    localStorage.setItem('topps_handles', JSON.stringify(handles));
+    log('info', `Phase 1 complete: ${handles.length} unique product handles from ${fetched} sitemaps (${cfBlocked} CF blocked)`);
+  } catch (e) {
+    log('error', `Phase 1 error: ${e.message}`);
+  }
+
+  document.getElementById('btn-phase1').disabled = false;
+  document.getElementById('btn-stop1').disabled = true;
+  running = false;
+  updateUI();
+}
+
+// ── Phase 2: Scrape product details via iframe ──────────────────
+function parseProductFromDoc(doc, handle) {
+  const p = { handle };
+
+  // Title from OG meta or <title>
+  p.title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content')
+    || doc.title?.replace(/\s*[|–-]\s*Topps.*$/i, '').trim() || '';
+
+  // Data attributes (Shopify-style)
+  const el = doc.querySelector('[data-product-id]');
+  if (el) {
+    p.shopify_product_id = el.getAttribute('data-product-id') || null;
+    p.sku = el.getAttribute('data-product-sku') || null;
+    p.category = el.getAttribute('data-product-category') || null;
+    p.sport = el.getAttribute('data-product-sub-category') || null;
+  }
+
+  // OG meta
+  p.og_description = doc.querySelector('meta[property="og:description"]')?.getAttribute('content')?.trim() || '';
+  p.image_url = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || null;
+  p.product_url = doc.querySelector('meta[property="og:url"]')?.getAttribute('content')
+    || 'https://www.topps.com/products/' + handle;
+
+  // PDFs
+  p.checklist_pdf_url = null;
+  p.odds_pdf_url = null;
+  doc.querySelectorAll('a[href*=".pdf"]').forEach(a => {
+    const href = a.getAttribute('href');
+    const text = a.textContent.toLowerCase();
+    if (text.includes('checklist')) p.checklist_pdf_url = href;
+    else if (text.includes('odd')) p.odds_pdf_url = href;
+  });
+
+  // Body text
+  const bodyText = doc.body?.textContent || '';
+
+  // Overview
+  const ovMatch = bodyText.match(/Overview\s*\n([\s\S]*?)(?=Description|$)/i);
+  p.overview = ovMatch ? ovMatch[1].trim().replace(/\s+/g, ' ') : '';
+
+  // Description
+  const descMatch = bodyText.match(/Description\s*\n([\s\S]*?)(?=Specs|Products|$)/i);
+  p.description = descMatch ? descMatch[1].trim().replace(/\s+/g, ' ') : '';
+
+  // Specs from table structure
+  p.specs = {};
+  doc.querySelectorAll('dt, th').forEach(el => {
+    const key = el.textContent.trim();
+    const val = el.nextElementSibling?.textContent?.trim();
+    if (key && val && key.length < 40) p.specs[key] = val;
+  });
+
+  // Specs from text patterns (fallback)
+  const specsMatch = bodyText.match(/Specs\s*\n([\s\S]*?)(?=Products|Start C|Download|Related|You may also|$)/i);
+  if (specsMatch) {
+    specsMatch[1].trim().split('\n').forEach(line => {
+      const parts = line.trim().split(/\t+/);
+      if (parts.length >= 2) p.specs[parts[0].trim()] = parts.slice(1).join(' ').trim();
+    });
+  }
+
+  // Derived fields from specs
+  p.product_year = p.specs['Product Year'] || null;
+  p.brand = p.specs['Brand'] || 'Topps';
+  p.sub_brand = p.specs['Sub Brand'] || null;
+  p.product_type = p.specs['Product Type'] || p.specs['Sub Type'] || p.category || null;
+  p.available_from = p.specs['Available From'] || null;
+  if (!p.sport) p.sport = p.specs['Sub Categories'] || null;
+  if (!p.sku) p.sku = p.specs['SKU'] || null;
+
+  // Pack config from overview or description
+  p.packs_per_box = null;
+  p.cards_per_pack = null;
+  p.guaranteed_hits = null;
+  const cfg = p.overview || p.og_description || p.description || '';
+  const pkM = cfg.match(/(\d+)\s*packs?\s*per\s*box/i);
+  if (pkM) p.packs_per_box = parseInt(pkM[1]);
+  const cdM = cfg.match(/(\d+)\s*cards?\s*per\s*pack/i);
+  if (cdM) p.cards_per_pack = parseInt(cdM[1]);
+  const htM = cfg.match(/(\d+\s*(?:autograph|auto|relic|memorabilia|hit|signature|patch|jersey)[^!.]*[!.]?)/i);
+  if (htM) p.guaranteed_hits = htM[1].trim();
+
+  // Stock & price
+  p.in_stock = !(bodyText.includes('Out of Stock') || bodyText.includes('Sold Out') || bodyText.includes('SOLD OUT'));
+  p.price_usd = null;
+  const prM = bodyText.match(/\$(\d+(?:\.\d{2})?)/);
+  if (prM) { const v = parseFloat(prM[1]); if (v >= 1 && v <= 50000) p.price_usd = v; }
+
+  return p;
+}
+
+// Load a product page in a hidden iframe, extract data, remove iframe
+function scrapeViaIframe(handle) {
+  return new Promise((resolve, reject) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;z-index:-1;pointer-events:none;';
+    iframe.src = '/products/' + encodeURIComponent(handle);
+
+    const timeout = setTimeout(() => {
+      iframe.remove();
+      reject(new Error('Timeout'));
+    }, 15000);
+
+    iframe.onload = () => {
+      clearTimeout(timeout);
+      try {
+        const doc = iframe.contentDocument;
+        if (!doc || !doc.body) {
+          iframe.remove();
+          reject(new Error('No document access'));
+          return;
+        }
+        // Check for CF challenge
+        if (doc.body.innerHTML.includes('cf-turnstile') || doc.body.innerHTML.includes('challenge-platform')) {
+          iframe.remove();
+          reject(new Error('CF challenge'));
+          return;
+        }
+        const product = parseProductFromDoc(doc, handle);
+        iframe.remove();
+        resolve(product);
+      } catch (e) {
+        iframe.remove();
+        reject(e);
+      }
+    };
+
+    iframe.onerror = () => {
+      clearTimeout(timeout);
+      iframe.remove();
+      reject(new Error('Load error'));
+    };
+
+    document.body.appendChild(iframe);
+  });
+}
+
+// Fallback: try fetch() + DOMParser
+async function scrapeViaFetch(handle) {
+  const res = await fetch('/products/' + encodeURIComponent(handle));
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const html = await res.text();
+  if (html.includes('cf-turnstile') || html.includes('challenge-platform')) {
+    throw new Error('CF challenge');
+  }
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return parseProductFromDoc(doc, handle);
+}
+
+async function runPhase2() {
+  running = true;
+  document.getElementById('btn-phase2').disabled = true;
+  document.getElementById('btn-stop2').disabled = false;
+  document.getElementById('prog2').style.display = 'block';
+  document.getElementById('stats2').style.display = 'grid';
+
+  const todo = handles.filter(h => !products[h]);
+  const total = todo.length;
+  let done = 0, failed = 0;
+  let consecutiveCF = 0;
+  startTime = Date.now();
+
+  log('info', `Phase 2: Scraping ${total} product pages (${Object.keys(products).length} already cached)...`);
+  document.getElementById('s2-remain').textContent = total;
+
+  for (let i = 0; i < todo.length && running; i++) {
+    const handle = todo[i];
+    try {
+      // Try iframe first, fall back to fetch
+      let product;
+      try {
+        product = await scrapeViaIframe(handle);
+      } catch (iframeErr) {
+        // Fallback to fetch
+        product = await scrapeViaFetch(handle);
+      }
+      products[handle] = product;
+      done++;
+      consecutiveCF = 0;
+    } catch (e) {
+      errors.push({ handle, error: e.message });
+      failed++;
+
+      if (e.message === 'CF challenge') {
+        consecutiveCF++;
+        if (consecutiveCF >= 5) {
+          log('error', `CF blocking detected (${consecutiveCF} in a row). Pausing 30s...`);
+          await new Promise(r => setTimeout(r, 30000));
+          consecutiveCF = 0;
+        }
+      }
+
+      if (i % 100 === 0 || failed <= 5) log('warn', `Failed: ${handle} — ${e.message}`);
+    }
+
+    // Update UI
+    const processed = done + failed;
+    const pct = (processed / total * 100).toFixed(1);
+    const elapsed = (Date.now() - startTime) / 60000;
+    const rate = elapsed > 0.1 ? (processed / elapsed).toFixed(1) : '...';
+    const eta = rate !== '...' ? ((total - processed) / parseFloat(rate)).toFixed(0) : '...';
+
+    document.getElementById('p2-status').textContent = `${processed}/${total}`;
+    document.getElementById('p2-pct').textContent = pct + '%';
+    document.getElementById('p2-bar').style.width = pct + '%';
+    document.getElementById('p2-eta').textContent = `~${eta} min remaining at ${rate}/min`;
+    document.getElementById('s2-done').textContent = done;
+    document.getElementById('s2-fail').textContent = failed;
+    document.getElementById('s2-remain').textContent = total - processed;
+    document.getElementById('s2-rate').textContent = rate;
+
+    // Save every 100 products
+    if (processed % 100 === 0) {
+      localStorage.setItem('topps_products', JSON.stringify(products));
+      log('info', `Checkpoint: ${done} scraped, ${failed} failed`);
+    }
+
+    // Delay between requests (2s for iframes to be polite + avoid CF)
+    await new Promise(r => setTimeout(r, 2000));
+  }
+
+  localStorage.setItem('topps_products', JSON.stringify(products));
+  log('info', `Phase 2 complete: ${done} scraped, ${failed} failed`);
+
+  document.getElementById('btn-phase2').disabled = false;
+  document.getElementById('btn-stop2').disabled = true;
+  running = false;
+  updateUI();
+}
+
+// ── Downloads ────────────────────────────────────────────────
+function downloadJSON(data, filename) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadHandles() {
+  downloadJSON(handles, 'topps-handles-' + new Date().toISOString().slice(0,10) + '.json');
+  log('info', `Downloaded ${handles.length} handles`);
+}
+
+function downloadProducts() {
+  const arr = Object.values(products);
+  downloadJSON(arr, 'topps-products-' + new Date().toISOString().slice(0,10) + '.json');
+  log('info', `Downloaded ${arr.length} products`);
+}
+</script>
+</body>
+</html>

@@ -32,45 +32,89 @@ const PRODUCT_ID = 'c0000000-0000-0000-0000-000000000007'; // 2025 Topps Series 
 
 const HOBBY = 'Hobby';
 const JUMBO = 'Jumbo';
-const BLASTER = 'Retail Blaster';
-const MEGA = 'Retail Mega';
+const BLASTER = 'Value Blaster';
+const MEGA = 'Mega Box';
 const HANGER = 'Hanger';
-const CELLO = 'Fat Pack/Cello';
+const FAT_PACK = 'Fat Pack';
+const SUPER = 'Super Box';
+const CELEBRATION = 'Celebration Mega';
+const FANATICS = 'Fanatics';
+const TIN = 'Tin';
+const MEIJER = 'Meijer';
+const GROCERY = 'Grocery';
 const ALL = 'All';
 
+// Shorthand for retail-side box types
+const RETAIL = [BLASTER, HANGER, FAT_PACK, MEGA, GROCERY];
+
 // Complete parallel data for 2025 Topps Series 1 Baseball
+// Corrected via Cardboard Connection, Beckett, BaseballCardPedia, Topps Ripped, ChecklistInsider
+// Note: Hobby uses "Rainbow Foil" track, Retail uses "Holo Foil" track, Hanger gets "Diamante Foil" track
 const parallels = [
-  // ── Unnumbered Parallels ──────────────────────────────────────
-  { name: 'Base', color_hex: null, print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card' },
-  { name: 'Rainbow Foil', color_hex: '#C0C0C0', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [ALL], description: 'Rainbow foil finish — most common parallel' },
-  { name: 'Royal Blue', color_hex: '#4169E1', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [BLASTER], description: 'Royal blue border — Retail Blaster exclusive' },
-  { name: 'Red', color_hex: '#CC0000', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [HANGER], description: 'Red border — Hanger exclusive' },
-  { name: 'Yellow', color_hex: '#FFD700', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [CELLO], description: 'Yellow border — Fat Pack/Cello exclusive' },
-  { name: 'Vintage Stock', color_hex: '#8B7355', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [HOBBY, JUMBO], description: 'Vintage stock paper finish — Hobby/Jumbo exclusive' },
-  { name: 'Foilboard', color_hex: '#E8E8FF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [HOBBY, JUMBO], description: 'Full foilboard card stock — Hobby/Jumbo exclusive' },
-  { name: 'Pink', color_hex: '#FF69B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [MEGA], description: 'Pink border — Retail Mega exclusive' },
+  // ── Unnumbered Parallels (17) ──────────────────────────────────
+  { name: 'Base', color_hex: '#FFFFFF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card; 350-card set' },
+  { name: 'Rainbow Foil', color_hex: '#C4C4C4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [HOBBY, JUMBO, ...RETAIL, SUPER], description: 'Rainbow foil refractor finish; ~1:11 hobby packs' },
+  { name: 'Holo Foil', color_hex: '#D8D8D8', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [...RETAIL], description: 'Holographic foil finish; retail-side equivalent of Rainbow Foil' },
+  { name: 'Pink Holo Foil', color_hex: '#FF69B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [...RETAIL], description: 'Pink-tinted holographic foil finish' },
+  { name: 'Aqua Rainbow Foil', color_hex: '#00CED1', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [HOBBY, JUMBO], description: 'Aqua-tinted rainbow foil; scarce at ~1:500 hobby packs' },
+  { name: 'Aqua Holo Foil', color_hex: '#48D1CC', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [...RETAIL], description: 'Aqua-tinted holographic foil; retail-side scarce parallel' },
+  { name: 'Diamante Foil', color_hex: '#B0C4DE', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [HANGER], description: 'Diamond-pattern foil finish; Hanger exclusive, ~2 per box' },
+  { name: 'Pink Diamante Foil', color_hex: '#FFB6C1', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [HANGER], description: 'Pink diamond-pattern foil; Hanger exclusive, ~1:10 packs' },
+  { name: 'Silver Crackle Foilboard', color_hex: '#A9A9A9', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [SUPER], description: 'Crackled silver foilboard finish; Super box exclusive' },
+  { name: 'Topps Foil Pattern', color_hex: '#B8860B', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [FANATICS], description: 'Repeating Topps logo foil pattern; Fanatics exclusive' },
+  { name: 'Sandglitter', color_hex: '#C2B280', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [JUMBO], description: 'Sandy glitter texture finish; Jumbo exclusive' },
+  { name: 'Confetti', color_hex: '#FF6FFF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [CELEBRATION], description: 'Confetti-pattern overlay; Celebration Mega exclusive' },
+  { name: 'Tinsel', color_hex: '#E8E8E8', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 13, box_exclusivity: [MEIJER], description: 'Tinsel/sparkle finish; Meijer retail exclusive' },
+  { name: 'Holiday', color_hex: '#98FB98', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 14, box_exclusivity: [TIN], description: 'Spring/Easter-themed border design; Tin exclusive' },
+  { name: 'Eggs', color_hex: '#FFFACD', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 15, box_exclusivity: [TIN], description: 'Easter egg border design; Tin exclusive, ~1:21 packs' },
+  { name: 'Rabbits', color_hex: '#FFDAB9', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 16, box_exclusivity: [TIN], description: 'Rabbit border design; Tin exclusive, ~1:57 packs' },
+  { name: 'Spring Training', color_hex: '#90EE90', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 17, box_exclusivity: [BLASTER], description: 'Cactus/palm tree spring training border; Blaster exclusive' },
 
-  // ── Numbered Parallels ────────────────────────────────────────
-  { name: 'Green', color_hex: '#228B22', print_run: 499, serial_numbered: true, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [ALL], description: 'Green border numbered to 499' },
-  { name: 'Advanced Stats', color_hex: '#2F4F4F', print_run: 300, serial_numbered: true, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [ALL], description: 'Advanced stats variation /300' },
-  { name: 'Blue', color_hex: '#0055A4', print_run: 299, serial_numbered: true, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [ALL], description: 'Blue border numbered to 299' },
-  { name: 'Aqua', color_hex: '#00CED1', print_run: 250, serial_numbered: true, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [ALL], description: 'Aqua border numbered to 250' },
-  { name: 'Orange', color_hex: '#FF8C00', print_run: 199, serial_numbered: true, is_one_of_one: false, rarity_rank: 13, box_exclusivity: [ALL], description: 'Orange border numbered to 199' },
-  { name: 'Purple', color_hex: '#800080', print_run: 150, serial_numbered: true, is_one_of_one: false, rarity_rank: 14, box_exclusivity: [ALL], description: 'Purple border numbered to 150' },
-  { name: 'Independence Day', color_hex: '#3B82F6', print_run: 76, serial_numbered: true, is_one_of_one: false, rarity_rank: 15, box_exclusivity: [ALL], description: 'Stars and stripes pattern /76' },
-  { name: 'Father\'s Day Blue', color_hex: '#4682B4', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 16, box_exclusivity: [ALL], description: 'Father\'s Day powder blue /50' },
-  { name: 'Mother\'s Day Pink', color_hex: '#FFB6C1', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 17, box_exclusivity: [ALL], description: 'Mother\'s Day hot pink /50' },
-  { name: 'Memorial Day Camo', color_hex: '#556B2F', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 18, box_exclusivity: [ALL], description: 'Memorial Day camouflage /25' },
-  { name: 'Gold', color_hex: '#FFD700', print_run: 2025, serial_numbered: true, is_one_of_one: false, rarity_rank: 19, box_exclusivity: [ALL], description: 'Gold border numbered to 2025 (year match)' },
-  { name: 'Clear', color_hex: '#F0F8FF', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 20, box_exclusivity: [ALL], description: 'Clear acetate card /10' },
-  { name: 'Red Foil', color_hex: '#CC0000', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 21, box_exclusivity: [ALL], description: 'Red foil numbered to 5' },
+  // ── Numbered Parallels (33) ────────────────────────────────────
+  { name: 'Gold', color_hex: '#FFD700', print_run: 2025, serial_numbered: true, is_one_of_one: false, rarity_rank: 18, box_exclusivity: [ALL], description: 'Gold border /2025 (year-matched print run)' },
+  { name: 'Advanced Stats', color_hex: '#4682B4', print_run: 300, serial_numbered: true, is_one_of_one: false, rarity_rank: 19, box_exclusivity: [HOBBY, JUMBO], description: 'Advanced statistics on card back /300' },
+  { name: 'Purple Rainbow Foil', color_hex: '#9370DB', print_run: 250, serial_numbered: true, is_one_of_one: false, rarity_rank: 20, box_exclusivity: [HOBBY, JUMBO], description: 'Purple-tinted rainbow foil /250 — Hobby exclusive' },
+  { name: 'Purple Holo Foil', color_hex: '#8A2BE2', print_run: 250, serial_numbered: true, is_one_of_one: false, rarity_rank: 21, box_exclusivity: [...RETAIL], description: 'Purple-tinted holographic foil /250 — Retail side' },
+  { name: 'Blue Rainbow Foil', color_hex: '#4169E1', print_run: 150, serial_numbered: true, is_one_of_one: false, rarity_rank: 22, box_exclusivity: [HOBBY, JUMBO], description: 'Blue-tinted rainbow foil /150 — Hobby exclusive' },
+  { name: 'Blue Holo Foil', color_hex: '#1E90FF', print_run: 150, serial_numbered: true, is_one_of_one: false, rarity_rank: 23, box_exclusivity: [...RETAIL], description: 'Blue-tinted holographic foil /150 — Retail side' },
+  { name: 'Green Rainbow Foil', color_hex: '#228B22', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 24, box_exclusivity: [HOBBY, JUMBO], description: 'Green-tinted rainbow foil /99 — Hobby exclusive' },
+  { name: 'Green Holo Foil', color_hex: '#32CD32', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 25, box_exclusivity: [...RETAIL], description: 'Green-tinted holographic foil /99 — Retail side' },
+  { name: 'Vintage Stock', color_hex: '#DEB887', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 26, box_exclusivity: [ALL], description: 'Vintage cardboard stock with aged look /99' },
+  { name: 'Spring Training Green', color_hex: '#3CB371', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 27, box_exclusivity: [BLASTER], description: 'Green spring training foilboard /99 — Blaster exclusive' },
+  { name: 'Independence Day', color_hex: '#B22222', print_run: 76, serial_numbered: true, is_one_of_one: false, rarity_rank: 28, box_exclusivity: [ALL], description: 'Patriotic red/white/blue design /76 (1776 tribute)' },
+  { name: 'Gold Rainbow Foil', color_hex: '#DAA520', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 29, box_exclusivity: [HOBBY, JUMBO], description: 'Gold-tinted rainbow foil /50 — Hobby exclusive' },
+  { name: 'Gold Holo Foil', color_hex: '#FFC125', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 30, box_exclusivity: [...RETAIL], description: 'Gold-tinted holographic foil /50 — Retail side' },
+  { name: 'Gold Diamante Foil', color_hex: '#FFD700', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 31, box_exclusivity: [HANGER], description: 'Gold diamond-pattern foil /50 — Hanger exclusive' },
+  { name: 'Canvas', color_hex: '#F5DEB3', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 32, box_exclusivity: [ALL], description: 'Canvas textured card stock /50' },
+  { name: 'Flowers', color_hex: '#FF69B4', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 33, box_exclusivity: [TIN], description: 'Flower border design /50 — Tin exclusive' },
+  { name: 'Spring Training Gold', color_hex: '#FFD700', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 34, box_exclusivity: [BLASTER], description: 'Gold spring training foilboard /50 — Blaster exclusive' },
+  { name: 'Orange Rainbow Foil', color_hex: '#FF8C00', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 35, box_exclusivity: [HOBBY, JUMBO], description: 'Orange-tinted rainbow foil /25 — Hobby exclusive' },
+  { name: 'Orange Holo Foil', color_hex: '#FF6347', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 36, box_exclusivity: [...RETAIL], description: 'Orange-tinted holographic foil /25 — Retail side' },
+  { name: 'Orange Diamante Foil', color_hex: '#FF7F50', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 37, box_exclusivity: [HANGER], description: 'Orange diamond-pattern foil /25 — Hanger exclusive' },
+  { name: 'Wood', color_hex: '#8B4513', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 38, box_exclusivity: [ALL], description: 'Wood-grain textured card stock /25' },
+  { name: 'Memorial Day Camo', color_hex: '#556B2F', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 39, box_exclusivity: [ALL], description: 'Military camouflage pattern /25' },
+  { name: 'Spring Training Orange', color_hex: '#FF8C00', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 40, box_exclusivity: [BLASTER], description: 'Orange spring training foilboard /25 — Blaster exclusive' },
+  { name: 'Black Rainbow Foil', color_hex: '#1C1C1C', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 41, box_exclusivity: [HOBBY, JUMBO], description: 'Black-tinted rainbow foil /10 — Hobby exclusive' },
+  { name: 'Black Holo Foil', color_hex: '#2F2F2F', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 42, box_exclusivity: [...RETAIL], description: 'Black-tinted holographic foil /10 — Retail side' },
+  { name: 'Black Diamante Foil', color_hex: '#3B3B3B', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 43, box_exclusivity: [HANGER], description: 'Black diamond-pattern foil /10 — Hanger exclusive' },
+  { name: 'Clear', color_hex: '#E0F7FA', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 44, box_exclusivity: [JUMBO], description: 'Clear acetate card stock /10 — Jumbo exclusive' },
+  { name: 'Umbrellas', color_hex: '#6A5ACD', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 45, box_exclusivity: [TIN], description: 'Umbrella border design /10 — Tin exclusive' },
+  { name: 'Red Rainbow Foil', color_hex: '#DC143C', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 46, box_exclusivity: [HOBBY, JUMBO], description: 'Red-tinted rainbow foil /5 — Hobby exclusive' },
+  { name: 'Red Holo Foil', color_hex: '#FF0000', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 47, box_exclusivity: [...RETAIL], description: 'Red-tinted holographic foil /5 — Retail side' },
+  { name: 'Red Diamante Foil', color_hex: '#CD5C5C', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 48, box_exclusivity: [HANGER], description: 'Red diamond-pattern foil /5 — Hanger exclusive' },
+  { name: 'Watering Cans', color_hex: '#4682B4', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 49, box_exclusivity: [TIN], description: 'Watering can border design /5 — Tin exclusive' },
+  { name: 'Spring Training Red', color_hex: '#DC143C', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 50, box_exclusivity: [BLASTER], description: 'Red spring training foilboard /5 — Blaster exclusive' },
 
-  // ── 1-of-1 Parallels ─────────────────────────────────────────
-  { name: 'Platinum', color_hex: '#E5E4E2', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 22, box_exclusivity: [ALL], description: 'Platinum — 1 of 1. The rarest Topps base parallel.' },
-  { name: 'Printing Plates Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 23, box_exclusivity: [ALL], description: 'Black printing plate — 1 of 1' },
-  { name: 'Printing Plates Cyan', color_hex: '#00FFFF', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 24, box_exclusivity: [ALL], description: 'Cyan printing plate — 1 of 1' },
-  { name: 'Printing Plates Magenta', color_hex: '#FF00FF', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 25, box_exclusivity: [ALL], description: 'Magenta printing plate — 1 of 1' },
-  { name: 'Printing Plates Yellow', color_hex: '#FFFF00', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 26, box_exclusivity: [ALL], description: 'Yellow printing plate — 1 of 1' },
+  // ── 1-of-1 Parallels (9) ──────────────────────────────────────
+  { name: 'FoilFractor', color_hex: '#C0C0C0', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 51, box_exclusivity: [HOBBY, JUMBO], description: 'Full foilfractor refractor finish — true 1/1, Hobby exclusive' },
+  { name: 'Platinum Holo Foil', color_hex: '#E5E4E2', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 52, box_exclusivity: [...RETAIL], description: 'Platinum holographic foil — true 1/1, Retail side' },
+  { name: 'First Card', color_hex: '#FFD700', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 53, box_exclusivity: [ALL], description: 'Stamped as first card off the production line — true 1/1' },
+  { name: 'Printing Plate Cyan', color_hex: '#00FFFF', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 54, box_exclusivity: [ALL], description: 'Cyan printing plate — 1 of 1' },
+  { name: 'Printing Plate Magenta', color_hex: '#FF00FF', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 55, box_exclusivity: [ALL], description: 'Magenta printing plate — 1 of 1' },
+  { name: 'Printing Plate Yellow', color_hex: '#FFFF00', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 56, box_exclusivity: [ALL], description: 'Yellow printing plate — 1 of 1' },
+  { name: 'Printing Plate Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 57, box_exclusivity: [ALL], description: 'Black printing plate — 1 of 1' },
+  { name: 'Birds', color_hex: '#87CEEB', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 58, box_exclusivity: [TIN], description: 'Bird border design — Tin exclusive, true 1/1' },
+  { name: 'Spring Training Platinum', color_hex: '#E5E4E2', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 59, box_exclusivity: [BLASTER], description: 'Platinum spring training foilboard — Blaster exclusive, true 1/1' },
 ];
 
 async function main() {

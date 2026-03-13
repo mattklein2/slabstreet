@@ -49,7 +49,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
   }, []);
 
   function fetchSuggestions(query: string) {
-    clearTimeout(debounceRef.current);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
     if (query.length < 2) { setSuggestions([]); return; }
     debounceRef.current = setTimeout(async () => {
       try {

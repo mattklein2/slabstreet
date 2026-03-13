@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { RarityBadge } from '../shared/RarityBadge';
 import { ExpandableSection } from '../shared/ExpandableSection';
@@ -32,6 +32,41 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
   const { colors } = useTheme();
   const level = getRarityLevel(parallel.rarityRank, parallel.totalParallels, parallel.isOneOfOne);
   const [playerName, setPlayerName] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [highlightIdx, setHighlightIdx] = useState(-1);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  function fetchSuggestions(query: string) {
+    clearTimeout(debounceRef.current);
+    if (query.length < 2) { setSuggestions([]); return; }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/decoder/suggest?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        setSuggestions(data);
+        setShowSuggestions(data.length > 0);
+        setHighlightIdx(-1);
+      } catch { setSuggestions([]); }
+    }, 200);
+  }
+
+  function selectSuggestion(val: string) {
+    setPlayerName(val);
+    setShowSuggestions(false);
+    setSuggestions([]);
+  }
 
   return (
     <div style={{ padding: '12px 0' }}>
@@ -90,26 +125,63 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
         border: `1px solid ${colors.border}`, marginBottom: 16,
       }}>
         <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: colors.muted, marginBottom: 8 }}>LOOK UP VALUE</div>
-        <input
-          type="text"
-          placeholder="Enter player name..."
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && playerName.trim()) {
-              window.open(buildEbayUrl(productYear, productName, parallel.name, playerName.trim()), '_blank');
-            }
-          }}
-          style={{
-            width: '100%', padding: '10px 12px', fontSize: 15,
-            background: colors.bg, color: colors.text,
-            border: `1px solid ${colors.border}`, borderRadius: 8,
-            outline: 'none', boxSizing: 'border-box',
-            fontFamily: "'IBM Plex Sans', sans-serif",
-          }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = colors.green; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = colors.border; }}
-        />
+        <div ref={wrapperRef} style={{ position: 'relative' }}>
+          <input
+            type="text"
+            placeholder="Enter player name..."
+            value={playerName}
+            onChange={(e) => { setPlayerName(e.target.value); fetchSuggestions(e.target.value); }}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setHighlightIdx(i => Math.min(i + 1, suggestions.length - 1));
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setHighlightIdx(i => Math.max(i - 1, -1));
+              } else if (e.key === 'Enter') {
+                if (highlightIdx >= 0 && suggestions[highlightIdx]) {
+                  selectSuggestion(suggestions[highlightIdx]);
+                } else if (playerName.trim()) {
+                  setShowSuggestions(false);
+                  window.open(buildEbayUrl(productYear, productName, parallel.name, playerName.trim()), '_blank');
+                }
+              } else if (e.key === 'Escape') {
+                setShowSuggestions(false);
+              }
+            }}
+            onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+            style={{
+              width: '100%', padding: '10px 12px', fontSize: 15,
+              background: colors.bg, color: colors.text,
+              border: `1px solid ${colors.border}`, borderRadius: 8,
+              outline: 'none', boxSizing: 'border-box',
+              fontFamily: "'IBM Plex Sans', sans-serif",
+            }}
+          />
+          {showSuggestions && suggestions.length > 0 && (
+            <div style={{
+              position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10,
+              background: colors.surface, border: `1px solid ${colors.border}`,
+              borderRadius: 8, marginTop: 4, overflow: 'hidden',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            }}>
+              {suggestions.map((s, i) => (
+                <div
+                  key={s}
+                  onMouseDown={() => selectSuggestion(s)}
+                  onMouseEnter={() => setHighlightIdx(i)}
+                  style={{
+                    padding: '8px 12px', fontSize: 14, cursor: 'pointer',
+                    color: colors.text, fontFamily: "'IBM Plex Sans', sans-serif",
+                    background: i === highlightIdx ? `${colors.green}20` : 'transparent',
+                  }}
+                >
+                  {s}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         <a
           href={playerName.trim() ? buildEbayUrl(productYear, productName, parallel.name, playerName.trim()) : undefined}
           target="_blank"

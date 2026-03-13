@@ -95,6 +95,11 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
           placeholder="Enter player name..."
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && playerName.trim()) {
+              window.open(buildEbayUrl(productYear, productName, parallel.name, playerName.trim()), '_blank');
+            }
+          }}
           style={{
             width: '100%', padding: '10px 12px', fontSize: 15,
             background: colors.bg, color: colors.text,

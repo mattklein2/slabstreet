@@ -35,43 +35,38 @@ const BLASTER = 'Retail Blaster';
 const MEGA = 'Retail Mega';
 const HANGER = 'Hanger';
 const FAT_PACK = 'Fat Pack/Cello';
-const FOTL = 'FOTL';
+const WINTER_TIN = 'Winter Tin';
 const ALL = 'All';
 
+// Shorthand for all retail formats
+const RETAIL = [BLASTER, MEGA, HANGER, FAT_PACK];
+
 // Complete parallel data for 2024 Donruss Football
+// Corrected via Cardboard Connection, Beckett, Checklist Insider, Cardlines
+// Note: "Holo Laser" parallels, FOTL parallels, and "White/Red Hot Rookies" are INSERT sets, not base parallels
 const parallels = [
-  // ── Unnumbered Parallels ──────────────────────────────────────
-  { name: 'Base', color_hex: null, print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card' },
-  { name: 'Press Proof Silver', color_hex: '#C0C0C0', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [ALL], description: 'Silver press proof finish — most common parallel' },
-  { name: 'Holo Blue Laser', color_hex: '#4169E1', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [HOBBY], description: 'Blue holographic laser pattern — Hobby exclusive' },
-  { name: 'Holo Red Laser', color_hex: '#CC0000', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [BLASTER], description: 'Red holographic laser — Retail Blaster exclusive' },
-  { name: 'Holo Orange Laser', color_hex: '#FF8C00', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [HANGER], description: 'Orange holographic laser — Hanger exclusive' },
-  { name: 'Holo Pink Laser', color_hex: '#FF69B4', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [MEGA], description: 'Pink holographic laser — Retail Mega exclusive' },
-  { name: 'Holo Teal Laser', color_hex: '#008080', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [FAT_PACK], description: 'Teal holographic laser — Fat Pack exclusive' },
-  { name: 'Press Proof Purple', color_hex: '#800080', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [ALL], description: 'Purple press proof finish' },
+  // ── Unnumbered Parallels (9) ──────────────────────────────────
+  { name: 'Base', color_hex: '#FFFFFF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card' },
+  { name: 'Press Proof Red', color_hex: '#DC2626', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [...RETAIL], description: 'Red-tinted press proof; retail-exclusive parallel' },
+  { name: 'Press Proof Yellow', color_hex: '#FACC15', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [HOBBY, ...RETAIL], description: 'Yellow-tinted press proof; most common unnumbered parallel' },
+  { name: 'Press Proof Green', color_hex: '#16A34A', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [HOBBY, ...RETAIL], description: 'Green-tinted press proof; common across most box types' },
+  { name: 'Press Proof Blue', color_hex: '#2563EB', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [HOBBY], description: 'Blue-tinted press proof; hobby-exclusive unnumbered parallel' },
+  { name: 'Canvas', color_hex: '#D4C5A9', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [HOBBY, ...RETAIL], description: 'Textured canvas finish with a painted-art look; unnumbered SSP' },
+  { name: 'Press Proof Purple', color_hex: '#7C3AED', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 7, box_exclusivity: [WINTER_TIN], description: 'Purple-tinted press proof; Winter Tin exclusive, 3 per box' },
+  { name: 'No Name', color_hex: '#1E293B', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 8, box_exclusivity: [HOBBY, ...RETAIL], description: 'Player name removed from card front for clean design; short print' },
+  { name: 'Aqueous Test', color_hex: '#38BDF8', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [HOBBY, ...RETAIL], description: 'Water-like translucent finish; rare unnumbered SSP' },
 
-  // ── Numbered Parallels ────────────────────────────────────────
-  { name: 'Press Proof Red', color_hex: '#CC0000', print_run: 299, serial_numbered: true, is_one_of_one: false, rarity_rank: 9, box_exclusivity: [ALL], description: 'Red press proof numbered to 299' },
-  { name: 'Press Proof Blue', color_hex: '#0055A4', print_run: 249, serial_numbered: true, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [ALL], description: 'Blue press proof numbered to 249' },
-  { name: 'Holo Purple Laser', color_hex: '#800080', print_run: 199, serial_numbered: true, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [ALL], description: 'Purple holographic laser /199' },
-  { name: 'Press Proof Orange', color_hex: '#FF8C00', print_run: 199, serial_numbered: true, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [ALL], description: 'Orange press proof numbered to 199' },
-  { name: 'Holo Gold Laser', color_hex: '#FFD700', print_run: 149, serial_numbered: true, is_one_of_one: false, rarity_rank: 13, box_exclusivity: [ALL], description: 'Gold holographic laser /149' },
-  { name: 'Press Proof Green', color_hex: '#228B22', print_run: 149, serial_numbered: true, is_one_of_one: false, rarity_rank: 14, box_exclusivity: [ALL], description: 'Green press proof numbered to 149' },
-  { name: 'Press Proof Pink', color_hex: '#FF69B4', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 15, box_exclusivity: [ALL], description: 'Pink press proof numbered to 99' },
-  { name: 'FOTL Blue', color_hex: '#4169E1', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 16, box_exclusivity: [FOTL], description: 'Blue FOTL /75 — First Off The Line exclusive' },
-  { name: 'Holo Silver Laser', color_hex: '#C0C0C0', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 17, box_exclusivity: [ALL], description: 'Silver holographic laser /75' },
-  { name: 'Press Proof Gold', color_hex: '#FFD700', print_run: 49, serial_numbered: true, is_one_of_one: false, rarity_rank: 18, box_exclusivity: [ALL], description: 'Gold press proof numbered to 49' },
-  { name: 'Holo Black Laser', color_hex: '#1A1A1A', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 19, box_exclusivity: [ALL], description: 'Black holographic laser /25' },
-  { name: 'FOTL Gold', color_hex: '#FFD700', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 20, box_exclusivity: [FOTL], description: 'Gold FOTL /25 — First Off The Line exclusive' },
-  { name: 'Press Proof Platinum', color_hex: '#E5E4E2', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 21, box_exclusivity: [ALL], description: 'Platinum press proof numbered to 10' },
-  { name: 'FOTL Green', color_hex: '#228B22', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 22, box_exclusivity: [FOTL], description: 'Green FOTL /10 — First Off The Line exclusive' },
-  { name: 'Holo White Laser', color_hex: '#FFFFFF', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 23, box_exclusivity: [ALL], description: 'White holographic laser /5' },
-  { name: 'FOTL Black', color_hex: '#000000', print_run: 5, serial_numbered: true, is_one_of_one: false, rarity_rank: 24, box_exclusivity: [FOTL], description: 'Black FOTL /5 — First Off The Line exclusive' },
+  // ── Numbered Parallels (7) ─────────────────────────────────────
+  { name: 'Season Stat Line', color_hex: '#F97316', print_run: 500, serial_numbered: true, is_one_of_one: false, rarity_rank: 10, box_exclusivity: [HOBBY], description: 'Numbered to player season stat (500 or less); print run varies per card' },
+  { name: 'Press Proof Silver', color_hex: '#C0C0C0', print_run: 100, serial_numbered: true, is_one_of_one: false, rarity_rank: 11, box_exclusivity: [HOBBY], description: 'Silver metallic press proof /100' },
+  { name: 'Jersey Number', color_hex: '#E11D48', print_run: 99, serial_numbered: true, is_one_of_one: false, rarity_rank: 12, box_exclusivity: [HOBBY], description: 'Numbered to player jersey number (99 or less); print run varies per card' },
+  { name: 'Press Proof Silver Die-Cut', color_hex: '#D1D5DB', print_run: 75, serial_numbered: true, is_one_of_one: false, rarity_rank: 13, box_exclusivity: [HOBBY], description: 'Silver press proof with die-cut edge /75' },
+  { name: 'Press Proof Gold', color_hex: '#EAB308', print_run: 50, serial_numbered: true, is_one_of_one: false, rarity_rank: 14, box_exclusivity: [HOBBY], description: 'Gold metallic press proof /50' },
+  { name: 'Press Proof Gold Die-Cut', color_hex: '#CA8A04', print_run: 25, serial_numbered: true, is_one_of_one: false, rarity_rank: 15, box_exclusivity: [HOBBY], description: 'Gold press proof with die-cut edge /25' },
+  { name: 'Press Proof Black', color_hex: '#171717', print_run: 10, serial_numbered: true, is_one_of_one: false, rarity_rank: 16, box_exclusivity: [HOBBY], description: 'Black press proof /10; extremely limited' },
 
-  // ── 1-of-1 Parallels ─────────────────────────────────────────
-  { name: 'Press Proof Black', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 25, box_exclusivity: [ALL], description: 'Black press proof — 1 of 1. The rarest Donruss parallel.' },
-  { name: 'Holo Neon Laser', color_hex: '#39FF14', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 26, box_exclusivity: [ALL], description: 'Neon holographic laser — 1 of 1' },
-  { name: 'FOTL One of One', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 27, box_exclusivity: [FOTL], description: 'FOTL exclusive 1/1 — First Off The Line exclusive' },
+  // ── 1-of-1 Parallels (1) ──────────────────────────────────────
+  { name: 'Press Proof Black Die-Cut', color_hex: '#000000', print_run: 1, serial_numbered: true, is_one_of_one: true, rarity_rank: 17, box_exclusivity: [HOBBY], description: 'Black press proof with die-cut edge — true 1/1, the rarest base parallel' },
 ];
 
 async function main() {

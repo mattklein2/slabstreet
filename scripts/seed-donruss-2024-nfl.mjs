@@ -35,6 +35,7 @@ const BLASTER = 'Retail Blaster';
 const MEGA = 'Retail Mega';
 const HANGER = 'Hanger';
 const FAT_PACK = 'Fat Pack/Cello';
+const GRAVITY_FEED = 'Gravity Feed';
 const WINTER_TIN = 'Winter Tin';
 const ALL = 'All';
 
@@ -47,8 +48,8 @@ const RETAIL = [BLASTER, MEGA, HANGER, FAT_PACK];
 const parallels = [
   // ── Unnumbered Parallels (9) ──────────────────────────────────
   { name: 'Base', color_hex: '#FFFFFF', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 1, box_exclusivity: [ALL], description: 'Standard base card' },
-  { name: 'Press Proof Red', color_hex: '#DC2626', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [...RETAIL], description: 'Red-tinted press proof; retail-exclusive parallel' },
-  { name: 'Press Proof Yellow', color_hex: '#FACC15', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [HOBBY, ...RETAIL], description: 'Yellow-tinted press proof; most common unnumbered parallel' },
+  { name: 'Press Proof Red', color_hex: '#DC2626', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 2, box_exclusivity: [BLASTER, HANGER], description: 'Red-tinted press proof; Blaster and Hanger exclusive' },
+  { name: 'Press Proof Yellow', color_hex: '#FACC15', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 3, box_exclusivity: [GRAVITY_FEED], description: 'Yellow-tinted press proof; Gravity Feed exclusive (1 per pack)' },
   { name: 'Press Proof Green', color_hex: '#16A34A', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 4, box_exclusivity: [HOBBY, ...RETAIL], description: 'Green-tinted press proof; common across most box types' },
   { name: 'Press Proof Blue', color_hex: '#2563EB', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 5, box_exclusivity: [HOBBY], description: 'Blue-tinted press proof; hobby-exclusive unnumbered parallel' },
   { name: 'Canvas', color_hex: '#D4C5A9', print_run: null, serial_numbered: false, is_one_of_one: false, rarity_rank: 6, box_exclusivity: [HOBBY, ...RETAIL], description: 'Textured canvas finish with a painted-art look; unnumbered SSP' },

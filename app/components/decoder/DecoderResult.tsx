@@ -79,7 +79,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
         }} />
         <div>
           <h2 style={{ fontSize: 22, fontWeight: 600, margin: 0, color: colors.text }}>{parallel.name}</h2>
-          <p style={{ fontSize: 13, color: colors.muted, margin: '2px 0 0' }}>{brandName ? `${brandName} · ` : ''}{productName} {productYear}</p>
+          <p style={{ fontSize: 13, color: colors.muted, margin: '2px 0 0' }}>{brandName && !productName.startsWith(brandName) ? `${brandName} · ` : ''}{productName} {productYear}</p>
         </div>
       </div>
 

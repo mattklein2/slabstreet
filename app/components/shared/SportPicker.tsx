@@ -12,11 +12,12 @@ export function SportPicker({ onSelect }: SportPickerProps) {
 
   return (
     <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
+      display: 'flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
       gap: 16,
       padding: '20px 0',
-      maxWidth: 400,
+      maxWidth: 480,
       margin: '0 auto',
     }}>
       {SPORTS.map((sport) => (
@@ -29,6 +30,8 @@ export function SportPicker({ onSelect }: SportPickerProps) {
             alignItems: 'center',
             gap: 8,
             padding: '24px 16px',
+            width: 'calc(33.333% - 12px)',
+            minWidth: 120,
             background: colors.surface,
             border: `1px solid ${colors.border}`,
             borderRadius: 16,

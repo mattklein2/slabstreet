@@ -210,21 +210,29 @@ async function firestoreQuery(token, collectionId, where, orderBy, limit = 100) 
     query.structuredQuery.orderBy = Array.isArray(orderBy) ? orderBy : [orderBy];
   }
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(query),
-  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 30000);
+  let res, results;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(query),
+      signal: ctrl.signal,
+    });
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(`Firestore query failed: ${err?.error?.message || res.statusText}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(`Firestore query failed: ${err?.error?.message || res.statusText}`);
+    }
+
+    results = await res.json();
+  } finally {
+    clearTimeout(timer);
   }
-
-  const results = await res.json();
   return results
     .filter(r => r.document)
     .map(r => {
@@ -370,12 +378,21 @@ async function fetchCardSales(token, cardFirestoreId) {
     let url = `${FIRESTORE_BASE}/cards/${cardFirestoreId}/sales?pageSize=100`;
     if (pageToken) url += `&pageToken=${pageToken}`;
 
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!res.ok) break;
-    const data = await res.json();
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000);
+    let res, data;
+    try {
+      res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: ctrl.signal,
+      });
+      if (!res.ok) break;
+      data = await res.json();
+    } catch (e) {
+      break; // timeout or network error — stop paginating this card
+    } finally {
+      clearTimeout(timer);
+    }
     const docs = data.documents || [];
     if (docs.length === 0) break;
 
@@ -954,7 +971,7 @@ async function runStandard(token) {
       }
 
       // Fetch cards (still requires per-player Firestore query)
-      const cardLimit = FETCH_SALES ? 9999 : (ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 100));
+      const cardLimit = ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 100);
       const cards = await fetchPlayerCards(token, clName, cardLimit);
 
       const cardladderData = buildCardLadderData(clDoc, cards);

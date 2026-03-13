@@ -76,6 +76,7 @@ export interface ProductItem {
   year: string;
   isFlagship: boolean;
   description: string;
+  brandName: string;
 }
 
 export interface ParallelItem {

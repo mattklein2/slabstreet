@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from('products')
-    .select('id, name, year, is_flagship, description')
+    .select('id, name, year, is_flagship, description, brands(name)')
     .eq('sport', sport)
     .order('year', { ascending: false })
     .order('is_flagship', { ascending: false })
@@ -20,12 +20,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const products = (data || []).map(row => ({
+  const products = (data || []).map((row: any) => ({
     id: row.id,
     name: row.name,
     year: row.year,
     isFlagship: row.is_flagship,
     description: row.description,
+    brandName: row.brands?.name || '',
   }));
 
   return NextResponse.json({ products }, {

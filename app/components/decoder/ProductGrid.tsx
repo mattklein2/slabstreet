@@ -70,6 +70,11 @@ export function ProductGrid({ products, loading, onSelect }: ProductGridProps) {
                   {product.isFlagship && <span style={{ color: colors.amber, marginRight: 4 }}>★</span>}
                   {product.name}
                 </span>
+                {product.brandName && (
+                  <span style={{ fontSize: 11, color: colors.muted, fontFamily: "'IBM Plex Mono', monospace" }}>
+                    {product.brandName}
+                  </span>
+                )}
               </button>
             ))}
           </div>

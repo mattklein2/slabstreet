@@ -128,6 +128,7 @@ function DecoderContent() {
           <DecoderResult
             parallel={selectedParallel} allParallels={parallels}
             productName={selectedProduct.name} productYear={selectedProduct.year}
+            brandName={selectedProduct.brandName}
           />
         )}
       </div>

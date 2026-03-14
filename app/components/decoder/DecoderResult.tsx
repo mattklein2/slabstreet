@@ -6,6 +6,7 @@ import { RarityBadge } from '../shared/RarityBadge';
 import { ExpandableSection } from '../shared/ExpandableSection';
 import { formatPrintRun } from '../../../lib/format';
 import { getRarityLevel } from '../../../lib/rarity';
+import { ParallelSwatch } from './ParallelSwatch';
 import type { ParallelItem } from '../../../lib/types';
 
 function buildEbayUrl(year: string, productName: string, parallelName: string, playerName: string): string {
@@ -72,11 +73,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
   return (
     <div style={{ padding: '12px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
-        <div style={{
-          width: 56, height: 56, borderRadius: 12,
-          background: parallel.colorHex || colors.muted,
-          border: `1px solid ${colors.border}`, flexShrink: 0,
-        }} />
+        <ParallelSwatch name={parallel.name} colorHex={parallel.colorHex} size={56} borderRadius={12} />
         <div>
           <h2 style={{ fontSize: 22, fontWeight: 600, margin: 0, color: colors.text }}>{parallel.name}</h2>
           <p style={{ fontSize: 13, color: colors.muted, margin: '2px 0 0' }}>{brandName && !productName.startsWith(brandName) ? `${brandName} · ` : ''}{productName} {productYear}</p>
@@ -231,7 +228,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
               background: p.id === parallel.id ? `${colors.green}15` : 'transparent',
               border: p.id === parallel.id ? `1px solid ${colors.green}40` : '1px solid transparent',
             }}>
-              <div style={{ width: 16, height: 16, borderRadius: 3, background: p.colorHex || colors.muted, flexShrink: 0 }} />
+              <ParallelSwatch name={p.name} colorHex={p.colorHex} size={16} borderRadius={3} />
               <span style={{ fontSize: 13, flex: 1, color: p.id === parallel.id ? colors.green : colors.text }}>{p.name}</span>
               <span style={{ fontSize: 11, color: colors.muted, fontFamily: "'IBM Plex Mono', monospace" }}>{formatPrintRun(p.printRun)}</span>
               {p.id === parallel.id && <span style={{ fontSize: 10, color: colors.green, fontWeight: 600 }}>YOU</span>}

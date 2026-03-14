@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { RarityBadge } from '../shared/RarityBadge';
 import { Skeleton } from '../shared/Skeleton';
+import { ParallelSwatch } from './ParallelSwatch';
 import type { ParallelItem } from '../../../lib/types';
 
 interface ParallelListProps {
@@ -49,14 +50,7 @@ export function ParallelList({ parallels, loading, onSelect }: ParallelListProps
           onMouseEnter={(e) => (e.currentTarget.style.borderColor = colors.green)}
           onMouseLeave={(e) => (e.currentTarget.style.borderColor = colors.border)}
         >
-          <div style={{
-            width: 32,
-            height: 32,
-            borderRadius: 6,
-            background: p.colorHex || colors.muted,
-            border: `1px solid ${colors.border}`,
-            flexShrink: 0,
-          }} />
+          <ParallelSwatch name={p.name} colorHex={p.colorHex} size={32} borderRadius={6} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 14, fontWeight: 500 }}>{p.name}</div>
             {p.boxExclusivity && !p.boxExclusivity.includes('All') && (

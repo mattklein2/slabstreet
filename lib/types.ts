@@ -141,6 +141,7 @@ export const SPORTS = [
   { label: 'Baseball', value: 'MLB', icon: '⚾' },
   { label: 'Formula 1', value: 'F1', icon: '🏎️' },
   { label: 'WNBA', value: 'WNBA', icon: '🏀' },
+  { label: 'Soccer', value: 'Soccer', icon: '⚽' },
 ] as const;
 
 export type SportValue = typeof SPORTS[number]['value'];

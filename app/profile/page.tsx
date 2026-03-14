@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTheme } from '../components/ThemeProvider';
@@ -33,6 +33,7 @@ export default function ProfilePage() {
   const [teamInput, setTeamInput] = useState('');
   const [playerInput, setPlayerInput] = useState('');
   const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Populate form from profile
@@ -50,14 +51,33 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
-  // Auto-save helper
-  const saveField = useCallback(async (updates: Partial<Profile>) => {
+  // Save all profile fields at once
+  async function handleSave() {
     if (!user) return;
     setSaving(true);
-    await supabase.from('profiles').update(updates).eq('id', user.id);
-    await refreshProfile();
+    setSaveStatus('idle');
+    const { error } = await supabase.from('profiles').update({
+      display_name: displayName || null,
+      zip_code: zipCode || null,
+      collector_level: collectorLevel || null,
+      favorite_leagues: favoriteLeagues,
+      favorite_teams: favoriteTeams,
+      favorite_players: favoritePlayers,
+      notify_drops: notifyDrops,
+      notify_shows: notifyShows,
+      notify_recap: notifyRecap,
+    }).eq('id', user.id);
+
+    if (error) {
+      console.error('Save error:', error);
+      setSaveStatus('error');
+    } else {
+      await refreshProfile();
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
     setSaving(false);
-  }, [user, supabase, refreshProfile]);
+  }
 
   // Redirect if not logged in
   if (!loading && !user) {
@@ -81,43 +101,33 @@ export default function ProfilePage() {
   }
 
   function toggleLeague(league: string) {
-    const updated = favoriteLeagues.includes(league)
-      ? favoriteLeagues.filter(l => l !== league)
-      : [...favoriteLeagues, league];
-    setFavoriteLeagues(updated);
-    saveField({ favorite_leagues: updated });
+    setFavoriteLeagues(prev =>
+      prev.includes(league) ? prev.filter(l => l !== league) : [...prev, league]
+    );
   }
 
   function addTeam() {
     const t = teamInput.trim();
     if (t && !favoriteTeams.includes(t)) {
-      const updated = [...favoriteTeams, t];
-      setFavoriteTeams(updated);
+      setFavoriteTeams(prev => [...prev, t]);
       setTeamInput('');
-      saveField({ favorite_teams: updated });
     }
   }
 
   function removeTeam(team: string) {
-    const updated = favoriteTeams.filter(t => t !== team);
-    setFavoriteTeams(updated);
-    saveField({ favorite_teams: updated });
+    setFavoriteTeams(prev => prev.filter(t => t !== team));
   }
 
   function addPlayer() {
     const p = playerInput.trim();
     if (p && !favoritePlayers.includes(p)) {
-      const updated = [...favoritePlayers, p];
-      setFavoritePlayers(updated);
+      setFavoritePlayers(prev => [...prev, p]);
       setPlayerInput('');
-      saveField({ favorite_players: updated });
     }
   }
 
   function removePlayer(player: string) {
-    const updated = favoritePlayers.filter(p => p !== player);
-    setFavoritePlayers(updated);
-    saveField({ favorite_players: updated });
+    setFavoritePlayers(prev => prev.filter(p => p !== player));
   }
 
   async function handleDeleteAccount() {
@@ -194,9 +204,38 @@ export default function ProfilePage() {
           color: colors.muted,
           margin: 0,
         }}>
-          Fill in what you want, skip the rest. Everything auto-saves.
-          {saving && <span style={{ color: colors.green, marginLeft: 8 }}>Saving...</span>}
+          Fill in what you want, skip the rest.
         </p>
+      </div>
+
+      {/* Save Button — sticky at top */}
+      <div style={{
+        position: 'sticky',
+        top: 56,
+        zIndex: 40,
+        marginBottom: 16,
+      }}>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          style={{
+            width: '100%',
+            padding: '14px',
+            fontSize: 16,
+            fontFamily: "'IBM Plex Sans', sans-serif",
+            fontWeight: 700,
+            background: saveStatus === 'saved' ? '#22c55e' : saveStatus === 'error' ? '#FF6B6B' : colors.green,
+            color: '#0a0f1a',
+            border: 'none',
+            borderRadius: 12,
+            cursor: saving ? 'wait' : 'pointer',
+            opacity: saving ? 0.7 : 1,
+            transition: 'all 0.2s',
+            letterSpacing: 1,
+          }}
+        >
+          {saving ? 'Saving...' : saveStatus === 'saved' ? 'Saved!' : saveStatus === 'error' ? 'Error — Try Again' : 'Save Profile'}
+        </button>
       </div>
 
       {/* Account Info */}
@@ -209,7 +248,6 @@ export default function ProfilePage() {
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              onBlur={() => saveField({ display_name: displayName || null })}
               placeholder="What should we call you?"
               style={inputStyle}
             />
@@ -227,10 +265,7 @@ export default function ProfilePage() {
             <label style={labelStyle}>Collector Level</label>
             <select
               value={collectorLevel}
-              onChange={(e) => {
-                setCollectorLevel(e.target.value);
-                saveField({ collector_level: e.target.value || null });
-              }}
+              onChange={(e) => setCollectorLevel(e.target.value)}
               style={{ ...inputStyle, cursor: 'pointer' }}
             >
               <option value="">Select your level...</option>
@@ -388,7 +423,6 @@ export default function ProfilePage() {
             type="text"
             value={zipCode}
             onChange={(e) => setZipCode(e.target.value)}
-            onBlur={() => saveField({ zip_code: zipCode || null })}
             placeholder="Used to auto-fill Show Finder"
             maxLength={5}
             style={{ ...inputStyle, maxWidth: 200, letterSpacing: 4, textAlign: 'center' }}
@@ -442,11 +476,7 @@ export default function ProfilePage() {
                 </div>
               </div>
               <button
-                onClick={() => {
-                  const newVal = !value;
-                  set(newVal);
-                  saveField({ [key]: newVal } as Partial<Profile>);
-                }}
+                onClick={() => set(!value)}
                 style={{
                   width: 44,
                   height: 24,

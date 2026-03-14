@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTheme } from '../components/ThemeProvider';
-import { useUser, type Profile } from '../components/UserProvider';
-import { createClient } from '@/lib/supabase-browser';
+import { useUser } from '../components/UserProvider';
 
 const LEAGUES = ['NBA', 'NFL', 'MLB', 'F1', 'WNBA', 'Soccer'];
 const COLLECTOR_LEVELS = [
@@ -19,7 +18,6 @@ export default function ProfilePage() {
   const { colors } = useTheme();
   const { user, profile, loading, signOut, refreshProfile } = useUser();
   const router = useRouter();
-  const supabase = createClient();
 
   const [displayName, setDisplayName] = useState('');
   const [zipCode, setZipCode] = useState('');
@@ -51,40 +49,41 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
-  // Save all profile fields at once
+  // Save all profile fields at once via server-side API route
   async function handleSave() {
     if (!user) return;
     setSaving(true);
     setSaveStatus('idle');
 
-    const updates = {
-      display_name: displayName || null,
-      zip_code: zipCode || null,
-      collector_level: collectorLevel || null,
-      favorite_leagues: favoriteLeagues,
-      favorite_teams: favoriteTeams,
-      favorite_players: favoritePlayers,
-      notify_drops: notifyDrops,
-      notify_shows: notifyShows,
-      notify_recap: notifyRecap,
-    };
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          display_name: displayName || null,
+          zip_code: zipCode || null,
+          collector_level: collectorLevel || null,
+          favorite_leagues: favoriteLeagues,
+          favorite_teams: favoriteTeams,
+          favorite_players: favoritePlayers,
+          notify_drops: notifyDrops,
+          notify_shows: notifyShows,
+          notify_recap: notifyRecap,
+        }),
+      });
 
-    const { data, error, status } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('id', user.id)
-      .select();
-
-    if (error) {
-      console.error('Save error:', error.message, error.code, error.details, 'status:', status);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        console.error('Save error:', res.status, body.error);
+        setSaveStatus('error');
+      } else {
+        await refreshProfile();
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 3000);
+      }
+    } catch (err) {
+      console.error('Save network error:', err);
       setSaveStatus('error');
-    } else if (!data || data.length === 0) {
-      console.error('Save returned no rows — RLS may be blocking the update. User ID:', user.id);
-      setSaveStatus('error');
-    } else {
-      await refreshProfile();
-      setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 3000);
     }
     setSaving(false);
   }

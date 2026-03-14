@@ -12,10 +12,10 @@ const tools = [
     icon: '🔍',
   },
   {
-    href: '/guide',
-    title: 'What Should I Buy?',
-    description: 'Find the best box for your budget and store',
-    icon: '🛒',
+    href: '/shows',
+    title: 'Card Show Finder',
+    description: 'Find major shows and conventions near your zip code',
+    icon: '🗺️',
   },
   {
     href: '/learn',

@@ -21,6 +21,7 @@ export default function CardShowFinder() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [radius, setRadius] = useState(500);
+  const [sortBy, setSortBy] = useState<'date' | 'distance'>('date');
 
   const search = useCallback(async () => {
     const cleaned = zip.replace(/\s/g, '');
@@ -51,8 +52,13 @@ export default function CardShowFinder() {
     return s.distance <= radius && (d === null || d >= -1);
   });
 
-  // Group upcoming shows chronologically
-  const upcoming = filtered ?? [];
+  // Sort by user preference
+  const upcoming = [...(filtered ?? [])].sort((a, b) => {
+    if (sortBy === 'date') {
+      return new Date(a.startDate ?? '9999-12-31').getTime() - new Date(b.startDate ?? '9999-12-31').getTime();
+    }
+    return a.distance - b.distance;
+  });
 
   return (
     <div style={{ width: '100%', maxWidth: 720, margin: '0 auto' }}>
@@ -144,6 +150,37 @@ export default function CardShowFinder() {
               }}
             >
               {r < 1000 ? `${r} mi` : '1,000+ mi'}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Sort toggle */}
+      {results && (
+        <div style={{
+          display: 'flex',
+          gap: 8,
+          justifyContent: 'center',
+          marginBottom: 24,
+        }}>
+          {(['date', 'distance'] as const).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setSortBy(mode)}
+              style={{
+                padding: '6px 16px',
+                fontSize: 13,
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontWeight: sortBy === mode ? 600 : 400,
+                background: sortBy === mode ? colors.green : 'transparent',
+                color: sortBy === mode ? '#0a0f1a' : colors.muted,
+                border: `1px solid ${sortBy === mode ? colors.green : colors.border}`,
+                borderRadius: 20,
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+              }}
+            >
+              {mode === 'date' ? 'Soonest First' : 'Nearest First'}
             </button>
           ))}
         </div>

@@ -26,7 +26,7 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/profile`,
+        emailRedirectTo: `https://slabstreet.netlify.app/auth/callback?next=/profile`,
       },
     });
 

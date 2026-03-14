@@ -51,7 +51,7 @@ function LoginForm() {
     const { error: oauthError } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
+        redirectTo: `https://slabstreet.netlify.app/auth/callback?next=${encodeURIComponent(redirectTo)}`,
       },
     });
 
@@ -70,7 +70,7 @@ function LoginForm() {
     setError('');
 
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/profile`,
+      redirectTo: `https://slabstreet.netlify.app/auth/callback?next=/profile`,
     });
 
     if (resetError) {

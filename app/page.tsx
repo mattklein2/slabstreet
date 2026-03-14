@@ -19,8 +19,8 @@ const tools = [
   },
   {
     href: '/learn',
-    title: 'Learn the Hobby',
-    description: 'Understand products, parallels, grading, and more',
+    title: 'Glossary',
+    description: 'Every term a collector needs to know, from A to Z',
     icon: '📚',
   },
 ];

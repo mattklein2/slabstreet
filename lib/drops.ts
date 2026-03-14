@@ -50,6 +50,8 @@ export interface Drop {
   tier: Tier;
   /** Product year label */
   year: string;
+  /** Link to manufacturer or checklist page */
+  url: string;
 }
 
 export const DROPS: Drop[] = [
@@ -69,6 +71,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'flagship',
     year: '2026',
+    url: 'https://www.topps.com/pages/series-1',
   },
   {
     slug: 'panini-prizm-football-2025',
@@ -85,6 +88,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025',
+    url: 'https://www.beckett.com/news/2025-panini-prizm-football-cards/',
   },
   {
     slug: 'topps-finest-basketball-2025-26',
@@ -101,6 +105,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025-26',
+    url: 'https://www.topps.com/pages/topps-finest-basketball',
   },
   {
     slug: 'topps-chrome-f1-2025',
@@ -117,6 +122,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'mid',
     year: '2025',
+    url: 'https://www.topps.com/pages/topps-chrome-formula-1',
   },
   {
     slug: 'upper-deck-series2-hockey-2025-26',
@@ -132,6 +138,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'flagship',
     year: '2025-26',
+    url: 'https://upperdeck.com/2025-26-upper-deck-series-2/',
   },
 
   // ── MARCH 2026 ─────────────────────────────────────────────
@@ -150,6 +157,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025',
+    url: 'https://www.paniniamerica.net/2025-panini-one-and-one-wnba-trading-card-box-hobby.html',
   },
   {
     slug: 'bowmans-best-baseball-2025',
@@ -166,6 +174,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025',
+    url: 'https://www.topps.com/pages/bowmans-best-baseball',
   },
   {
     slug: 'panini-prizm-black-football-2025',
@@ -182,6 +191,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'ultra-premium',
     year: '2025',
+    url: 'https://www.paniniamerica.net/2025-panini-prizm-black-nfl-trading-card-box-hobby.html',
   },
   {
     slug: 'panini-contenders-euroleague-2025-26',
@@ -198,6 +208,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'mid',
     year: '2025-26',
+    url: 'https://www.paniniamerica.net/2025-26-panini-contenders-euroleague-trading-card-box-hobby.html',
   },
   {
     slug: 'topps-heritage-baseball-2026',
@@ -214,6 +225,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'flagship',
     year: '2026',
+    url: 'https://www.topps.com/pages/topps-heritage-baseball',
   },
   {
     slug: 'panini-prizm-wnba-2025',
@@ -230,6 +242,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025',
+    url: 'https://www.paniniamerica.net/2025-panini-prizm-wnba-trading-card-box-hobby.html',
   },
   {
     slug: 'panini-prizm-fifa-soccer-2025-26',
@@ -246,6 +259,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'mid',
     year: '2025-26',
+    url: 'https://www.beckett.com/news/2025-26-panini-prizm-fifa-soccer-details/',
   },
 
   // ── APRIL 2026 ─────────────────────────────────────────────
@@ -264,6 +278,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025',
+    url: 'https://www.beckett.com/news/2025-panini-select-wnba-basketball-cards/',
   },
   {
     slug: 'opc-platinum-hockey-2025-26',
@@ -280,6 +295,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025-26',
+    url: 'https://www.beckett.com/news/2025-26-o-pee-chee-platinum-hockey-cards/',
   },
 
   // ── MAY 2026 ───────────────────────────────────────────────
@@ -298,6 +314,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'flagship',
     year: '2026',
+    url: 'https://www.topps.com/pages/bowman-baseball',
   },
 
   // ── JUNE 2026 ──────────────────────────────────────────────
@@ -316,6 +333,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'flagship',
     year: '2026',
+    url: 'https://www.topps.com/pages/series-2',
   },
 
   // ── JULY 2026 ──────────────────────────────────────────────
@@ -334,6 +352,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2026',
+    url: 'https://www.topps.com/pages/topps-chrome-baseball',
   },
   {
     slug: 'upper-deck-sp-authentic-hockey-2025-26',
@@ -350,6 +369,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2025-26',
+    url: 'https://www.beckett.com/news/2025-26-sp-authentic-hockey-cards/',
   },
 
   // ── SEPTEMBER 2026 ─────────────────────────────────────────
@@ -368,6 +388,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2026',
+    url: 'https://www.topps.com/pages/bowman-chrome-baseball',
   },
   {
     slug: 'panini-prizm-football-2026',
@@ -384,6 +405,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'premium',
     year: '2026',
+    url: 'https://www.beckett.com/news/2025-football-cards-release-dates-checklists-and-set-information/',
   },
 
   // ── TBA ────────────────────────────────────────────────────
@@ -402,6 +424,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'ultra-premium',
     year: '2025-26',
+    url: 'https://www.paniniamerica.net/2025-26-panini-noir-road-to-fifa-world-cup-2026-trading-card-box-hobby.html',
   },
   {
     slug: 'panini-select-fifa-2025-26',
@@ -417,6 +440,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'mid',
     year: '2025-26',
+    url: 'https://www.beckett.com/news/2025-26-panini-select-road-to-fifa-world-cup-26-soccer-cards/',
   },
   {
     slug: 'topps-football-2026',
@@ -433,6 +457,7 @@ export const DROPS: Drop[] = [
     ],
     tier: 'flagship',
     year: '2026',
+    url: 'https://www.topps.com/pages/football',
   },
 ];
 

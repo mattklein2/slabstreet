@@ -26,7 +26,7 @@ const tools = [
 ];
 
 export default function HomePage() {
-  const { colors } = useTheme();
+  const { theme, toggle, colors } = useTheme();
 
   return (
     <div style={{
@@ -37,7 +37,32 @@ export default function HomePage() {
       justifyContent: 'flex-start',
       padding: '4rem 1.25rem 2rem',
       fontFamily: "'IBM Plex Sans', sans-serif",
+      position: 'relative',
     }}>
+      {/* Theme Toggle */}
+      <button
+        onClick={toggle}
+        style={{
+          position: 'fixed',
+          top: 16,
+          right: 16,
+          background: colors.surface,
+          border: `1px solid ${colors.border}`,
+          borderRadius: 10,
+          padding: '8px 12px',
+          cursor: 'pointer',
+          fontSize: 20,
+          lineHeight: 1,
+          zIndex: 50,
+          transition: 'border-color 0.15s',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.borderColor = colors.green; }}
+        onMouseLeave={(e) => { e.currentTarget.style.borderColor = colors.border; }}
+        aria-label="Toggle theme"
+      >
+        {theme === 'dark' ? '🌙' : '☀️'}
+      </button>
+
       {/* Logo */}
       <h1 style={{
         fontFamily: "'Bebas Neue', sans-serif",

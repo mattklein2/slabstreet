@@ -116,7 +116,10 @@ function DropCard({ drop, colors }: { drop: Drop; colors: ReturnType<typeof useT
   const isImminent = hasDate && daysUntil(drop.releaseDate!) >= 0 && daysUntil(drop.releaseDate!) <= 7;
 
   return (
-    <div
+    <a
+      href={drop.url}
+      target="_blank"
+      rel="noopener noreferrer"
       style={{
         background: colors.surface,
         border: `1px solid ${isImminent ? colors.green : colors.border}`,
@@ -129,6 +132,8 @@ function DropCard({ drop, colors }: { drop: Drop; colors: ReturnType<typeof useT
         opacity: isPast ? 0.7 : 1,
         position: 'relative',
         overflow: 'hidden',
+        textDecoration: 'none',
+        cursor: 'pointer',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.borderColor = colors.green;
@@ -272,7 +277,7 @@ function DropCard({ drop, colors }: { drop: Drop; colors: ReturnType<typeof useT
           </span>
         ))}
       </div>
-    </div>
+    </a>
   );
 }
 

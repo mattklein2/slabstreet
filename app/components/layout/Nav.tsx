@@ -41,41 +41,58 @@ export default function Nav() {
 
   return (
     <nav
-      className="sticky top-0 z-50 flex items-center justify-between"
       style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         background: c.bg,
         borderBottom: `1px solid ${c.border}`,
         height: 56,
-        padding: '0 32px',
+        padding: '0 16px',
       }}
     >
       {/* Left: Logo */}
-      <div className="flex items-center shrink-0">
-        <a href="/" className="no-underline">
+      <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+        <a href="/" style={{ textDecoration: 'none' }}>
           <span
-            className="font-display text-[20px] tracking-[3px]"
-            style={{ color: c.text }}
+            className="font-display"
+            style={{ fontSize: 18, letterSpacing: 3, color: c.text }}
           >
             SLAB<span style={{ color: c.green }}>STREET</span>
           </span>
         </a>
       </div>
 
-      {/* Center: League Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto">
+      {/* Center: League Tabs — hidden on mobile */}
+      <div
+        className="nav-tabs"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          overflowX: 'auto',
+        }}
+      >
         {TABS.map((tab) => {
           const active = isActive(tab);
           return (
             <Link
               key={tab}
               href={getTabHref(tab)}
-              className="shrink-0 font-body no-underline whitespace-nowrap transition-all duration-150"
+              className="font-body"
               style={{
+                flexShrink: 0,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s',
                 fontSize: 11,
                 textTransform: 'uppercase',
                 letterSpacing: 1.5,
                 fontWeight: 500,
-                padding: '6px 14px',
+                padding: '6px 12px',
                 borderRadius: 8,
                 cursor: 'pointer',
                 color: active ? c.green : c.muted,
@@ -88,28 +105,67 @@ export default function Nav() {
         })}
       </div>
 
-      {/* Right: Search + Live + Toggle + Auth */}
-      <div className="flex items-center gap-4 shrink-0">
-        <NavSearch />
+      {/* Right: Controls */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+        {/* Search — hidden on mobile */}
+        <div className="nav-search">
+          <NavSearch />
+        </div>
+
+        {/* LIVE indicator — hidden on mobile */}
         <div
-          className="flex items-center gap-1.5 font-body text-[9px] font-medium tracking-wider"
-          style={{ color: c.green }}
+          className="nav-live font-body"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            fontSize: 9,
+            fontWeight: 500,
+            letterSpacing: 1.5,
+            color: c.green,
+          }}
         >
           <span
-            className="w-1.5 h-1.5 rounded-full inline-block"
-            style={{ background: c.green, animation: 'pulse 1.5s ease-in-out infinite' }}
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: 3,
+              display: 'inline-block',
+              background: c.green,
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
           />
           LIVE
         </div>
+
+        {/* Theme toggle */}
         <button
           onClick={toggle}
           title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-          className="flex items-center h-6 w-11 rounded-full px-0.5 cursor-pointer shrink-0 transition-all duration-200"
-          style={{ background: c.surface, border: `1px solid ${c.border}` }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: 24,
+            width: 44,
+            borderRadius: 12,
+            padding: '0 2px',
+            cursor: 'pointer',
+            flexShrink: 0,
+            transition: 'all 0.2s',
+            background: c.surface,
+            border: `1px solid ${c.border}`,
+          }}
         >
           <div
-            className="w-[18px] h-[18px] rounded-full flex items-center justify-center text-[10px] transition-transform duration-200"
             style={{
+              width: 18,
+              height: 18,
+              borderRadius: 9,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 10,
+              transition: 'transform 0.2s',
               background: c.green,
               transform: theme === 'dark' ? 'translateX(0)' : 'translateX(20px)',
             }}
@@ -123,8 +179,8 @@ export default function Nav() {
           <Link
             href="/login"
             style={{
-              padding: '6px 16px',
-              fontSize: 12,
+              padding: '6px 12px',
+              fontSize: 11,
               fontFamily: "'IBM Plex Sans', sans-serif",
               fontWeight: 600,
               background: c.green,
@@ -257,6 +313,18 @@ export default function Nav() {
           </div>
         )}
       </div>
+
+      {/* Responsive styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .nav-tabs { display: none !important; }
+          .nav-search { display: none !important; }
+          .nav-live { display: none !important; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .nav-search { display: none !important; }
+        }
+      `}</style>
     </nav>
   );
 }

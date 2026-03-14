@@ -1,8 +1,10 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '../ThemeProvider';
+import { useUser } from '../UserProvider';
 import NavSearch from '../NavSearch';
 import { getAllLeagueIds, getLeagueConfig, ALL_ACCENT_COLOR } from '@/lib/leagues';
 import type { LeagueId } from '@/lib/leagues';
@@ -16,7 +18,21 @@ function getTabHref(tab: LeagueFilter): string {
 
 export default function Nav() {
   const { theme, toggle, colors: c } = useTheme();
+  const { user, profile, loading, signOut } = useUser();
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    if (menuOpen) document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [menuOpen]);
 
   function isActive(tab: LeagueFilter): boolean {
     if (tab === 'ALL') return pathname === '/';
@@ -72,7 +88,7 @@ export default function Nav() {
         })}
       </div>
 
-      {/* Right: Search + Live + Toggle */}
+      {/* Right: Search + Live + Toggle + Auth */}
       <div className="flex items-center gap-4 shrink-0">
         <NavSearch />
         <div
@@ -101,6 +117,145 @@ export default function Nav() {
             {theme === 'dark' ? '🌙' : '☀️'}
           </div>
         </button>
+
+        {/* Auth */}
+        {!loading && !user && (
+          <Link
+            href="/login"
+            style={{
+              padding: '6px 16px',
+              fontSize: 12,
+              fontFamily: "'IBM Plex Sans', sans-serif",
+              fontWeight: 600,
+              background: c.green,
+              color: '#0a0f1a',
+              borderRadius: 8,
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Sign In
+          </Link>
+        )}
+
+        {!loading && user && (
+          <div ref={menuRef} style={{ position: 'relative' }}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                background: c.green + '22',
+                border: `2px solid ${c.green}`,
+                color: c.green,
+                fontFamily: "'IBM Plex Sans', sans-serif",
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textTransform: 'uppercase',
+              }}
+            >
+              {(profile?.display_name?.[0] || user.email?.[0] || 'U')}
+            </button>
+
+            {menuOpen && (
+              <div style={{
+                position: 'absolute',
+                top: 40,
+                right: 0,
+                background: c.surface,
+                border: `1px solid ${c.border}`,
+                borderRadius: 10,
+                padding: '6px 0',
+                minWidth: 160,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                zIndex: 100,
+              }}>
+                <div style={{
+                  padding: '8px 16px 10px',
+                  borderBottom: `1px solid ${c.border}`,
+                  marginBottom: 4,
+                }}>
+                  <div style={{
+                    fontFamily: "'IBM Plex Sans', sans-serif",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: c.text,
+                  }}>
+                    {profile?.display_name || 'Collector'}
+                  </div>
+                  <div style={{
+                    fontFamily: "'IBM Plex Sans', sans-serif",
+                    fontSize: 11,
+                    color: c.muted,
+                    marginTop: 2,
+                  }}>
+                    {user.email}
+                  </div>
+                </div>
+
+                <Link
+                  href="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    padding: '8px 16px',
+                    fontFamily: "'IBM Plex Sans', sans-serif",
+                    fontSize: 13,
+                    color: c.text,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Profile
+                </Link>
+
+                {profile?.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: 'block',
+                      padding: '8px 16px',
+                      fontFamily: "'IBM Plex Sans', sans-serif",
+                      fontSize: 13,
+                      color: c.text,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Admin
+                  </Link>
+                )}
+
+                <button
+                  onClick={async () => {
+                    setMenuOpen(false);
+                    await signOut();
+                  }}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '8px 16px',
+                    fontFamily: "'IBM Plex Sans', sans-serif",
+                    fontSize: 13,
+                    color: c.muted,
+                    background: 'none',
+                    border: 'none',
+                    borderTop: `1px solid ${c.border}`,
+                    marginTop: 4,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                  }}
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useTheme } from './components/ThemeProvider';
+import DropCalendar from './components/drops/DropCalendar';
 
 const tools = [
   {
@@ -33,8 +34,8 @@ export default function HomePage() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2rem 1.25rem',
+      justifyContent: 'flex-start',
+      padding: '4rem 1.25rem 2rem',
       fontFamily: "'IBM Plex Sans', sans-serif",
     }}>
       {/* Logo */}
@@ -113,6 +114,9 @@ export default function HomePage() {
           </Link>
         ))}
       </div>
+
+      {/* Drop Calendar */}
+      <DropCalendar />
 
       {/* Footer */}
       <div style={{

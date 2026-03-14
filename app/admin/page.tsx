@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { getLeagueConfig, getAllLeagueIds } from '../../lib/leagues';
+import { useUser } from '../components/UserProvider';
 
 const BG      = '#090b0f';
 const GREEN   = '#00ff87';
@@ -96,6 +97,35 @@ function RemoveBtn({ onClick }: any) {
 }
 
 export default function AdminPage() {
+  const { user, profile, loading } = useUser();
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: BG }}>
+        <p style={{ color: MUTED, fontFamily: "'IBM Plex Sans', sans-serif" }}>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user || profile?.role !== 'admin') {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: BG }}>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ color: TEXT, fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 16, marginBottom: 8 }}>
+            Admin access required
+          </p>
+          <a href="/" style={{ color: GREEN, fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 14 }}>
+            &larr; Back to SlabStreet
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return <AdminForm />;
+}
+
+function AdminForm() {
   const [name, setName]         = useState('');
   const [slug, setSlug]         = useState('');
   const [firstName, setFirstName] = useState('');

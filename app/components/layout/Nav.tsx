@@ -134,7 +134,7 @@ export default function Nav() {
               whiteSpace: 'nowrap',
             }}
           >
-            Sign In
+            Sign Up / Sign In
           </Link>
         )}
 

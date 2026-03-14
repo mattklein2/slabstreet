@@ -56,7 +56,8 @@ export default function ProfilePage() {
     if (!user) return;
     setSaving(true);
     setSaveStatus('idle');
-    const { error } = await supabase.from('profiles').update({
+
+    const updates = {
       display_name: displayName || null,
       zip_code: zipCode || null,
       collector_level: collectorLevel || null,
@@ -66,10 +67,19 @@ export default function ProfilePage() {
       notify_drops: notifyDrops,
       notify_shows: notifyShows,
       notify_recap: notifyRecap,
-    }).eq('id', user.id);
+    };
+
+    const { data, error, status } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', user.id)
+      .select();
 
     if (error) {
-      console.error('Save error:', error);
+      console.error('Save error:', error.message, error.code, error.details, 'status:', status);
+      setSaveStatus('error');
+    } else if (!data || data.length === 0) {
+      console.error('Save returned no rows — RLS may be blocking the update. User ID:', user.id);
       setSaveStatus('error');
     } else {
       await refreshProfile();

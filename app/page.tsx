@@ -123,13 +123,42 @@ export default function HomePage() {
       <div style={{
         marginTop: 'auto',
         paddingTop: 48,
-        fontFamily: "'IBM Plex Mono', monospace",
-        fontSize: '0.65rem',
-        color: colors.muted,
-        letterSpacing: 2,
-        opacity: 0.5,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 8,
       }}>
-        slabstreet.io
+        <a
+          href="https://x.com/SlabStreetX"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            fontFamily: "'IBM Plex Sans', sans-serif",
+            fontSize: 13,
+            color: colors.muted,
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = colors.green; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = colors.muted; }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          @SlabStreetX
+        </a>
+        <div style={{
+          fontFamily: "'IBM Plex Mono', monospace",
+          fontSize: '0.65rem',
+          color: colors.muted,
+          letterSpacing: 2,
+          opacity: 0.5,
+        }}>
+          slabstreet.io
+        </div>
       </div>
     </div>
   );

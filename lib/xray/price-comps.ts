@@ -1,6 +1,6 @@
 // lib/xray/price-comps.ts
 
-import { searchSoldListings, buildSoldQuery } from './ebay-sold';
+import { searchSoldListings, buildSoldQuery, filterSoldItems } from './ebay-sold';
 import { searchComps } from './ebay-client';
 import type { CardIdentity, PriceComps, CompListing, SegmentStats } from './types';
 
@@ -30,7 +30,10 @@ export async function getPriceComps(
   if (!query) return null;
 
   // Try sold data first
-  const soldItems = await searchSoldListings(query);
+  const rawSoldItems = await searchSoldListings(query);
+  const soldItems = filterSoldItems(rawSoldItems, identity);
+
+  console.log(`[price-comps] Query: "${query}" | Scraped: ${rawSoldItems.length} | After filter: ${soldItems.length}`);
 
   if (soldItems.length > 0) {
     // Convert to CompListing format

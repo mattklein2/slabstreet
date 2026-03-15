@@ -6,6 +6,59 @@ import type { CardIdentity } from './types';
 const GRADERS = ['PSA', 'BGS', 'SGC', 'CGC', 'CSG', 'HGA'];
 const GRADE_RE = new RegExp(`\\b(${GRADERS.join('|')})\\s*(\\d+\\.?\\d*)\\b`, 'i');
 
+/**
+ * Normalize a string for fuzzy matching: lowercase, strip special chars, collapse spaces.
+ */
+function normalize(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Check if all words from `needle` appear in `haystack` (order-independent).
+ */
+function containsAllWords(haystack: string, needle: string): boolean {
+  const hWords = normalize(haystack).split(' ');
+  const nWords = normalize(needle).split(' ');
+  return nWords.every(w => hWords.some(hw => hw.includes(w) || w.includes(hw)));
+}
+
+/**
+ * Post-filter sold listings to only include items that actually match the card identity.
+ * Checks player name (required), parallel name (if not base), and year.
+ */
+export function filterSoldItems(items: SoldItem[], identity: CardIdentity): SoldItem[] {
+  return items.filter(item => {
+    const titleLower = normalize(item.title);
+
+    // Player name MUST appear in title (check last name at minimum)
+    if (identity.player) {
+      const playerParts = normalize(identity.player).split(' ');
+      // Last name must match; for common names also check first name
+      const lastName = playerParts[playerParts.length - 1];
+      if (!titleLower.includes(lastName)) return false;
+    }
+
+    // Year should appear (2-digit or 4-digit)
+    if (identity.year) {
+      const y4 = identity.year;            // "2024"
+      const y2 = identity.year.slice(-2);  // "24"
+      if (!titleLower.includes(y4) && !titleLower.includes(y2)) return false;
+    }
+
+    // Parallel should appear in title (unless base)
+    if (identity.parallel && identity.parallel.toLowerCase() !== 'base') {
+      // Some parallels have multi-word names like "Neon Blue Prizm"
+      // Check if the key words appear (not necessarily contiguous)
+      if (!containsAllWords(item.title, identity.parallel)) return false;
+    }
+
+    // Filter out lot listings (multi-card sales skew prices)
+    if (/\b(lot|bundle|bulk|set of|complete set)\b/i.test(item.title)) return false;
+
+    return true;
+  });
+}
+
 export interface SoldItem {
   title: string;
   price: number;

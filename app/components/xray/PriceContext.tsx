@@ -205,14 +205,11 @@ function StatsBlock({ stats, label, listingPrice, vsMedian, vsColor, vsLabel, co
 
 function SaleRow({ sale, colors, textScale }: { sale: CompListing; colors: any; textScale: number }) {
   return (
-    <a
-      href={sale.url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <div
       style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         padding: '8px 12px', borderRadius: 8, background: `${colors.border}40`,
-        textDecoration: 'none', gap: 12,
+        gap: 12,
       }}
     >
       <span style={{
@@ -244,7 +241,7 @@ function SaleRow({ sale, colors, textScale }: { sale: CompListing; colors: any; 
           ${sale.price.toFixed(2)}
         </span>
       </span>
-    </a>
+    </div>
   );
 }
 

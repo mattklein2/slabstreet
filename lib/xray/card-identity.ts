@@ -27,6 +27,9 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     grade: specs['Grade'] || null,
   };
 
+  // Check Item Specifics for insert name
+  const specsInsert = specs['Insert'] || specs['Card Name'] || specs['Subset'] || null;
+
   // Pass 2: Fill gaps from title
   const fromTitle = parseTitleFallback(title);
 
@@ -56,6 +59,7 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     brand: fromSpecs.brand || fromTitle.brand,
     set: resolvedSet,
     parallel: resolvedParallel,
+    insert: specsInsert || fromTitle.insert || null,
     cardNumber: fromSpecs.cardNumber || fromTitle.cardNumber,
     sport: fromSpecs.sport || fromTitle.sport,
     isRookie: fromSpecs.isRookie || fromTitle.isRookie || false,
@@ -136,8 +140,23 @@ const PARALLELS = [
   'Sapphire', 'Diamond', 'Cracked Ice', 'Shimmer', 'Disco', 'Scope',
   'Camo', 'Lazer', 'Laser', 'Neon', 'Snakeskin', 'Peacock', 'Tiger',
   'Nebula', 'Wave', 'Mojo', 'Hyper', 'Fast Break', 'Holo',
-  'Refractor', 'Xfractor', 'Prizm', 'Ice', 'Color Blast',
+  'Refractor', 'Xfractor', 'Prizm', 'Ice',
   'No Huddle', 'Choice', 'Fanatics', 'Asia',
+];
+
+// Known insert set names (not parallels — separate card subsets within a product)
+const INSERTS = [
+  'Downtown', 'Kaboom', 'Color Blast', 'Fireworks', 'Instant Impact',
+  'Stained Glass', 'Swagger', 'Behind the Glass', 'Case Hit',
+  'My City', 'Exhibition', 'Star Gazing', 'Blank Slate',
+  'Sensational', 'Phenomenon', 'Hobby Horse', 'Crusade',
+  'Astro', 'Laser Show', 'Hype', 'Unleashed', 'Vortex',
+  'Rookie Ticket', 'Contenders Rookie Ticket',
+  'Hall of Fame', 'Legendary', 'Franchise', 'Iconic',
+  'Rookie Patch Autograph', 'RPA', 'Logoman',
+  'National Pride', 'Emergent', 'My House',
+  'Net Marvels', 'Fearless', 'Far Out', 'Shock Wave',
+  'Rookie Revolution', 'All Day', 'Number Ones',
 ];
 
 // Grading companies & grade patterns
@@ -162,6 +181,7 @@ interface TitleParsed {
   brand: string | null;
   set: string | null;
   parallel: string | null;
+  insert: string | null;
   cardNumber: string | null;
   sport: string | null;
   isRookie: boolean;
@@ -173,8 +193,8 @@ interface TitleParsed {
 function parseTitleFallback(title: string): TitleParsed {
   const result: TitleParsed = {
     player: null, year: null, brand: null, set: null, parallel: null,
-    cardNumber: null, sport: null, isRookie: false, isGraded: false,
-    grader: null, grade: null,
+    insert: null, cardNumber: null, sport: null, isRookie: false,
+    isGraded: false, grader: null, grade: null,
   };
 
   // Clean junk words
@@ -219,6 +239,15 @@ function parseTitleFallback(title: string): TitleParsed {
       // by grabbing the matched word plus surrounding parallel-adjacent words
       const after = clean.substring(idx + par.length).match(/^\s+(Prizm|Refractor|Xfractor|Holo|Scope|Shimmer|Disco|Wave|Ice)\b/i);
       result.parallel = after ? `${par} ${after[1]}` : par;
+      break;
+    }
+  }
+
+  // Insert set detection — checked AFTER parallels so both can coexist
+  // (e.g., "Downtown Gold /10" = insert: Downtown, parallel: Gold)
+  for (const ins of INSERTS) {
+    if (cleanLower.includes(ins.toLowerCase())) {
+      result.insert = ins;
       break;
     }
   }

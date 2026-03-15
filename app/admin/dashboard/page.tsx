@@ -259,7 +259,6 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user || profile?.role !== 'admin') return;
 
     async function fetchUsers() {
       const supabase = createClient();
@@ -277,27 +276,12 @@ export default function AdminDashboard() {
     }
 
     fetchUsers();
-  }, [user, profile, authLoading]);
+  }, [authLoading]);
 
   if (authLoading || loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: BG }}>
         <p style={{ color: MUTED, fontFamily: "'IBM Plex Sans', sans-serif" }}>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user || profile?.role !== 'admin') {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: BG }}>
-        <div style={{ textAlign: 'center' }}>
-          <p style={{ color: TEXT, fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 16, marginBottom: 8 }}>
-            Admin access required
-          </p>
-          <a href="/" style={{ color: GREEN, fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 14 }}>
-            &larr; Back to SlabStreet
-          </a>
-        </div>
       </div>
     );
   }

@@ -76,28 +76,37 @@ export async function searchSoldListings(query: string): Promise<SoldItem[]> {
   const $ = cheerio.load(html);
   const items: SoldItem[] = [];
 
-  $('[data-viewport]').each((_i, el) => {
-    const container = $(el);
-    const titleEl = container.find('a[href*="/itm/"]');
-    const title = titleEl.text().trim();
-    const itemUrl = titleEl.attr('href') || '';
+  // Each sold listing is an <li> with class "s-card" and a data-listingid attribute.
+  // This excludes ads, "Have one to sell?" blocks, and other non-listing elements.
+  $('li.s-card[data-listingid]').each((_i, el) => {
+    const card = $(el);
 
-    if (!title || !itemUrl) return;
+    // Title: inside .s-card__title > first span (excludes "Opens in a new window or tab")
+    const titleSpan = card.find('.s-card__title .su-styled-text').first();
+    const title = titleSpan.text().trim();
+    if (!title) return;
 
-    // Extract price — look for dollar amounts in the item text
-    const text = container.text();
-    const priceMatches = text.match(/\$[\d,]+\.?\d*/g);
-    if (!priceMatches || priceMatches.length === 0) return;
+    // URL: the title link (a.s-card__link with /itm/ in href)
+    const linkEl = card.find('a.s-card__link[href*="/itm/"]').first();
+    let itemUrl = linkEl.attr('href') || '';
+    if (!itemUrl) return;
+    // Clean URL: strip tracking params, keep just the item page
+    const itemIdMatch = itemUrl.match(/\/itm\/(\d+)/);
+    if (itemIdMatch) {
+      itemUrl = `https://www.ebay.com/itm/${itemIdMatch[1]}`;
+    }
 
-    // First price match in the listing area is typically the sale price
-    const price = parseFloat(priceMatches[0].replace(/[$,]/g, ''));
+    // Price: in span.s-card__price
+    const priceText = card.find('.s-card__price').first().text().trim();
+    const priceMatch = priceText.match(/\$([\d,]+\.?\d*)/);
+    if (!priceMatch) return;
+    const price = parseFloat(priceMatch[1].replace(/,/g, ''));
+    if (price < 0.01) return;
 
-    // Filter shipping-only / test listings
-    if (price < 1) return;
-
-    // Extract sold date
-    const dateMatch = text.match(/Sold\s+([\w]+\s+\d+,?\s*\d*)/i);
-    const date = dateMatch ? dateMatch[1].replace(/\s+/g, ' ').trim() : '';
+    // Sold date: in span with "Sold" text inside .s-card__caption
+    const captionText = card.find('.s-card__caption').text().trim();
+    const dateMatch = captionText.match(/Sold\s+([A-Z][a-z]+\s+\d{1,2},?\s+\d{4})/i);
+    const date = dateMatch ? dateMatch[1].trim() : '';
 
     const gradeInfo = detectGrade(title);
 
@@ -105,7 +114,7 @@ export async function searchSoldListings(query: string): Promise<SoldItem[]> {
       title,
       price,
       date,
-      url: itemUrl.startsWith('http') ? itemUrl : `https://www.ebay.com${itemUrl}`,
+      url: itemUrl,
       ...gradeInfo,
     });
   });

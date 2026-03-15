@@ -69,23 +69,40 @@ export interface RainbowEntry {
   boxExclusivity: string[] | null;
 }
 
-/** Price comp data from eBay active listings (sold/completed data requires Finding API — Phase 2) */
-export interface PriceComps {
-  compListings: CompListing[];
-  stats: {
-    low: number;
-    median: number;
-    high: number;
-    count: number;
-  };
-  listingPrice: number;       // current listing price
-  vsMedian: number | null;    // percentage above/below median
+/** Grading info for a sold listing */
+export interface GradeInfo {
+  grader: string;  // PSA, BGS, SGC, etc.
+  grade: string;   // "10", "9.5", etc.
 }
 
+/** A single sold or active comp listing */
 export interface CompListing {
   title: string;
   price: number;
   url: string;
+  date: string;              // "Mar 14, 2026" or "" for active listings
+  condition: 'raw' | 'graded';
+  gradeInfo: GradeInfo | null;
+}
+
+/** Stats for a price segment (raw or graded) */
+export interface SegmentStats {
+  low: number;
+  median: number;
+  high: number;
+  count: number;
+  listings: CompListing[];   // all listings in this segment, most recent first
+}
+
+/** Computed price context from eBay sold + active data */
+export interface PriceComps {
+  source: 'sold' | 'active';      // which data source was used
+  raw: SegmentStats | null;        // raw card sales
+  graded: SegmentStats | null;     // graded card sales
+  primarySegment: 'raw' | 'graded'; // which segment to highlight
+  listingPrice: number;             // current listing price
+  vsMedian: number | null;          // % above/below primary segment median
+  totalCount: number;               // total sales across both segments
 }
 
 /** Full X-Ray API response */

@@ -271,7 +271,7 @@ export default function Nav() {
 
                 {profile?.role === 'admin' && (
                   <Link
-                    href="/admin"
+                    href="/admin/dashboard"
                     onClick={() => setMenuOpen(false)}
                     style={{
                       display: 'block',

@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Scraped checklist HTML (raw pages — not committed)
 data/checklists/**/*.html
+
+# Claude worktrees
+.claude/worktrees/

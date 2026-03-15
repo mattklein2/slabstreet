@@ -8,10 +8,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-prizm-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "81e4b8d6-09f9-4ebf-a299-6ea2b38bd1c7",
+      "parallelCount": 81,
+      "notes": "template: 2024-25 Prizm"
     },
     {
       "brand": "Panini",
@@ -21,10 +21,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-select-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ca91de97-4881-4366-9310-693c5f1766b0",
+      "parallelCount": 69,
+      "notes": "template: 2024-25 Select"
     },
     {
       "brand": "Panini",
@@ -34,10 +34,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-donruss-optic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "94af682e-62e6-49df-bc73-8ea4e1ce72e8",
+      "parallelCount": 66,
+      "notes": "template: 2024-25 Optic"
     },
     {
       "brand": "Panini",
@@ -47,10 +47,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-mosaic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "60f55447-c754-4c24-8f68-528042b85186",
+      "parallelCount": 63,
+      "notes": "template: 2024-25 Mosaic"
     },
     {
       "brand": "Panini",
@@ -60,10 +60,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b2057879-e97e-4bf4-9a43-baa0bdd94d3b",
+      "parallelCount": 19,
+      "notes": "template: 2024-25 Contenders"
     },
     {
       "brand": "Panini",
@@ -73,10 +73,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-donruss-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b802447f-26d5-4eb9-a080-6a9975676c27",
+      "parallelCount": 54,
+      "notes": "template: 2024-25 Donruss"
     },
     {
       "brand": "Panini",
@@ -86,10 +86,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-hoops-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d2a63e50-a4e6-4c49-9d9f-ae489b6422cf",
+      "parallelCount": 54,
+      "notes": "template: 2024-25 Hoops"
     },
     {
       "brand": "Panini",
@@ -99,10 +99,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-court-kings-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "eb8d7719-ca4d-4608-82bb-a94a1c84a30c",
+      "parallelCount": 14,
+      "notes": "template: 2024-25 Court Kings"
     },
     {
       "brand": "Panini",
@@ -112,10 +112,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "15262653-5c9e-4332-a318-c24c396c0ec4",
+      "parallelCount": 28,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -125,10 +125,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2ff7ad07-8f13-428f-9f06-8c3201569faf",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -138,10 +138,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "166a4ab7-21c0-4863-a100-4aab2476cd6d",
+      "parallelCount": 25,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -151,10 +151,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9cdc7010-04dc-4c1e-81a4-9a5cefd978bd",
+      "parallelCount": 33,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -164,10 +164,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1a3658e4-68c8-4138-a73c-c00762090f27",
+      "parallelCount": 61,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -177,10 +177,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "56856d36-4c21-4dc3-836b-8c15b310c204",
+      "parallelCount": 36,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -190,10 +190,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1175c506-1992-4245-8cf0-31a1608395fa",
+      "parallelCount": 44,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -203,10 +203,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-19-panini-noir-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e0d68b86-c48e-4616-bc4d-a9c7b660b06c",
+      "parallelCount": 25,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -216,10 +216,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-prizm-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a30f3034-fe09-4414-85a3-dba521df9989",
+      "parallelCount": 80,
+      "notes": "template: 2018-19 Prizm"
     },
     {
       "brand": "Panini",
@@ -229,10 +229,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-select-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a7363975-1854-49de-8eae-9c4db3a8c649",
+      "parallelCount": 68,
+      "notes": "template: 2018-19 Select"
     },
     {
       "brand": "Panini",
@@ -242,10 +242,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-donruss-optic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ddafc9e0-1e90-4ffb-921c-16d7e1015622",
+      "parallelCount": 66,
+      "notes": "template: 2018-19 Optic"
     },
     {
       "brand": "Panini",
@@ -255,10 +255,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-mosaic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7d1a4344-0dd3-4186-8e2f-4ec9408de6bd",
+      "parallelCount": 62,
+      "notes": "template: 2018-19 Mosaic"
     },
     {
       "brand": "Panini",
@@ -268,10 +268,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "58ae2eeb-6087-48ff-94b7-997335c799af",
+      "parallelCount": 18,
+      "notes": "template: 2018-19 Contenders"
     },
     {
       "brand": "Panini",
@@ -281,10 +281,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-donruss-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "77f41143-da7f-4bfa-b3b8-97c69f663173",
+      "parallelCount": 53,
+      "notes": "template: 2018-19 Donruss"
     },
     {
       "brand": "Panini",
@@ -294,10 +294,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-hoops-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "cb2e87b8-149c-48c8-aa95-408bca910dc6",
+      "parallelCount": 53,
+      "notes": "template: 2018-19 Hoops"
     },
     {
       "brand": "Panini",
@@ -307,10 +307,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-court-kings-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1e4f25a2-cd72-4d1d-b1a8-655b59a65ef0",
+      "parallelCount": 14,
+      "notes": "template: 2018-19 Court Kings"
     },
     {
       "brand": "Panini",
@@ -320,10 +320,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "fdb6f377-378a-4116-bcdf-aad293eb86dc",
+      "parallelCount": 40,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -333,10 +333,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9da484c2-7ddd-496f-b20d-3507b47f5858",
+      "parallelCount": 37,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -346,10 +346,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "649788df-0a70-4350-b9a9-7e2e2ef63f41",
+      "parallelCount": 36,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -359,10 +359,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "34dc013c-b2f5-4487-85fc-ed558c3afe93",
+      "parallelCount": 45,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -372,10 +372,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "eb613cec-292c-412a-bef8-15d7264d4fd4",
+      "parallelCount": 123,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -385,10 +385,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "664cb20a-6973-4378-a588-63305c1daf4e",
+      "parallelCount": 55,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -398,10 +398,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a4c46654-2c3f-4cfc-83c1-8083e1a0fed7",
+      "parallelCount": 102,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -411,10 +411,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-20-panini-noir-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6e0067b5-b7cc-478c-88ba-7c9b9b03dfcd",
+      "parallelCount": 30,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -424,10 +424,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-prizm-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "99ecea3d-5bbe-400f-ae99-2b2414fcd0a0",
+      "parallelCount": 79,
+      "notes": "template: 2019-20 Prizm"
     },
     {
       "brand": "Panini",
@@ -437,10 +437,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-select-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b34572d8-7457-4f36-bf1e-28ab75fe471d",
+      "parallelCount": 67,
+      "notes": "template: 2019-20 Select"
     },
     {
       "brand": "Panini",
@@ -450,10 +450,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-donruss-optic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "df70a206-bb77-485e-a322-a816f55e8f53",
+      "parallelCount": 66,
+      "notes": "template: 2019-20 Optic"
     },
     {
       "brand": "Panini",
@@ -463,10 +463,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-mosaic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b007d05d-a619-43cb-9846-e1d97c250277",
+      "parallelCount": 61,
+      "notes": "template: 2019-20 Mosaic"
     },
     {
       "brand": "Panini",
@@ -476,10 +476,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "293fa5b9-20d1-4bba-ab50-3d903eaa1502",
+      "parallelCount": 18,
+      "notes": "template: 2019-20 Contenders"
     },
     {
       "brand": "Panini",
@@ -489,10 +489,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-donruss-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "87c80e76-33bc-48cc-91f1-30bd9c8cd492",
+      "parallelCount": 52,
+      "notes": "template: 2019-20 Donruss"
     },
     {
       "brand": "Panini",
@@ -502,10 +502,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-hoops-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b30f1d47-32f2-4d2d-b1bd-eb17ca031d31",
+      "parallelCount": 52,
+      "notes": "template: 2019-20 Hoops"
     },
     {
       "brand": "Panini",
@@ -515,10 +515,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-court-kings-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "24d3543d-5fa6-459b-b284-6e1acac26282",
+      "parallelCount": 14,
+      "notes": "template: 2019-20 Court Kings"
     },
     {
       "brand": "Panini",
@@ -528,10 +528,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "015a3b88-0b7c-4d46-9581-c75d1e5831c5",
+      "parallelCount": 34,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -541,10 +541,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "97cd2ca2-ab01-4d7d-9542-a1df5eab7052",
+      "parallelCount": 35,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -554,10 +554,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "84ce0e16-d2c8-4d01-bef9-7dabd640f26d",
+      "parallelCount": 34,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -567,10 +567,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "08e209a1-916d-46af-bd73-a2b61ea7671e",
+      "parallelCount": 52,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -580,10 +580,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "54380b04-0b65-4167-b08d-36d1c845620a",
+      "parallelCount": 136,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -593,10 +593,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7bba0a4b-79bc-4a4b-b446-87e23ee69ab5",
+      "parallelCount": 56,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -606,10 +606,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d1a15170-08cf-47d6-aa1e-ca37c4581b9e",
+      "parallelCount": 61,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -619,10 +619,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-21-panini-noir-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4634aa4d-5d3c-4016-940e-cf274302d41e",
+      "parallelCount": 28,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -632,10 +632,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-prizm-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "99143034-7b9b-4f89-b9f3-75da25e341dd",
+      "parallelCount": 79,
+      "notes": "template: 2020-21 Prizm"
     },
     {
       "brand": "Panini",
@@ -645,10 +645,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-select-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6939aeda-02c7-41c4-9f9d-da429fb5e776",
+      "parallelCount": 67,
+      "notes": "template: 2020-21 Select"
     },
     {
       "brand": "Panini",
@@ -658,10 +658,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-donruss-optic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8a799ec8-45d9-409a-996b-1c181c10a410",
+      "parallelCount": 66,
+      "notes": "template: 2020-21 Optic"
     },
     {
       "brand": "Panini",
@@ -671,10 +671,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-mosaic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f8e8c91e-737e-4212-9efc-30d8130e6da6",
+      "parallelCount": 61,
+      "notes": "template: 2020-21 Mosaic"
     },
     {
       "brand": "Panini",
@@ -684,10 +684,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3c0314e4-e259-462b-bb3c-c5c329c9b038",
+      "parallelCount": 18,
+      "notes": "template: 2020-21 Contenders"
     },
     {
       "brand": "Panini",
@@ -697,10 +697,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-donruss-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "578d3a7c-2d15-431c-ad8d-8510d9d04ed3",
+      "parallelCount": 52,
+      "notes": "template: 2020-21 Donruss"
     },
     {
       "brand": "Panini",
@@ -710,10 +710,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-hoops-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b8316851-e6a4-4e19-8c05-e229c8f4d4a8",
+      "parallelCount": 52,
+      "notes": "template: 2020-21 Hoops"
     },
     {
       "brand": "Panini",
@@ -723,10 +723,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-court-kings-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "bcc9b141-111e-4545-9700-02ba749ad1c4",
+      "parallelCount": 14,
+      "notes": "template: 2020-21 Court Kings"
     },
     {
       "brand": "Panini",
@@ -736,10 +736,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ed974752-c9e3-4cb7-8e12-948c2ba88f47",
+      "parallelCount": 37,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -749,10 +749,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f68a955c-01b1-4cd8-9d06-73f0716e2f7a",
+      "parallelCount": 37,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -762,10 +762,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9f0515f6-e9c7-45c4-9494-f473014e46dd",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -775,10 +775,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c63d73cf-3025-4839-a2ca-97463fb5c30d",
+      "parallelCount": 51,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -788,10 +788,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "bd3bb9a4-4714-42a5-951b-cb28408490d2",
+      "parallelCount": 194,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -801,10 +801,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ef6d2509-a473-414b-aa5f-88c0dcc7a5df",
+      "parallelCount": 71,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -814,10 +814,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b617e818-dc97-418b-a9c4-4adcaf28d0d7",
+      "parallelCount": 66,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -827,10 +827,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-22-panini-noir-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1ac61f5f-9acd-4495-a831-8b8667eb1d26",
+      "parallelCount": 30,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -840,10 +840,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-prizm-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f3a9009b-2a96-4128-8b94-79929d45e1d5",
+      "parallelCount": 79,
+      "notes": "template: 2021-22 Prizm"
     },
     {
       "brand": "Panini",
@@ -853,10 +853,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-select-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "49caad8f-cf1a-4342-8cf9-0b373674d145",
+      "parallelCount": 67,
+      "notes": "template: 2021-22 Select"
     },
     {
       "brand": "Panini",
@@ -866,10 +866,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-donruss-optic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9fbea4bd-f935-4ed7-801e-49a29c506cde",
+      "parallelCount": 66,
+      "notes": "template: 2021-22 Optic"
     },
     {
       "brand": "Panini",
@@ -879,10 +879,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-mosaic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "66b17219-c97f-4c29-a546-f399dab166f5",
+      "parallelCount": 61,
+      "notes": "template: 2021-22 Mosaic"
     },
     {
       "brand": "Panini",
@@ -892,10 +892,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "09504187-e9c0-45f0-96f7-ff160b9cc157",
+      "parallelCount": 18,
+      "notes": "template: 2021-22 Contenders"
     },
     {
       "brand": "Panini",
@@ -905,10 +905,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-donruss-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0f91484d-bd95-4bfe-9afd-4bfbdd19b105",
+      "parallelCount": 52,
+      "notes": "template: 2021-22 Donruss"
     },
     {
       "brand": "Panini",
@@ -918,10 +918,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-hoops-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1e14775d-d71d-4526-a2cc-639c1615580f",
+      "parallelCount": 52,
+      "notes": "template: 2021-22 Hoops"
     },
     {
       "brand": "Panini",
@@ -931,10 +931,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-court-kings-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4448d678-268e-488d-9b5d-003860f88393",
+      "parallelCount": 14,
+      "notes": "template: 2021-22 Court Kings"
     },
     {
       "brand": "Panini",
@@ -944,10 +944,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "de03f4a0-e3b3-4b1e-bc63-189897aecd1b",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -957,10 +957,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "59a21f74-03c4-430d-8472-c2da053028c4",
+      "parallelCount": 36,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -970,10 +970,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4b4b702b-ac66-4ced-bc7e-0eb02b1287af",
+      "parallelCount": 35,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -983,10 +983,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6373ebba-eeef-4a06-aaf1-f91279053847",
+      "parallelCount": 55,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -996,10 +996,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ab055619-f3a0-4f82-8cce-e2601ea6d487",
+      "parallelCount": 149,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1009,10 +1009,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "cd4f2e80-6887-4e80-b20e-89b59857f1b5",
+      "parallelCount": 64,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1022,10 +1022,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f1c18ca1-9606-4b08-a43c-05152ce03254",
+      "parallelCount": 67,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1035,10 +1035,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-23-panini-noir-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5c01eca4-7026-4460-ba0e-4704c32bed1c",
+      "parallelCount": 26,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1048,10 +1048,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-prizm-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d6ea01e6-3e65-4df8-ae78-556dec763a8d",
+      "parallelCount": 83,
+      "notes": "template: 2024-25 Prizm"
     },
     {
       "brand": "Panini",
@@ -1061,10 +1061,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-select-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "cc1e8be6-3ab4-456c-ac57-6d7bbf5505cb",
+      "parallelCount": 70,
+      "notes": "template: 2024-25 Select"
     },
     {
       "brand": "Panini",
@@ -1074,10 +1074,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-donruss-optic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3f9cbc29-8206-4429-a50c-4198d4b6e214",
+      "parallelCount": 67,
+      "notes": "template: 2024-25 Optic"
     },
     {
       "brand": "Panini",
@@ -1087,10 +1087,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-mosaic-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "08abe2c4-5ded-4430-9128-1ee8700aacd0",
+      "parallelCount": 65,
+      "notes": "template: 2024-25 Mosaic"
     },
     {
       "brand": "Panini",
@@ -1100,10 +1100,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "74a11c47-8dc9-400f-9788-c2c65a4fefca",
+      "parallelCount": 20,
+      "notes": "template: 2024-25 Contenders"
     },
     {
       "brand": "Panini",
@@ -1113,10 +1113,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-donruss-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "cd4749a9-de45-4474-9039-c78f571ec8b4",
+      "parallelCount": 55,
+      "notes": "template: 2024-25 Donruss"
     },
     {
       "brand": "Panini",
@@ -1126,10 +1126,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-hoops-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ae8722fa-5639-415f-bf4a-328b7eaf406d",
+      "parallelCount": 55,
+      "notes": "template: 2024-25 Hoops"
     },
     {
       "brand": "Panini",
@@ -1139,10 +1139,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-court-kings-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d962675d-517a-4f56-9686-fabff7f6462a",
+      "parallelCount": 14,
+      "notes": "template: 2024-25 Court Kings"
     },
     {
       "brand": "Panini",
@@ -1152,10 +1152,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7a20a7ff-5146-4e47-93c1-5dcaf865b61b",
+      "parallelCount": 40,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1165,10 +1165,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "28364a2d-58ed-4947-b8c6-82ac26a13344",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1178,10 +1178,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ded83cc4-c71d-4261-a47c-3ea6054cc95c",
+      "parallelCount": 31,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1191,10 +1191,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5be0205c-882d-4e0c-bf99-37b4993997f9",
+      "parallelCount": 58,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1204,10 +1204,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0b783453-71f2-491d-ba87-f903ee2ab9d0",
+      "parallelCount": 19,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1217,10 +1217,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8faa2e1a-8607-413d-9c2e-cdcf921051a5",
+      "parallelCount": 66,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1230,10 +1230,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6d814798-110d-403c-b203-91c97773481f",
+      "parallelCount": 62,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1243,10 +1243,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-24-panini-noir-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ab8908f5-cde3-4672-b6bd-b9e50f07320f",
+      "parallelCount": 28,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1360,10 +1360,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e8497f23-38e5-46dd-bf3f-007675a3ca16",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1373,10 +1373,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-flawless-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a57e5342-2284-441d-9af2-8f48de015f1b",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1386,10 +1386,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-immaculate-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "cac14080-d0d8-4f76-8be5-9c45d555a57d",
+      "parallelCount": 30,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1399,10 +1399,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-crown-royale-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "49c7916a-9acb-4017-8b6e-e898fd553133",
+      "parallelCount": 24,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1412,10 +1412,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-chronicles-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8dc79a01-0624-438c-8be0-eb4a31dbffac",
+      "parallelCount": 12,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1425,10 +1425,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-revolution-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a8db3749-1814-4ec8-97de-1df21761e6fe",
+      "parallelCount": 79,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1438,10 +1438,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-25-panini-spectra-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "732d9360-81cb-44f5-a192-51a9ed967087",
+      "parallelCount": 7,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1503,10 +1503,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-26-panini-contenders-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "94373934-8243-471d-b0f7-4b0541650acf",
+      "parallelCount": 20,
+      "notes": "template: 2024-25 Contenders"
     },
     {
       "brand": "Panini",
@@ -1542,10 +1542,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-26-panini-national-treasures-basketball-nba-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "44eef5bb-b34b-4bbb-83d8-ccab96f6b9dd",
+      "parallelCount": 5,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1620,10 +1620,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-prizm-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f26f016d-b40e-4837-a7e2-dc5671929eb5",
+      "parallelCount": 64,
+      "notes": "template: 2024 Prizm"
     },
     {
       "brand": "Panini",
@@ -1633,10 +1633,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-select-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9ba037c3-2fda-4df9-b694-8fd7cf821985",
+      "parallelCount": 51,
+      "notes": "template: 2024 Select"
     },
     {
       "brand": "Panini",
@@ -1646,10 +1646,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-donruss-optic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "24e4beaa-477a-4ffc-a682-d96491e95f79",
+      "parallelCount": 38,
+      "notes": "template: 2024 Optic"
     },
     {
       "brand": "Panini",
@@ -1659,10 +1659,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-mosaic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d8f58e51-bd95-46cf-b983-f8aa3f2a428e",
+      "parallelCount": 40,
+      "notes": "template: 2024 Mosaic"
     },
     {
       "brand": "Panini",
@@ -1672,10 +1672,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-contenders-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "36c0c37e-234e-4c4e-b4ce-d121e74bc8b1",
+      "parallelCount": 23,
+      "notes": "template: 2024 Contenders"
     },
     {
       "brand": "Panini",
@@ -1685,10 +1685,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-donruss-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d31a4d55-73c2-43ab-8592-556b85137a48",
+      "parallelCount": 16,
+      "notes": "template: 2024 Donruss"
     },
     {
       "brand": "Panini",
@@ -1698,10 +1698,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-score-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2a864010-5279-4fec-8a9c-b2987a8f5d49",
+      "parallelCount": 29,
+      "notes": "template: 2024 Score"
     },
     {
       "brand": "Panini",
@@ -1711,10 +1711,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "15621aa3-04bc-4b39-97aa-12edf54cc846",
+      "parallelCount": 41,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1724,10 +1724,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "110aa0e5-2e9a-4933-bc90-de4c85fa7da0",
+      "parallelCount": 37,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1737,10 +1737,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "14530379-b38d-40f1-a7d0-0857a056e2ab",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1750,10 +1750,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "bfa0cf2c-52c0-415c-bf2d-b46c508db4d3",
+      "parallelCount": 51,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1763,10 +1763,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "83b920c4-85d7-4cbf-a384-d3eed2b7784e",
+      "parallelCount": 33,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1776,10 +1776,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "21906ee5-361f-416f-931f-59f8c8def9d4",
+      "parallelCount": 24,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1789,10 +1789,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "238b9fc3-286d-46ea-a7f1-a246a305f168",
+      "parallelCount": 261,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1802,10 +1802,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-prizm-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1d69145b-ffc7-47b4-a507-18d925974fa8",
+      "parallelCount": 63,
+      "notes": "template: 2018 Prizm"
     },
     {
       "brand": "Panini",
@@ -1815,10 +1815,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-select-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c6ae3833-362a-4667-88a0-7a97c0bcc641",
+      "parallelCount": 51,
+      "notes": "template: 2018 Select"
     },
     {
       "brand": "Panini",
@@ -1828,10 +1828,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-donruss-optic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "fad2fe7b-4415-4b51-90aa-c5af0bc27062",
+      "parallelCount": 37,
+      "notes": "template: 2018 Optic"
     },
     {
       "brand": "Panini",
@@ -1841,10 +1841,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-mosaic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b9642e70-eb9b-447f-8f6e-fd5356882c7c",
+      "parallelCount": 39,
+      "notes": "template: 2018 Mosaic"
     },
     {
       "brand": "Panini",
@@ -1854,10 +1854,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-contenders-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4bebbbfd-5778-439f-9427-5c8371726c5c",
+      "parallelCount": 23,
+      "notes": "template: 2018 Contenders"
     },
     {
       "brand": "Panini",
@@ -1867,10 +1867,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-donruss-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8609cfaf-1168-4679-acfa-0616eec947e1",
+      "parallelCount": 15,
+      "notes": "template: 2018 Donruss"
     },
     {
       "brand": "Panini",
@@ -1880,10 +1880,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-score-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f01af9c4-8efc-4600-8fd5-a128c069652e",
+      "parallelCount": 29,
+      "notes": "template: 2018 Score"
     },
     {
       "brand": "Panini",
@@ -1893,10 +1893,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "28700d2a-d681-4750-b621-f7936748e8f3",
+      "parallelCount": 62,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1906,10 +1906,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "dbb1096c-26b9-4f81-be36-dfeb06e9739f",
+      "parallelCount": 58,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1919,10 +1919,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "717db32a-d3a9-46e5-bf48-97762c57622f",
+      "parallelCount": 39,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1932,10 +1932,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1d506e69-4fa0-40aa-8f9d-b0f42c9b3d48",
+      "parallelCount": 98,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1945,10 +1945,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f2bb7c29-b3ac-4f18-85ba-336fdd58c687",
+      "parallelCount": 174,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1958,10 +1958,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8347f4ba-9744-445e-a5fe-1fa4348c02e2",
+      "parallelCount": 34,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1971,10 +1971,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4e2519d8-5083-46f7-9377-d9d3e86d05bc",
+      "parallelCount": 390,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -1984,10 +1984,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-prizm-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7e277697-c31c-49cb-a6c4-2635c1c166ea",
+      "parallelCount": 62,
+      "notes": "template: 2019 Prizm"
     },
     {
       "brand": "Panini",
@@ -1997,10 +1997,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-select-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "eec5372b-49aa-4728-bc4b-c024dadf836c",
+      "parallelCount": 51,
+      "notes": "template: 2019 Select"
     },
     {
       "brand": "Panini",
@@ -2010,10 +2010,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-donruss-optic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9555cf4f-6f83-4a0b-8197-39a0e9961106",
+      "parallelCount": 37,
+      "notes": "template: 2019 Optic"
     },
     {
       "brand": "Panini",
@@ -2023,10 +2023,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-mosaic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c8ae8b9b-1af3-4a16-b79f-2d65d49082dc",
+      "parallelCount": 38,
+      "notes": "template: 2019 Mosaic"
     },
     {
       "brand": "Panini",
@@ -2036,10 +2036,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-contenders-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9347ff49-8b54-4db0-80da-c74f1daed2a6",
+      "parallelCount": 23,
+      "notes": "template: 2019 Contenders"
     },
     {
       "brand": "Panini",
@@ -2049,10 +2049,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-donruss-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "abb7f9fc-ea2a-4b09-a12c-d90b8f9d2264",
+      "parallelCount": 14,
+      "notes": "template: 2019 Donruss"
     },
     {
       "brand": "Panini",
@@ -2062,10 +2062,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-score-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "059e86dc-2dd9-46b3-afa6-c000da5fa617",
+      "parallelCount": 29,
+      "notes": "template: 2019 Score"
     },
     {
       "brand": "Panini",
@@ -2075,10 +2075,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8102f3ad-c6d3-44ff-a40a-c431a7ac8610",
+      "parallelCount": 58,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2088,10 +2088,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1c3b2013-afb1-4f80-8284-cb99dc4d202f",
+      "parallelCount": 66,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2101,10 +2101,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9546d402-3301-49eb-9e24-b60116e0e207",
+      "parallelCount": 54,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2114,10 +2114,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8a7b0a1b-23c5-4153-b48c-634e55ba83e3",
+      "parallelCount": 131,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2127,10 +2127,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "93a4a20d-13e8-4367-8fa2-07449078d4e5",
+      "parallelCount": 227,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2140,10 +2140,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2990f8a9-7318-4be2-8dec-6c08a4a288e4",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2153,10 +2153,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "23b18a5d-d320-4791-bf9f-3e84327f9f9f",
+      "parallelCount": 445,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2166,10 +2166,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-prizm-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "151f811c-e91a-4c6c-8d38-8d096618da4e",
+      "parallelCount": 62,
+      "notes": "template: 2020 Prizm"
     },
     {
       "brand": "Panini",
@@ -2179,10 +2179,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-select-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c7ef41e7-b515-4fc2-881e-f9ddbd348cad",
+      "parallelCount": 51,
+      "notes": "template: 2020 Select"
     },
     {
       "brand": "Panini",
@@ -2192,10 +2192,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-donruss-optic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b5f043a6-16d9-4723-928d-57be83991af5",
+      "parallelCount": 37,
+      "notes": "template: 2020 Optic"
     },
     {
       "brand": "Panini",
@@ -2205,10 +2205,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-mosaic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "bd3a29e9-ad0d-48dd-b156-b5eb600b50ae",
+      "parallelCount": 38,
+      "notes": "template: 2020 Mosaic"
     },
     {
       "brand": "Panini",
@@ -2218,10 +2218,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-contenders-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8afe28dc-562b-4425-ab36-05832fb25174",
+      "parallelCount": 23,
+      "notes": "template: 2020 Contenders"
     },
     {
       "brand": "Panini",
@@ -2231,10 +2231,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-donruss-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1a3699c9-ce26-47de-a190-56952e6e1416",
+      "parallelCount": 14,
+      "notes": "template: 2020 Donruss"
     },
     {
       "brand": "Panini",
@@ -2244,10 +2244,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-score-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "48dc6cee-b74d-4871-b0d5-e3117a34dc8f",
+      "parallelCount": 29,
+      "notes": "template: 2020 Score"
     },
     {
       "brand": "Panini",
@@ -2257,10 +2257,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a523c316-151f-4e62-9314-fb9463ddf77e",
+      "parallelCount": 58,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2270,10 +2270,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c043f44d-3ee7-434a-b616-19ae6f3abd20",
+      "parallelCount": 57,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2283,10 +2283,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a2a6b22e-b1cd-4a26-a27d-8358d4250fad",
+      "parallelCount": 61,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2296,10 +2296,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3b5c5d6f-bab4-4df3-803e-25cc179c8ce0",
+      "parallelCount": 144,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2309,10 +2309,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e8409903-7125-4a65-9c54-54507d988dfa",
+      "parallelCount": 271,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2322,10 +2322,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0703041d-ab57-45e9-a84c-66d62eb843b5",
+      "parallelCount": 22,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2335,10 +2335,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b4b6cc48-ce90-4f7e-ad7c-cf525dcf6756",
+      "parallelCount": 474,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2348,10 +2348,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-prizm-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5c4c79b0-554d-43d5-883d-fe2aa41d1ceb",
+      "parallelCount": 62,
+      "notes": "template: 2021 Prizm"
     },
     {
       "brand": "Panini",
@@ -2361,10 +2361,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-select-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1815a43b-c2fc-4860-89da-8ad89cf2bb8a",
+      "parallelCount": 51,
+      "notes": "template: 2021 Select"
     },
     {
       "brand": "Panini",
@@ -2374,10 +2374,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-donruss-optic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0e26a4ce-71a9-4831-9212-63b227ecc101",
+      "parallelCount": 37,
+      "notes": "template: 2021 Optic"
     },
     {
       "brand": "Panini",
@@ -2387,10 +2387,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-mosaic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1da39dc3-8d46-408f-8c31-3718326ec8b6",
+      "parallelCount": 38,
+      "notes": "template: 2021 Mosaic"
     },
     {
       "brand": "Panini",
@@ -2400,10 +2400,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-contenders-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ed38725d-d61c-48b5-b3b7-55979f90e380",
+      "parallelCount": 23,
+      "notes": "template: 2021 Contenders"
     },
     {
       "brand": "Panini",
@@ -2413,10 +2413,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-donruss-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ad74dfd3-311d-4b21-8515-7fa2e5bade92",
+      "parallelCount": 14,
+      "notes": "template: 2021 Donruss"
     },
     {
       "brand": "Panini",
@@ -2426,10 +2426,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-score-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d988c49c-a70a-4368-802e-fe209a5d90ed",
+      "parallelCount": 29,
+      "notes": "template: 2021 Score"
     },
     {
       "brand": "Panini",
@@ -2439,10 +2439,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8732ea6c-4a11-4561-ab44-4edddaf55ccc",
+      "parallelCount": 60,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2452,10 +2452,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7edff3f0-64b5-4b5e-9815-f9c36637b037",
+      "parallelCount": 54,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2465,10 +2465,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "53ec46ee-b457-4ceb-8608-034eb8e6cdb6",
+      "parallelCount": 60,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2478,10 +2478,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d29b48ee-01da-4395-a061-49d4057140a4",
+      "parallelCount": 153,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2491,10 +2491,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "622f8f13-f0f5-4a99-b12f-78a74214dafc",
+      "parallelCount": 256,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2504,10 +2504,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "aee021b0-f83b-44b8-bedf-6fc83af67f3c",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2517,10 +2517,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9e7adb71-18e5-4d56-99be-9a00e91f5e2c",
+      "parallelCount": 482,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2530,10 +2530,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-prizm-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c17ad941-ddb4-4980-9833-27ddbcda2fd0",
+      "parallelCount": 65,
+      "notes": "template: 2024 Prizm"
     },
     {
       "brand": "Panini",
@@ -2543,10 +2543,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-select-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4cc1ae4b-1392-4ca7-9932-41064bc07a64",
+      "parallelCount": 52,
+      "notes": "template: 2024 Select"
     },
     {
       "brand": "Panini",
@@ -2556,10 +2556,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-donruss-optic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b9d984e9-d3b8-477d-8019-c04441b35f66",
+      "parallelCount": 39,
+      "notes": "template: 2024 Optic"
     },
     {
       "brand": "Panini",
@@ -2569,10 +2569,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-mosaic-football-nfl-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "aefeaf75-6444-490b-94cf-b97e54716c8d",
+      "parallelCount": 42,
+      "notes": "template: 2024 Mosaic"
     },
     {
       "brand": "Panini",
@@ -2582,10 +2582,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-contenders-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "dc7fa1ae-6946-4fa0-9cbc-e5f7dfa45845",
+      "parallelCount": 24,
+      "notes": "template: 2024 Contenders"
     },
     {
       "brand": "Panini",
@@ -2595,10 +2595,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-donruss-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d1b1522f-090b-45af-b677-0a650d0d9ef1",
+      "parallelCount": 17,
+      "notes": "template: 2024 Donruss"
     },
     {
       "brand": "Panini",
@@ -2608,10 +2608,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-score-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "dde6c4e1-f15b-41e6-9a3e-bbda8fd27a2a",
+      "parallelCount": 29,
+      "notes": "template: 2024 Score"
     },
     {
       "brand": "Panini",
@@ -2621,10 +2621,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7d58d115-23eb-4dcb-a853-5e7ecff482aa",
+      "parallelCount": 48,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2634,10 +2634,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3cc4b11d-a95e-46d7-99f6-ccf231f2ab13",
+      "parallelCount": 42,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2647,10 +2647,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1c532f0f-9b42-4244-ab49-b63c4c029710",
+      "parallelCount": 66,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2660,10 +2660,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d6c2acdd-0089-46a3-80dd-572cc2d8991c",
+      "parallelCount": 135,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2673,10 +2673,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "48ef4c48-1167-42a6-b120-fd68d58d37de",
+      "parallelCount": 136,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2686,10 +2686,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6464cbd9-f193-46e4-97de-62e8ed63de22",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2699,10 +2699,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d5ed8ca5-3628-4e1e-9590-0175637c6915",
+      "parallelCount": 416,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2803,10 +2803,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e5f1860a-6be2-4e54-8495-82f06c73f684",
+      "parallelCount": 56,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2816,10 +2816,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-flawless-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "aea74173-8a8c-4c7f-bbcf-1e8d7c5aa3e8",
+      "parallelCount": 44,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2829,10 +2829,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-immaculate-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "262cb67a-668e-49e4-b29c-26c6346190ac",
+      "parallelCount": 66,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2842,10 +2842,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "329b6ecb-d487-4f9b-8c95-aa8ee389332c",
+      "parallelCount": 129,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2855,10 +2855,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7e2e329a-b3a3-4331-b19c-d3e4896b807f",
+      "parallelCount": 39,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2868,10 +2868,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-plates-and-patches-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "aee53e9d-3439-4d62-831e-c42fa979cddf",
+      "parallelCount": 11,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2881,10 +2881,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-limited-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "76d56a2e-b6ce-4117-ad0a-4b79d76e6b30",
+      "parallelCount": 417,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2985,10 +2985,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-panini-national-treasures-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6758d96f-194f-4686-bfc9-71ee77d7809d",
+      "parallelCount": 45,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -2998,10 +2998,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-panini-phoenix-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b5cb77d6-0879-4ac0-8809-5cfb2f12e3fb",
+      "parallelCount": 129,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -3011,10 +3011,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-panini-chronicles-football-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7034569a-75dd-40e7-ac44-551018984268",
+      "parallelCount": 16,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3024,10 +3024,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-series-1-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b5d181af-3889-486c-92e9-40353e101517",
+      "parallelCount": 37,
+      "notes": "template: 2024 Topps Series 1"
     },
     {
       "brand": "Topps",
@@ -3037,10 +3037,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-series-2-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ccc3f0c1-a2c8-414c-b52e-6ab1b429828b",
+      "parallelCount": 38,
+      "notes": "template: 2024 Topps Series 2"
     },
     {
       "brand": "Topps",
@@ -3050,10 +3050,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ef845e9a-7aad-4263-a2b9-81f43845ccc2",
+      "parallelCount": 105,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3063,10 +3063,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2d2ca9f0-8f21-4a8c-9a0f-9fec38d08387",
+      "parallelCount": 40,
+      "notes": "template: 2024 Topps Chrome"
     },
     {
       "brand": "Bowman",
@@ -3076,10 +3076,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-bowman-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1ddf13e4-14c7-4ccd-bc7e-400095a12cfc",
+      "parallelCount": 21,
+      "notes": "template: 2024 Bowman"
     },
     {
       "brand": "Bowman",
@@ -3089,10 +3089,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7643b319-1e06-4483-9bb3-78a98d87cc58",
+      "parallelCount": 94,
+      "notes": "template: 2025 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -3102,10 +3102,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-heritage-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "63d85bbc-9075-462d-95d4-6a81192407a0",
+      "parallelCount": 14,
+      "notes": "template: 2024 Heritage"
     },
     {
       "brand": "Topps",
@@ -3115,10 +3115,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0185e855-8bb9-4cc0-9ff4-e77a1fc358b6",
+      "parallelCount": 39,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3128,10 +3128,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "000b4d40-c648-4358-b879-92050b803933",
+      "parallelCount": 43,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3141,10 +3141,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e25ab947-8920-4f76-9830-958fce30bdf0",
+      "parallelCount": 52,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3154,10 +3154,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b1d82abc-11f3-45d9-923c-2ea0f0e273d8",
+      "parallelCount": 35,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3167,10 +3167,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c3c8f863-b849-403d-84f5-39df702c49f7",
+      "parallelCount": 26,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3180,10 +3180,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "11808def-a994-4d2b-97ac-29c4b2dc9a0c",
+      "parallelCount": 19,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3193,10 +3193,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6e000b08-2c30-4d7a-946a-86892a280168",
+      "parallelCount": 28,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3206,10 +3206,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "02c08c87-e69b-4889-8ac9-87d519a71f22",
+      "parallelCount": 13,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -3219,10 +3219,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8b0afa66-c2d5-4d2f-aa08-f24347d32a1a",
+      "parallelCount": 24,
+      "notes": "template: 2025 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -3232,10 +3232,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-series-1-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "15180abe-1fd7-46ba-8732-b05113086791",
+      "parallelCount": 36,
+      "notes": "template: 2018 Topps Series 1"
     },
     {
       "brand": "Topps",
@@ -3245,10 +3245,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-series-2-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a240148f-5839-4b94-ba61-9b0a64b6e7f8",
+      "parallelCount": 36,
+      "notes": "template: 2018 Topps Series 2"
     },
     {
       "brand": "Topps",
@@ -3258,10 +3258,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4a5b7abf-578f-4ef1-b275-96077dab456c",
+      "parallelCount": 188,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3271,10 +3271,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8407d574-d52f-40d2-a6b6-f17e2bae9f2b",
+      "parallelCount": 39,
+      "notes": "template: 2018 Topps Chrome"
     },
     {
       "brand": "Bowman",
@@ -3284,10 +3284,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-bowman-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ad171569-8366-4cb8-ade5-e65fc424c6be",
+      "parallelCount": 21,
+      "notes": "template: 2018 Bowman"
     },
     {
       "brand": "Bowman",
@@ -3297,10 +3297,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d3ab230c-23b5-412e-941a-770d07d8ab1b",
+      "parallelCount": 93,
+      "notes": "template: 2018 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -3310,10 +3310,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-heritage-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "66923bc9-1cad-41f2-9c79-5aab81e272df",
+      "parallelCount": 14,
+      "notes": "template: 2018 Heritage"
     },
     {
       "brand": "Topps",
@@ -3323,10 +3323,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "fff095b8-e23f-4d80-a30b-f5fa185bfb46",
+      "parallelCount": 62,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3336,10 +3336,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "44ce2add-9a96-4a18-bcbd-ccee3b61dd61",
+      "parallelCount": 69,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3349,10 +3349,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "954cfa21-dceb-4e7a-bd02-4d6334e40128",
+      "parallelCount": 60,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3362,10 +3362,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "60fe760d-f102-42e6-bfa0-10b60ea25413",
+      "parallelCount": 64,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3375,10 +3375,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "543d626a-c49c-4da8-95f7-27b9de969cd9",
+      "parallelCount": 34,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3388,10 +3388,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "86f53f50-e2be-4181-b8d2-4ac38df1d28b",
+      "parallelCount": 25,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3401,10 +3401,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d27b5cd9-06e9-43f6-a4cb-a6f5b2ecf8b7",
+      "parallelCount": 39,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3414,10 +3414,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ad214160-b940-4de7-a9ad-e9e986bd1810",
+      "parallelCount": 15,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -3427,10 +3427,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f2b9e69b-b9fa-4349-96c7-b4d0198583aa",
+      "parallelCount": 24,
+      "notes": "template: 2018 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -3440,10 +3440,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-series-1-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4bfa4967-2ba0-44ec-9656-0c728d6cbcdb",
+      "parallelCount": 35,
+      "notes": "template: 2019 Topps Series 1"
     },
     {
       "brand": "Topps",
@@ -3453,10 +3453,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-series-2-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5e942d38-afa6-432f-a824-07820b8cce4f",
+      "parallelCount": 35,
+      "notes": "template: 2019 Topps Series 2"
     },
     {
       "brand": "Topps",
@@ -3466,10 +3466,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c9a8695a-2148-4700-9292-01ebe004f392",
+      "parallelCount": 201,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3479,10 +3479,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d939c8c7-080d-4345-a300-3d04da6d033d",
+      "parallelCount": 39,
+      "notes": "template: 2019 Topps Chrome"
     },
     {
       "brand": "Bowman",
@@ -3492,10 +3492,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-bowman-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ce713c57-6222-4ff7-b04e-915509eb4a55",
+      "parallelCount": 21,
+      "notes": "template: 2019 Bowman"
     },
     {
       "brand": "Bowman",
@@ -3505,10 +3505,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8da3f51b-0138-429f-bd6d-35a41567d49b",
+      "parallelCount": 92,
+      "notes": "template: 2019 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -3518,10 +3518,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-heritage-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "16a453c3-fe63-4af0-8a8a-652ed86a6b69",
+      "parallelCount": 14,
+      "notes": "template: 2019 Heritage"
     },
     {
       "brand": "Topps",
@@ -3531,10 +3531,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "babc794f-3b35-4b01-977b-a03f253c4ae0",
+      "parallelCount": 84,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3544,10 +3544,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0fe8b658-9c6e-43a8-af7a-e81981b667eb",
+      "parallelCount": 90,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3557,10 +3557,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3b8c79c1-7f05-4603-9483-56a5433acdd9",
+      "parallelCount": 70,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3570,10 +3570,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "bbccfcbf-69b3-42d1-a5e4-48b0745c8d96",
+      "parallelCount": 71,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3583,10 +3583,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "cfe05e60-8507-4f7b-b2cd-f73a9daa2ca2",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3596,10 +3596,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6ec55787-3094-4c00-8ba4-373444fb8bcf",
+      "parallelCount": 26,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3609,10 +3609,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b7be7d87-48c7-4a0d-a19a-89d95c120900",
+      "parallelCount": 45,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3622,10 +3622,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "da0b0f5d-e712-4c92-846e-8da4c65f503e",
+      "parallelCount": 15,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -3635,10 +3635,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "58918f7f-40d7-4002-8047-27c26a188273",
+      "parallelCount": 24,
+      "notes": "template: 2019 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -3648,10 +3648,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-series-1-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8bb7f325-df44-4000-b99b-093173c28d07",
+      "parallelCount": 35,
+      "notes": "template: 2020 Topps Series 1"
     },
     {
       "brand": "Topps",
@@ -3661,10 +3661,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-series-2-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d55dacbb-7d0a-4fc6-ab09-bbf8395003b6",
+      "parallelCount": 35,
+      "notes": "template: 2020 Topps Series 2"
     },
     {
       "brand": "Topps",
@@ -3674,10 +3674,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c5d26191-b6e9-4e86-96ca-e4c373107ed5",
+      "parallelCount": 208,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3687,10 +3687,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6a030e6b-236f-4f55-b91d-a7549865017a",
+      "parallelCount": 39,
+      "notes": "template: 2020 Topps Chrome"
     },
     {
       "brand": "Bowman",
@@ -3700,10 +3700,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-bowman-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c88ab289-43e0-4fe5-ab78-cb07addc0198",
+      "parallelCount": 21,
+      "notes": "template: 2020 Bowman"
     },
     {
       "brand": "Bowman",
@@ -3713,10 +3713,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "178aa11a-c44f-4eb3-b85a-82bb0e3c9a36",
+      "parallelCount": 92,
+      "notes": "template: 2020 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -3726,10 +3726,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-heritage-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e94d27a9-ad0d-4ce6-bf48-217ab73f7be8",
+      "parallelCount": 14,
+      "notes": "template: 2020 Heritage"
     },
     {
       "brand": "Topps",
@@ -3739,10 +3739,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "92efc975-5c3b-4fa9-bed5-570483ff4dae",
+      "parallelCount": 97,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3752,10 +3752,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6785113c-cefc-4127-9add-e755c1148c4b",
+      "parallelCount": 103,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3765,10 +3765,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ed608e60-fd6d-4d88-97e1-a6b601d14e31",
+      "parallelCount": 82,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3778,10 +3778,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "895f3122-f2b9-44a7-8125-29ecc0961384",
+      "parallelCount": 78,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3791,10 +3791,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "eab8bebe-87da-4cae-9c6d-6d9fea6f82ed",
+      "parallelCount": 32,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3804,10 +3804,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3f92249a-ca85-45f9-80cd-cae46f56ab05",
+      "parallelCount": 29,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3817,10 +3817,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "afeb77c7-465b-4be3-9e80-0eab9ecfc198",
+      "parallelCount": 50,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3830,10 +3830,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0ec47155-dd26-4187-b6a3-59cbb88e4482",
+      "parallelCount": 13,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -3843,10 +3843,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "90e58ced-8bac-4ecf-bab0-70552393f0a9",
+      "parallelCount": 24,
+      "notes": "template: 2020 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -3856,10 +3856,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-series-1-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0e0f74d1-641a-4854-99f1-4b0c2877588c",
+      "parallelCount": 35,
+      "notes": "template: 2021 Topps Series 1"
     },
     {
       "brand": "Topps",
@@ -3869,10 +3869,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-series-2-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "03fbd4dc-8c9f-4964-85ef-c8fa438ae71c",
+      "parallelCount": 35,
+      "notes": "template: 2021 Topps Series 2"
     },
     {
       "brand": "Topps",
@@ -3882,10 +3882,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0894443d-b633-41a3-89a3-34381df1a1b9",
+      "parallelCount": 195,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3895,10 +3895,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0f7e4ced-b196-46ff-887d-22438116398d",
+      "parallelCount": 39,
+      "notes": "template: 2021 Topps Chrome"
     },
     {
       "brand": "Bowman",
@@ -3908,10 +3908,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-bowman-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "517fd02a-7a57-4193-8105-317e4f68742a",
+      "parallelCount": 21,
+      "notes": "template: 2021 Bowman"
     },
     {
       "brand": "Bowman",
@@ -3921,10 +3921,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0a54233e-cbe8-43ab-ac48-25b84aad2bea",
+      "parallelCount": 92,
+      "notes": "template: 2021 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -3934,10 +3934,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-heritage-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e69ec0fb-bd9a-462a-b946-4ccd90426e58",
+      "parallelCount": 14,
+      "notes": "template: 2021 Heritage"
     },
     {
       "brand": "Topps",
@@ -3947,10 +3947,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "108382d8-67b9-498c-b13f-767ecd9ac34d",
+      "parallelCount": 106,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3960,10 +3960,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c1216d94-7aa0-4eb5-b3f9-c27eb1849389",
+      "parallelCount": 90,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3973,10 +3973,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e381c781-c6e6-4039-90f3-9f7aa73aac33",
+      "parallelCount": 78,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3986,10 +3986,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "78ae60d7-868c-413d-9776-32b8de47d59e",
+      "parallelCount": 80,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -3999,10 +3999,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e9270152-d318-4886-9def-cc5cf0838b71",
+      "parallelCount": 44,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4012,10 +4012,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "74fc2d1b-5d8e-4d18-824a-7fee515e27c9",
+      "parallelCount": 33,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4025,10 +4025,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "481abfbd-9517-4a8c-ba85-8294b30f14c5",
+      "parallelCount": 63,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4038,10 +4038,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "73afe479-6859-41a7-8a47-a8a8484cbb5b",
+      "parallelCount": 17,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -4051,10 +4051,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "01664e45-ab34-4a8f-9104-7a72507824e9",
+      "parallelCount": 24,
+      "notes": "template: 2021 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -4064,10 +4064,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-series-1-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "27412c97-523e-4668-8741-91de8259ab6d",
+      "parallelCount": 39,
+      "notes": "template: 2024 Topps Series 1"
     },
     {
       "brand": "Topps",
@@ -4077,10 +4077,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-series-2-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d78430d6-d45a-4e9f-9793-a06e547937c5",
+      "parallelCount": 40,
+      "notes": "template: 2024 Topps Series 2"
     },
     {
       "brand": "Topps",
@@ -4090,10 +4090,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "af75287e-598e-456e-9b2d-5c3eaf6cc747",
+      "parallelCount": 169,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4103,10 +4103,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f6cf6671-5683-4995-bdc2-89c354a8fcc5",
+      "parallelCount": 41,
+      "notes": "template: 2024 Topps Chrome"
     },
     {
       "brand": "Bowman",
@@ -4116,10 +4116,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-bowman-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b8edfa32-9b80-4890-891f-559ee8686887",
+      "parallelCount": 21,
+      "notes": "template: 2024 Bowman"
     },
     {
       "brand": "Bowman",
@@ -4129,10 +4129,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "31487cf3-fcd2-4a3f-bdd7-e49349f6c9fc",
+      "parallelCount": 92,
+      "notes": "template: 2022 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -4142,10 +4142,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-heritage-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "def11d8d-97b4-47c3-9750-95cb22d22c8e",
+      "parallelCount": 14,
+      "notes": "template: 2024 Heritage"
     },
     {
       "brand": "Topps",
@@ -4155,10 +4155,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2f2dc021-ab41-4bcb-b361-bbabea8952c1",
+      "parallelCount": 84,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4168,10 +4168,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6366378e-9aef-4109-a95a-6471d617549f",
+      "parallelCount": 71,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4181,10 +4181,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5eeba4fa-d4c0-476d-bf95-3bc152b397ec",
+      "parallelCount": 85,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4194,10 +4194,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8e66d980-f86e-476f-8645-6cd7cd71a396",
+      "parallelCount": 65,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4207,10 +4207,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "31097da5-4c98-445f-a9d8-c1a4b257d375",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4220,10 +4220,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "559bb2bf-4394-40a4-b4ee-9e118f393a67",
+      "parallelCount": 24,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4233,10 +4233,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b54e1396-701f-456d-b980-945bc04d5f22",
+      "parallelCount": 42,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4246,10 +4246,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "06621a03-3363-452a-9707-5028f117f855",
+      "parallelCount": 16,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -4259,10 +4259,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7253a899-6d8a-4627-9e90-3739ce20d151",
+      "parallelCount": 24,
+      "notes": "template: 2022 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -4298,10 +4298,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-update-series-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c8c1c14b-fdf6-41e7-ac93-642ce6fee5dc",
+      "parallelCount": 187,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4337,10 +4337,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-bowman-chrome-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "dbdcca96-09c3-4887-b376-2246c41d9c82",
+      "parallelCount": 95,
+      "notes": "template: 2025 Bowman Chrome"
     },
     {
       "brand": "Topps",
@@ -4363,10 +4363,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9dd33c47-dc12-405d-b5f2-1c0f4d5d9ec9",
+      "parallelCount": 66,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4376,10 +4376,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "203ffab0-dacc-442e-8de4-b155fea3453b",
+      "parallelCount": 77,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4389,10 +4389,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "70180359-abde-4e15-a5b5-e176200e7e69",
+      "parallelCount": 47,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4402,10 +4402,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "bb2edca9-6e1e-463a-9341-663a7b889ca9",
+      "parallelCount": 81,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4415,10 +4415,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7033e0b0-4c3a-4fc3-ad51-5c1be0ad6340",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4428,10 +4428,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ded35928-eac7-4bde-8f81-d1e6f34fe6a5",
+      "parallelCount": 37,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4441,10 +4441,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a7b0568e-430e-43e6-ace3-bfa9eb128028",
+      "parallelCount": 47,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4454,10 +4454,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-diamond-icons-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f78304c5-295a-4b06-83f8-33b5d4c6cf3f",
+      "parallelCount": 18,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -4467,10 +4467,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-bowmans-best-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9341cecf-81fd-4fe8-a7c8-19864738bdf6",
+      "parallelCount": 24,
+      "notes": "template: 2025 Bowman's Best"
     },
     {
       "brand": "Topps",
@@ -4558,10 +4558,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-finest-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4d505e9d-e6bf-452a-a23c-6ce3c1aa4c4c",
+      "parallelCount": 58,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4571,10 +4571,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-stadium-club-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a35cd95d-6b71-42d6-9117-249bdabb23b8",
+      "parallelCount": 61,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4584,10 +4584,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-gypsy-queen-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "08d8b479-eeb4-43cf-8800-712f594f77bb",
+      "parallelCount": 27,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4597,10 +4597,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-allen-ginter-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6d687b74-0842-4a03-a775-4f17c25f826d",
+      "parallelCount": 73,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4610,10 +4610,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-museum-collection-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "29fb5129-35d3-41a6-8224-cb36c6fedd21",
+      "parallelCount": 38,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4623,10 +4623,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-tier-one-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2b2e30fa-03cb-4ede-b10b-90d2bf5a9414",
+      "parallelCount": 33,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -4636,10 +4636,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-tribute-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1ce0ebae-31e0-439e-b0b1-1e47a5d4cf63",
+      "parallelCount": 42,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Bowman",
@@ -4688,10 +4688,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-prizm-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9209731f-ec92-4f19-90c0-431ab4423195",
+      "parallelCount": 169,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4701,10 +4701,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-donruss-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "eff60365-2785-43ae-a04b-203d5a3d8ce3",
+      "parallelCount": 146,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4714,10 +4714,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-chronicles-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "465bdce0-c9a1-4bec-8568-cd00ba9b2e8e",
+      "parallelCount": 107,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4727,10 +4727,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-select-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d3e09f58-3cd0-441b-bf38-94e2be50357d",
+      "parallelCount": 85,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4740,10 +4740,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2018-panini-national-treasures-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7690f1c5-5a36-48ee-a014-3a0ffcdbe2a1",
+      "parallelCount": 28,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4753,10 +4753,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-prizm-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5ffb91c3-deb2-40db-a605-2760c60ea95d",
+      "parallelCount": 281,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4766,10 +4766,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-donruss-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "7fbde4a7-1395-4cad-ba47-c324544888ac",
+      "parallelCount": 239,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4779,10 +4779,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-chronicles-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ff8af6f7-ecf0-4a70-98aa-0fe5108ce0b9",
+      "parallelCount": 153,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4792,10 +4792,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-select-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d9f08a0e-4027-4648-9e8c-3b145e97b626",
+      "parallelCount": 214,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4805,10 +4805,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2019-panini-national-treasures-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c13b479b-bf15-4c6e-b49e-32969159e7f5",
+      "parallelCount": 47,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4818,10 +4818,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-prizm-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9d2dded1-95bb-44b9-9b5b-c0e12eaa7d4e",
+      "parallelCount": 333,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4831,10 +4831,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-donruss-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "37b4f849-7863-456c-8ba5-02a0d0ea6165",
+      "parallelCount": 279,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4844,10 +4844,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-chronicles-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e053dfeb-783c-4c55-99db-173ff951170c",
+      "parallelCount": 183,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4857,10 +4857,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-select-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "72ec0455-93d9-4c7f-b6db-128217fd0d6e",
+      "parallelCount": 245,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4870,10 +4870,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-panini-national-treasures-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "65c1b412-38c8-4091-bd19-342aac5c0739",
+      "parallelCount": 51,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4883,10 +4883,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-prizm-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a2ddb649-4e2f-439f-83c3-4393abf432ea",
+      "parallelCount": 348,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4896,10 +4896,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-donruss-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b3409f10-09be-492a-afad-f6cfa6a9d225",
+      "parallelCount": 295,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4909,10 +4909,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-chronicles-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "e7f8a3b6-7ceb-4a2c-aa9e-c6e4c0be420b",
+      "parallelCount": 221,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4922,10 +4922,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-select-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c4fee6c6-20dd-4db1-b8b8-a274336bdf84",
+      "parallelCount": 233,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4935,10 +4935,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-panini-national-treasures-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "24e595a1-c751-49a8-985f-73339282bdc3",
+      "parallelCount": 52,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4948,10 +4948,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-prizm-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0795cfd8-b3dd-4aa0-a4de-c3d05785bac8",
+      "parallelCount": 352,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4961,10 +4961,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-donruss-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "805f2a11-5c53-48b6-9870-e752b4f43933",
+      "parallelCount": 282,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4974,10 +4974,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-chronicles-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "9e072068-ee3a-420a-97fa-fdcbe753b5b0",
+      "parallelCount": 218,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -4987,10 +4987,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-select-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "ded168da-7d43-4bef-aefb-b808f3164dd8",
+      "parallelCount": 218,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5000,10 +5000,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-national-treasures-baseball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "acc29a44-023e-4aa4-bb24-da1c35770102",
+      "parallelCount": 50,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5013,10 +5013,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-chrome-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "777be701-baf8-4917-b0af-7a3ddbfa5755",
+      "parallelCount": 31,
+      "notes": "template: 2024 Topps Chrome F1"
     },
     {
       "brand": "Topps",
@@ -5026,10 +5026,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "fe0c8130-0ffd-400a-85c9-91d729c0750f",
+      "parallelCount": 13,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5039,10 +5039,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2020-topps-dynasty-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d7583b4f-5ee9-4248-bfdd-c879a765c588",
+      "parallelCount": 7,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5052,10 +5052,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-chrome-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b47b5803-0a84-4efe-b78d-7c1e80ee09e1",
+      "parallelCount": 31,
+      "notes": "template: 2020 Topps Chrome F1"
     },
     {
       "brand": "Topps",
@@ -5065,10 +5065,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1df33244-2fb2-4355-8a49-50620eacc99f",
+      "parallelCount": 20,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5091,10 +5091,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-dynasty-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "8ff570d5-b514-4ce5-be8c-8d846ed8970b",
+      "parallelCount": 7,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5104,10 +5104,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2021-topps-chrome-sapphire-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "2b789d3d-8e2d-49ae-bee4-2363c7b6209a",
+      "parallelCount": 22,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5117,10 +5117,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-chrome-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "1d39f68a-70a4-4dc3-95dc-f2b52c4cf7e6",
+      "parallelCount": 31,
+      "notes": "template: 2021 Topps Chrome F1"
     },
     {
       "brand": "Topps",
@@ -5130,10 +5130,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "109fce45-891e-4f38-88f4-9f54b2f39f6c",
+      "parallelCount": 15,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5156,10 +5156,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-dynasty-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "82c5d524-66c8-4dab-b58b-19d2fd7a9a10",
+      "parallelCount": 6,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5169,10 +5169,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-topps-chrome-sapphire-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3200d289-0768-425c-ad11-1ef201fa5c02",
+      "parallelCount": 24,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5182,10 +5182,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-chrome-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "c3a229ff-09e9-499d-9751-67ed426454cb",
+      "parallelCount": 31,
+      "notes": "template: 2024 Topps Chrome F1"
     },
     {
       "brand": "Topps",
@@ -5208,10 +5208,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-finest-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "5418358a-b523-4295-93ed-1dc150ae8447",
+      "parallelCount": 5,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5234,10 +5234,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-topps-chrome-sapphire-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "3d20221c-bb22-4a28-93b0-62cd94c1a906",
+      "parallelCount": 20,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5273,10 +5273,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-finest-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "0bf6ca56-fad6-44a9-9b1f-affab2deca6d",
+      "parallelCount": 21,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5286,10 +5286,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-dynasty-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b941e77b-76ec-4352-85db-6d209c46d673",
+      "parallelCount": 5,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5299,10 +5299,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-topps-chrome-sapphire-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f157875c-5ddb-414d-b06f-50bda0e083fc",
+      "parallelCount": 19,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5351,10 +5351,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-dynasty-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f9690836-0332-49a3-a3da-24262e900827",
+      "parallelCount": 6,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Topps",
@@ -5364,10 +5364,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-topps-chrome-sapphire-formula-1-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d62f58b4-80d8-4537-93de-c97caed1a88a",
+      "parallelCount": 11,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5377,10 +5377,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-prizm-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a5a2a525-e5ef-4d03-a495-6cea508d5610",
+      "parallelCount": 33,
+      "notes": "template: 2024 Prizm WNBA"
     },
     {
       "brand": "Panini",
@@ -5390,10 +5390,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-select-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "4269ee6f-ecec-4563-b531-51e94c344bb2",
+      "parallelCount": 24,
+      "notes": "template: 2024 Select WNBA"
     },
     {
       "brand": "Panini",
@@ -5403,10 +5403,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-hoops-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "667c22ee-3ef5-46f1-a61c-4736c40a75be",
+      "parallelCount": 85,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5416,10 +5416,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-donruss-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "76b3f1c1-2b36-46a0-987f-252ff58abaad",
+      "parallelCount": 29,
+      "notes": "template: 2025 Donruss WNBA"
     },
     {
       "brand": "Panini",
@@ -5429,10 +5429,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2022-panini-origins-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "60aa3abf-20b4-4fe2-becd-7217cc8b354e",
+      "parallelCount": 70,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5442,10 +5442,10 @@
       "tier": 1,
       "isFlagship": true,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-prizm-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6955011d-b16a-4296-ab49-3ff970b7632d",
+      "parallelCount": 33,
+      "notes": "template: 2024 Prizm WNBA"
     },
     {
       "brand": "Panini",
@@ -5455,10 +5455,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-select-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "f4cbe576-db61-4563-9fc0-fe4ae9d0f7f7",
+      "parallelCount": 24,
+      "notes": "template: 2024 Select WNBA"
     },
     {
       "brand": "Panini",
@@ -5468,10 +5468,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-hoops-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "6652a3bc-8da5-41e0-a008-3efc7d309499",
+      "parallelCount": 99,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5481,10 +5481,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-donruss-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "00c4199a-3ab8-4de6-a96c-8670274c2893",
+      "parallelCount": 29,
+      "notes": "template: 2022 Donruss WNBA"
     },
     {
       "brand": "Panini",
@@ -5494,10 +5494,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2023-panini-origins-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "b833328f-c104-48f7-8292-b61a76b0c280",
+      "parallelCount": 64,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5533,10 +5533,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-hoops-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "40ecdb7d-6795-4dbe-a782-bebb7bb5a35f",
+      "parallelCount": 153,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5546,10 +5546,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-donruss-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "40142946-d746-4946-9f01-9ef3d2cba2a7",
+      "parallelCount": 29,
+      "notes": "template: 2025 Donruss WNBA"
     },
     {
       "brand": "Panini",
@@ -5559,10 +5559,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2024-panini-origins-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "76004306-5f73-4f26-b07c-1da683b68669",
+      "parallelCount": 131,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5585,10 +5585,10 @@
       "tier": 1,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-panini-select-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a1e16081-6910-4348-b758-e7eeecd33f04",
+      "parallelCount": 24,
+      "notes": "template: 2024 Select WNBA"
     },
     {
       "brand": "Panini",
@@ -5598,10 +5598,10 @@
       "tier": 3,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-panini-hoops-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "a1647480-08df-4d3c-9a8f-62702ee4aa7e",
+      "parallelCount": 139,
+      "notes": "ebay-seeded 2026-03-15"
     },
     {
       "brand": "Panini",
@@ -5624,10 +5624,10 @@
       "tier": 2,
       "isFlagship": false,
       "checklistUrl": "https://www.cardboardconnection.com/2025-panini-origins-wnba-basketball-cards",
-      "status": "pending",
-      "existingProductId": null,
-      "parallelCount": null,
-      "notes": ""
+      "status": "seeded",
+      "existingProductId": "d8ebcfa3-5c20-47da-97ab-27f9aec1c800",
+      "parallelCount": 114,
+      "notes": "ebay-seeded 2026-03-15"
     }
   ]
 }

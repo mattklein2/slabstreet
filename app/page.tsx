@@ -23,6 +23,12 @@ const tools = [
     description: 'Every term a collector needs to know, from A to Z',
     icon: '📚',
   },
+  {
+    href: '/xray',
+    title: 'Card X-Ray',
+    description: 'Paste any eBay link to see exactly what you\'re looking at',
+    icon: '🔬',
+  },
 ];
 
 export default function HomePage() {

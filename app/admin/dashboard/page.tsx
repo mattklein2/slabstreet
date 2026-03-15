@@ -260,7 +260,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (authLoading) return;
 
-    async function fetchUsers() {
+    async function fetchUsers(retries = 3): Promise<void> {
       const supabase = createClient();
       const { data, error: fetchError } = await supabase
         .from('profiles')
@@ -268,6 +268,10 @@ export default function AdminDashboard() {
         .order('created_at', { ascending: false });
 
       if (fetchError) {
+        if (fetchError.message.includes('AbortError') && retries > 0) {
+          await new Promise(r => setTimeout(r, 500));
+          return fetchUsers(retries - 1);
+        }
         setError(fetchError.message);
       } else {
         setUsers(data || []);

@@ -24,6 +24,12 @@ const tools = [
     icon: '🗺️',
   },
   {
+    href: '/ebay-search',
+    title: 'Card Search',
+    description: 'Build the perfect eBay search with smart filters — no guesswork',
+    icon: '🎯',
+  },
+  {
     href: '/learn',
     title: 'Glossary',
     description: 'Every term a collector needs to know, from A to Z',

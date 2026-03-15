@@ -89,6 +89,9 @@ export function buildSoldQuery(identity: CardIdentity): string | null {
   if (identity.parallel && identity.parallel.toLowerCase() !== 'base') {
     parts.push(identity.parallel);
   }
+  if (identity.insert) {
+    parts.push(identity.insert);
+  }
   // Need at least 3 parts for a meaningful query
   return parts.length >= 3 ? parts.join(' ') : null;
 }
@@ -131,7 +134,7 @@ export async function searchSoldListings(query: string): Promise<SoldItem[]> {
 
   // Each sold listing is an <li> with class "s-card" and a data-listingid attribute.
   // This excludes ads, "Have one to sell?" blocks, and other non-listing elements.
-  $('li.s-card[data-listingid]').each((_i, el) => {
+  $('li.s-card[data-listingid]:not([data-sponsored])').each((_i, el) => {
     const card = $(el);
 
     // Title: inside .s-card__title > first span (excludes "Opens in a new window or tab")
@@ -139,10 +142,16 @@ export async function searchSoldListings(query: string): Promise<SoldItem[]> {
     const title = titleSpan.text().trim();
     if (!title) return;
 
+    // Skip sponsored "Shop on eBay" items
+    if (/shop on ebay/i.test(title)) return;
+
     // URL: the title link (a.s-card__link with /itm/ in href)
     const linkEl = card.find('a.s-card__link[href*="/itm/"]').first();
     let itemUrl = linkEl.attr('href') || '';
     if (!itemUrl) return;
+
+    // Skip non-item URLs (sponsored store links)
+    if (!itemUrl.includes('/itm/')) return;
     // Clean URL: strip tracking params, keep just the item page
     const itemIdMatch = itemUrl.match(/\/itm\/(\d+)/);
     if (itemIdMatch) {

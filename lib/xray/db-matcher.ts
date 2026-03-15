@@ -1,7 +1,7 @@
 // lib/xray/db-matcher.ts
 
 import { supabase } from '../supabase';
-import type { CardIdentity, MatchedProduct, MatchedParallel, RainbowEntry } from './types';
+import type { CardIdentity, MatchedProduct, MatchedParallel, MatchedCardSet, RainbowEntry } from './types';
 
 // Brand name → brand_id mapping
 const BRAND_IDS: Record<string, string> = {
@@ -17,8 +17,36 @@ const BRAND_IDS: Record<string, string> = {
 
 export interface MatchResult {
   product: MatchedProduct | null;
+  cardSet: MatchedCardSet | null;
   parallel: MatchedParallel | null;
   rainbow: RainbowEntry[];
+}
+
+function scoreNameMatch(dbName: string, identityName: string): number {
+  const dbLower = dbName.toLowerCase();
+  const idLower = identityName.toLowerCase();
+
+  // Exact match
+  if (dbLower === idLower) return 10;
+
+  // Normalized exact: strip common suffixes (Prizm, Refractor, Holo, etc.)
+  const suffixes = /\s*(prizm|refractor|xfractor|holo|scope|shimmer|disco|wave|ice)\s*$/i;
+  const dbNorm = dbLower.replace(suffixes, '').trim();
+  const idNorm = idLower.replace(suffixes, '').trim();
+  if (dbNorm && idNorm && dbNorm === idNorm) return 8;
+
+  // Bidirectional word match: all words in identity appear in DB name AND vice versa
+  const dbWords = dbLower.split(/\s+/);
+  const idWords = idLower.split(/\s+/);
+  const idInDb = idWords.every(w => dbWords.some(dw => dw.includes(w)));
+  const dbInId = dbWords.every(w => idWords.some(iw => iw.includes(w)));
+  if (idInDb && dbInId) return 5;
+
+  // Partial: at least half of identity words appear in DB name
+  const matchCount = idWords.filter(w => dbWords.some(dw => dw.includes(w))).length;
+  if (matchCount >= Math.ceil(idWords.length / 2)) return 2;
+
+  return 0;
 }
 
 /**
@@ -30,7 +58,7 @@ export interface MatchResult {
  * 3. Match the specific parallel by name
  */
 export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
-  const empty: MatchResult = { product: null, parallel: null, rainbow: [] };
+  const empty: MatchResult = { product: null, cardSet: null, parallel: null, rainbow: [] };
 
   // Need at least year and set to match
   if (!identity.year && !identity.set) return empty;
@@ -102,27 +130,63 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
     description: p.description || '',
   };
 
-  // Step 2: Fetch all parallels for this product
+  // Step 2: Find matching card_set
+  const { data: cardSets } = await supabase
+    .from('card_sets')
+    .select('*')
+    .eq('product_id', p.id);
+
+  if (!cardSets || cardSets.length === 0) {
+    return { product: matchedProduct, cardSet: null, parallel: null, rainbow: [] };
+  }
+
+  let matchedCardSetRow = null;
+  if (identity.insert) {
+    const scored = cardSets
+      .filter((cs: any) => cs.type !== 'base')
+      .map((cs: any) => ({ cs, score: scoreNameMatch(cs.name, identity.insert!) }))
+      .filter(s => s.score > 0)
+      .sort((a, b) => b.score - a.score);
+    matchedCardSetRow = scored.length > 0 ? scored[0].cs : null;
+  }
+  if (!matchedCardSetRow) {
+    matchedCardSetRow = cardSets.find((cs: any) => cs.name === 'Base Set') || cardSets[0];
+  }
+
+  const matchedCardSet: MatchedCardSet = {
+    cardSetId: matchedCardSetRow.id,
+    cardSetName: matchedCardSetRow.name,
+    type: matchedCardSetRow.type,
+    description: matchedCardSetRow.description,
+    cardCount: matchedCardSetRow.card_count,
+    odds: matchedCardSetRow.odds,
+    boxExclusivity: matchedCardSetRow.box_exclusivity,
+  };
+
+  // Step 3: Fetch parallels for this card_set
   const { data: parallels, error: parError } = await supabase
     .from('parallels')
     .select('id, name, color_hex, print_run, serial_numbered, rarity_rank, is_one_of_one, description, box_exclusivity')
-    .eq('product_id', p.id)
+    .eq('card_set_id', matchedCardSetRow.id)
     .order('rarity_rank', { ascending: false });
 
   if (parError || !parallels) {
-    return { product: matchedProduct, parallel: null, rainbow: [] };
+    return { product: matchedProduct, cardSet: matchedCardSet, parallel: null, rainbow: [] };
   }
 
-  // Step 3: Build rainbow and find matched parallel
+  // Step 4: Score each parallel
   let matchedParallel: MatchedParallel | null = null;
-
-  const rainbow: RainbowEntry[] = parallels.map((par: any) => {
-    const isMatch = identity.parallel
-      ? par.name.toLowerCase().includes(identity.parallel.toLowerCase()) ||
-        identity.parallel.toLowerCase().includes(par.name.toLowerCase())
-      : par.name.toLowerCase() === 'base'; // default to Base if no parallel specified
-
-    if (isMatch && !matchedParallel) {
+  if (identity.parallel) {
+    const scored = parallels.map((par: any) => ({
+      par,
+      score: scoreNameMatch(par.name, identity.parallel!),
+    }));
+    scored.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.par.rarity_rank - a.par.rarity_rank;
+    });
+    if (scored[0]?.score > 0) {
+      const par = scored[0].par;
       matchedParallel = {
         parallelId: par.id,
         parallelName: par.name,
@@ -135,26 +199,33 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
         boxExclusivity: par.box_exclusivity,
       };
     }
-
-    return {
-      name: par.name,
-      colorHex: par.color_hex,
-      printRun: par.print_run,
-      serialNumbered: par.serial_numbered,
-      rarityRank: par.rarity_rank,
-      isOneOfOne: par.is_one_of_one,
-      isCurrentCard: isMatch && (matchedParallel?.parallelId === par.id),
-      boxExclusivity: par.box_exclusivity,
-    };
-  });
-
-  // Fix isCurrentCard — only the first match should be true
-  if (matchedParallel) {
-    rainbow.forEach(r => {
-      r.isCurrentCard = r.name === (matchedParallel as MatchedParallel).parallelName &&
-                        r.rarityRank === (matchedParallel as MatchedParallel).rarityRank;
-    });
+  } else {
+    const basePar = parallels.find((pp: any) => pp.name.toLowerCase() === 'base');
+    if (basePar) {
+      matchedParallel = {
+        parallelId: basePar.id,
+        parallelName: basePar.name,
+        colorHex: basePar.color_hex,
+        printRun: basePar.print_run,
+        serialNumbered: basePar.serial_numbered,
+        rarityRank: basePar.rarity_rank,
+        isOneOfOne: basePar.is_one_of_one,
+        description: basePar.description || '',
+        boxExclusivity: basePar.box_exclusivity,
+      };
+    }
   }
 
-  return { product: matchedProduct, parallel: matchedParallel, rainbow };
+  const rainbow: RainbowEntry[] = parallels.map((par: any) => ({
+    name: par.name,
+    colorHex: par.color_hex,
+    printRun: par.print_run,
+    serialNumbered: par.serial_numbered,
+    rarityRank: par.rarity_rank,
+    isOneOfOne: par.is_one_of_one,
+    isCurrentCard: matchedParallel ? par.id === matchedParallel.parallelId : false,
+    boxExclusivity: par.box_exclusivity,
+  }));
+
+  return { product: matchedProduct, cardSet: matchedCardSet, parallel: matchedParallel, rainbow };
 }

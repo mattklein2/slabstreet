@@ -1,76 +1,121 @@
 // lib/xray/price-comps.ts
 
+import { searchSoldListings, buildSoldQuery } from './ebay-sold';
 import { searchComps } from './ebay-client';
-import type { CardIdentity, PriceComps, CompListing } from './types';
+import type { CardIdentity, PriceComps, CompListing, SegmentStats } from './types';
 
 /**
- * Build price comps for a card by searching eBay for similar active listings.
- *
- * Constructs a targeted search query from the card identity,
- * then computes price statistics from matching listings.
+ * Compute stats for a list of comp listings.
+ */
+function computeStats(listings: CompListing[]): SegmentStats | null {
+  if (listings.length === 0) return null;
+  const prices = listings.map(l => l.price).sort((a, b) => a - b);
+  return {
+    low: prices[0],
+    median: prices[Math.floor(prices.length / 2)],
+    high: prices[prices.length - 1],
+    count: prices.length,
+    listings,
+  };
+}
+
+/**
+ * Build price comps from sold data (primary) or active listings (fallback).
  */
 export async function getPriceComps(
   identity: CardIdentity,
   listingPrice: number,
 ): Promise<PriceComps | null> {
-  // Build a focused search query
-  const queryParts: string[] = [];
+  const query = buildSoldQuery(identity);
+  if (!query) return null;
 
-  if (identity.year) queryParts.push(identity.year);
-  if (identity.brand) queryParts.push(identity.brand);
-  if (identity.set) queryParts.push(identity.set);
-  if (identity.player) queryParts.push(identity.player);
-  if (identity.parallel && identity.parallel.toLowerCase() !== 'base') {
-    queryParts.push(identity.parallel);
-  }
-  if (identity.cardNumber) queryParts.push(`#${identity.cardNumber}`);
+  // Try sold data first
+  const soldItems = await searchSoldListings(query);
 
-  // Need enough info to build a meaningful query
-  if (queryParts.length < 3) return null;
-
-  const query = queryParts.join(' ');
-
-  try {
-    const items = await searchComps(query, 20);
-    if (items.length === 0) return null;
-
-    // Convert to CompListing format and extract prices
-    const compListings: CompListing[] = items.map(item => ({
+  if (soldItems.length > 0) {
+    // Convert to CompListing format
+    const allComps: CompListing[] = soldItems.map(item => ({
       title: item.title,
-      price: parseFloat(item.price.value) || 0,
-      url: item.itemWebUrl,
+      price: item.price,
+      url: item.url,
+      date: item.date,
+      condition: item.condition,
+      gradeInfo: item.grader ? { grader: item.grader, grade: item.grade! } : null,
     }));
 
-    // Filter out $0 and outliers (>10x median)
-    const prices = compListings
-      .map(l => l.price)
-      .filter(p => p > 0)
-      .sort((a, b) => a - b);
+    const rawListings = allComps.filter(c => c.condition === 'raw');
+    const gradedListings = allComps.filter(c => c.condition === 'graded');
 
-    if (prices.length === 0) return null;
+    const rawStats = computeStats(rawListings);
+    const gradedStats = computeStats(gradedListings);
 
-    const median = prices[Math.floor(prices.length / 2)];
-    const filtered = prices.filter(p => p < median * 10); // remove extreme outliers
+    // Determine primary segment based on the card being X-Ray'd
+    const primarySegment: 'raw' | 'graded' = identity.isGraded ? 'graded' : 'raw';
+    const primaryStats = primarySegment === 'raw' ? rawStats : gradedStats;
 
-    const stats = {
-      low: filtered[0],
-      median: filtered[Math.floor(filtered.length / 2)],
-      high: filtered[filtered.length - 1],
-      count: filtered.length,
-    };
-
-    const vsMedian = stats.median > 0
-      ? Math.round(((listingPrice - stats.median) / stats.median) * 100)
-      : null;
+    // vs Median: compare listing price against primary segment
+    let vsMedian: number | null = null;
+    if (primaryStats && primaryStats.median > 0) {
+      vsMedian = Math.round(((listingPrice - primaryStats.median) / primaryStats.median) * 100);
+    }
 
     return {
-      compListings: compListings.slice(0, 10), // return top 10
-      stats,
+      source: 'sold',
+      raw: rawStats,
+      graded: gradedStats,
+      primarySegment,
       listingPrice,
       vsMedian,
+      totalCount: soldItems.length,
+    };
+  }
+
+  // Fallback: active listings from Browse API
+  try {
+    const queryParts: string[] = [];
+    if (identity.year) queryParts.push(identity.year);
+    if (identity.brand) queryParts.push(identity.brand);
+    if (identity.set) queryParts.push(identity.set);
+    if (identity.player) queryParts.push(identity.player);
+    if (identity.parallel && identity.parallel.toLowerCase() !== 'base') {
+      queryParts.push(identity.parallel);
+    }
+    if (queryParts.length < 3) return null;
+
+    const items = await searchComps(queryParts.join(' '), 20);
+    if (items.length === 0) return null;
+
+    const allComps: CompListing[] = items
+      .map(item => ({
+        title: item.title,
+        price: parseFloat(item.price.value) || 0,
+        url: item.itemWebUrl,
+        date: '',
+        condition: 'raw' as const,
+        gradeInfo: null,
+      }))
+      .filter(c => c.price > 0);
+
+    if (allComps.length === 0) return null;
+
+    const stats = computeStats(allComps);
+
+    let vsMedian: number | null = null;
+    if (stats && stats.median > 0) {
+      vsMedian = Math.round(((listingPrice - stats.median) / stats.median) * 100);
+    }
+
+    return {
+      source: 'active',
+      raw: stats,
+      graded: null,
+      primarySegment: 'raw',
+      listingPrice,
+      vsMedian,
+      totalCount: allComps.length,
     };
   } catch (err) {
-    console.error('Price comps error:', err);
+    console.error('Price comps fallback error:', err);
     return null;
   }
 }

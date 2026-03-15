@@ -7,6 +7,7 @@ export interface CardIdentity {
   brand: string | null;
   set: string | null;
   parallel: string | null;
+  insert?: string | null;      // "Downtown", "Kaboom!", etc. — null/undefined for base cards
   cardNumber: string | null;
   sport: string | null;
   isRookie: boolean;
@@ -42,6 +43,17 @@ export interface MatchedProduct {
   sport: string;
   isFlagship: boolean;
   description: string;
+}
+
+/** Matched card set from our database */
+export interface MatchedCardSet {
+  cardSetId: string;
+  cardSetName: string;
+  type: 'base' | 'insert' | 'subset';
+  description: string | null;
+  cardCount: number | null;
+  odds: string | null;
+  boxExclusivity: string[] | null;
 }
 
 /** Matched parallel with its rainbow context */
@@ -112,12 +124,14 @@ export interface XRayResult {
   identity: CardIdentity;
   product: MatchedProduct | null;
   matchedParallel: MatchedParallel | null;
+  matchedCardSet: MatchedCardSet | null;
   rainbow: RainbowEntry[];
   priceComps: PriceComps | null;
   education: {
     setDescription: string | null;
     parallelDescription: string | null;
     flagshipContext: string | null;
+    insertDescription: string | null;
   };
 }
 

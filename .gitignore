@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+
+# Scraped checklist HTML (raw pages — not committed)
+data/checklists/**/*.html

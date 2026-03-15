@@ -4,17 +4,18 @@
  * Cardboard Connection checklist scraper.
  *
  * Fetches a Cardboard Connection product checklist page, saves the raw HTML,
- * and parses out parallel information (name, print run, exclusivity, etc.).
+ * and parses out parallel and insert set information.
  *
  * Usage:
  *   node scripts/scrape-checklist.mjs "https://www.cardboardconnection.com/2024-25-panini-prizm-basketball-cards"
+ *   node scripts/scrape-checklist.mjs --batch data/checklist-urls-nba.txt
  *
  * Output:
  *   data/checklists/{sport}/{year}-{brand}-{product}.html  (raw HTML)
- *   data/checklists/{sport}/{year}-{brand}-{product}.json  (parsed parallels)
+ *   data/checklists/{sport}/{year}-{brand}-{product}.json  (parsed parallels + inserts)
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import * as cheerio from 'cheerio';
@@ -179,6 +180,14 @@ function parseParallelLine(rawText) {
   return { name, ...prInfo, exclusivity };
 }
 
+/**
+ * Parse odds from text like "1:288 hobby packs" or "Odds: 1:48".
+ */
+function parseOdds(text) {
+  const m = text.match(/\b(\d+:\d+(?:\s+(?:hobby|retail|blaster|mega|fat|cello|hanger)\s*(?:packs?|boxes?)?)?)(?:\b|$)/i);
+  return m ? m[1].trim() : null;
+}
+
 // ── HTML parsing ──────────────────────────────────────────────────────────────
 
 /**
@@ -198,13 +207,34 @@ function isParallelHeader(text) {
 }
 
 /**
+ * Heuristic: is this text likely an insert section header?
+ */
+function isInsertSectionHeader(text) {
+  const t = text.toLowerCase().trim();
+  return (
+    t.startsWith('insert') ||
+    t === 'insert cards:' ||
+    t === 'insert cards' ||
+    t === 'inserts:' ||
+    t === 'inserts' ||
+    t === 'insert sets' ||
+    t === 'insert sets:'
+  );
+}
+
+/**
  * Main page parser using cheerio.
- * Tries multiple strategies to extract parallel data.
+ * Tries multiple strategies to extract parallel and insert data.
+ * Returns { parallels: [...], inserts: [...] }
  */
 function parseChecklistPage(html) {
   const $ = cheerio.load(html);
   const parallels = [];
+  const inserts = [];
   const seen = new Set();
+
+  // Track elements that belong to the insert section so strategies 2-4 skip them
+  const insertElements = new Set();
 
   function addParallel(parsed) {
     if (!parsed || !parsed.name) return;
@@ -214,8 +244,105 @@ function parseChecklistPage(html) {
     parallels.push(parsed);
   }
 
+  // ── First pass: Find insert section boundaries and extract insert data ──
+  $('h2, h3, h4, strong, b, p').each((_, el) => {
+    const headText = $(el).text().trim();
+    if (!isInsertSectionHeader(headText)) return;
+
+    // Mark this element as part of insert section
+    insertElements.add(el);
+
+    // Walk sibling elements after the insert header to find sub-headers and their parallel lists
+    let current = $(el).next();
+    // If the header is inside a <p> or <strong>, walk from the parent
+    const parentTag = $(el).prop('tagName')?.toLowerCase();
+    if (['strong', 'b'].includes(parentTag) || ['strong', 'b'].includes($(el).prop('tagName')?.toLowerCase())) {
+      current = $(el).parent().next();
+    }
+
+    let currentInsert = null;
+
+    for (let i = 0; i < 100; i++) {
+      if (!current.length) break;
+      const tag = current.prop('tagName')?.toLowerCase();
+      const text = current.text().trim();
+
+      // Stop if we hit another major section header (parallels, autographs, etc.)
+      if (['h2'].includes(tag) && !isInsertSectionHeader(text)) break;
+      if (tag === 'h2' || (tag === 'h3' && isParallelHeader(text))) break;
+
+      // Mark this element as belonging to insert section
+      insertElements.add(current[0]);
+
+      // Check if this is an insert sub-header (H3, H4, or bold text)
+      const isSubHeader =
+        ['h3', 'h4'].includes(tag) ||
+        (tag === 'p' && current.find('strong, b').length > 0 && text.length < 100 && !text.includes('/'));
+
+      if (isSubHeader && !isInsertSectionHeader(text) && !isParallelHeader(text)) {
+        // Save previous insert if it exists
+        if (currentInsert) {
+          inserts.push(currentInsert);
+        }
+
+        // Extract the insert name — use the bold text if it's a <p> with <strong>
+        let insertName = text;
+        if (tag === 'p') {
+          const boldText = current.find('strong, b').first().text().trim();
+          if (boldText) insertName = boldText;
+        }
+
+        // Clean up the insert name (remove trailing colons, "Cards" suffix, etc.)
+        insertName = insertName.replace(/[:]+$/, '').replace(/\s+Cards?\s*$/i, '').trim();
+
+        // Try to extract odds from the header text
+        const odds = parseOdds(text);
+
+        // Try to extract exclusivity from the header text
+        const excl = parseExclusivity(text);
+
+        currentInsert = {
+          name: insertName,
+          parallels: [],
+          odds: odds,
+          exclusivity: excl,
+        };
+      } else if (currentInsert) {
+        // Look for parallel lists under the current insert
+        if (tag === 'ul' || tag === 'ol') {
+          current.find('li').each((_, li) => {
+            insertElements.add(li);
+            const parsed = parseParallelLine($(li).text());
+            if (parsed) currentInsert.parallels.push(parsed);
+          });
+        } else if (tag === 'p' && !isSubHeader) {
+          // Check for comma-separated parallels or odds info in paragraph text
+          const oddsFromP = parseOdds(text);
+          if (oddsFromP && !currentInsert.odds) {
+            currentInsert.odds = oddsFromP;
+          }
+          // Try to parse parallel lines from the paragraph
+          if (parsePrintRun(text) || parseExclusivity(text)) {
+            text.split(/[,\n]/).forEach(chunk => {
+              const parsed = parseParallelLine(chunk);
+              if (parsed) currentInsert.parallels.push(parsed);
+            });
+          }
+        }
+      }
+
+      current = current.next();
+    }
+
+    // Don't forget the last insert
+    if (currentInsert) {
+      inserts.push(currentInsert);
+    }
+  });
+
   // ── Strategy 1: Find "Parallels" section headers and scrape the following list ──
   $('h2, h3, h4, strong, b, p').each((_, el) => {
+    if (insertElements.has(el)) return; // Skip insert section elements
     const headText = $(el).text().trim();
     if (!isParallelHeader(headText)) return;
 
@@ -226,9 +353,11 @@ function parseChecklistPage(html) {
     let target = $(el).next();
     for (let i = 0; i < 10; i++) {
       if (!target.length) break;
+      if (insertElements.has(target[0])) break; // Stop at insert section
       const tag = target.prop('tagName')?.toLowerCase();
       if (tag === 'ul' || tag === 'ol') {
         target.find('li').each((_, li) => {
+          if (insertElements.has(li)) return;
           addParallel(parseParallelLine($(li).text()));
         });
         break;
@@ -249,6 +378,7 @@ function parseChecklistPage(html) {
   // ── Strategy 2: Scan all <li> items across the page for parallel-like entries ──
   // Heuristic: li items that mention a print run or known exclusivity are likely parallels
   $('li').each((_, el) => {
+    if (insertElements.has(el)) return; // Skip insert section elements
     const text = $(el).text().trim();
     if (!text || text.length > 200) return; // skip very long items (card descriptions)
     const prInfo = parsePrintRun(text);
@@ -260,6 +390,7 @@ function parseChecklistPage(html) {
 
   // ── Strategy 3: Look for tables with parallel data ──
   $('table').each((_, table) => {
+    if (insertElements.has(table)) return; // Skip insert section elements
     const headers = $(table)
       .find('th')
       .map((_, th) => $(th).text().toLowerCase().trim())
@@ -308,7 +439,7 @@ function parseChecklistPage(html) {
     }
   }
 
-  return parallels;
+  return { parallels, inserts };
 }
 
 /**
@@ -359,6 +490,14 @@ async function fetchWithRetry(url, retries = 3, delayMs = 2000) {
         },
       });
 
+      // Handle 429 Too Many Requests with exponential backoff
+      if (res.status === 429) {
+        const backoffMs = 30000 * Math.pow(2, attempt - 1); // 30s, 60s, 120s
+        console.warn(`HTTP 429 Too Many Requests — backing off ${backoffMs / 1000}s...`);
+        await new Promise(r => setTimeout(r, backoffMs));
+        continue;
+      }
+
       if (!res.ok) {
         throw new Error(`HTTP ${res.status} ${res.statusText}`);
       }
@@ -377,24 +516,19 @@ async function fetchWithRetry(url, retries = 3, delayMs = 2000) {
       }
     }
   }
+
+  throw new Error(`Failed to fetch ${url} after ${retries} attempts`);
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Process a single URL ─────────────────────────────────────────────────────
 
-async function main() {
-  const url = process.argv[2];
-  if (!url) {
-    console.error('Usage: node scripts/scrape-checklist.mjs <cardboardconnection-url>');
-    process.exit(1);
-  }
-
+async function processUrl(url, index, total) {
   // Validate URL
   let parsed;
   try {
     parsed = new URL(url);
   } catch {
-    console.error(`Invalid URL: ${url}`);
-    process.exit(1);
+    throw new Error(`Invalid URL: ${url}`);
   }
 
   if (!parsed.hostname.includes('cardboardconnection.com')) {
@@ -405,9 +539,7 @@ async function main() {
   const urlSlug = parsed.pathname.replace(/^\//, '').replace(/\/$/, '');
   const sportInfo = detectSport(urlSlug);
   if (!sportInfo) {
-    console.error(`Could not detect sport from URL slug: "${urlSlug}"`);
-    console.error('Supported: basketball/nba, football/nfl, baseball/mlb, formula/f1, wnba');
-    process.exit(1);
+    throw new Error(`Could not detect sport from URL slug: "${urlSlug}"`);
   }
 
   const { sport, subdir } = sportInfo;
@@ -420,24 +552,25 @@ async function main() {
   const htmlPath = resolve(outDir, `${stem}.html`);
   const jsonPath = resolve(outDir, `${stem}.json`);
 
-  // ── Rate limit: pause 1.5s before fetching (polite crawl) ──
-  console.log('Waiting 1.5s before fetching (rate limiting)...');
-  await new Promise(r => setTimeout(r, 1500));
-
   // Fetch HTML
   const html = await fetchWithRetry(url);
 
   // Save raw HTML
   writeFileSync(htmlPath, html, 'utf-8');
-  console.log(`HTML saved to: ${htmlPath}`);
 
   // Parse
   const $ = cheerio.load(html);
   const slugMeta = parseSlugMeta(stem);
   const meta = extractPageMeta($, slugMeta);
 
-  const parallels = parseChecklistPage(html);
-  console.log(`Found ${parallels.length} parallel(s)`);
+  const { parallels, inserts } = parseChecklistPage(html);
+
+  const label = stem.length > 40 ? stem.slice(0, 40) + '...' : stem;
+  if (total > 1) {
+    console.log(`[${index}/${total}] ${label} — ${parallels.length} parallels, ${inserts.length} inserts`);
+  } else {
+    console.log(`Found ${parallels.length} parallel(s) and ${inserts.length} insert set(s)`);
+  }
 
   const output = {
     url,
@@ -447,23 +580,118 @@ async function main() {
     sport,
     year: meta.year,
     parallels,
+    inserts,
   };
 
   writeFileSync(jsonPath, JSON.stringify(output, null, 2), 'utf-8');
-  console.log(`JSON saved to: ${jsonPath}`);
 
-  if (parallels.length === 0) {
-    console.warn('No parallels extracted — the page structure may not match expected patterns.');
-    console.warn('Inspect the raw HTML file for clues and consider updating the parser.');
-  } else {
-    console.log('\nSample parallels:');
-    parallels.slice(0, 5).forEach(p => {
-      const pr = p.printRun ? `/${p.printRun}` : p.serialNumbered ? 'serial' : 'unnumbered';
-      const excl = p.exclusivity ? ` [${p.exclusivity}]` : '';
-      console.log(`  ${p.name} — ${pr}${excl}`);
-    });
-    if (parallels.length > 5) console.log(`  ... and ${parallels.length - 5} more`);
+  if (total === 1) {
+    console.log(`HTML saved to: ${htmlPath}`);
+    console.log(`JSON saved to: ${jsonPath}`);
+
+    if (parallels.length === 0 && inserts.length === 0) {
+      console.warn('No parallels or inserts extracted — the page structure may not match expected patterns.');
+      console.warn('Inspect the raw HTML file for clues and consider updating the parser.');
+    } else {
+      if (parallels.length > 0) {
+        console.log('\nSample parallels:');
+        parallels.slice(0, 5).forEach(p => {
+          const pr = p.printRun ? `/${p.printRun}` : p.serialNumbered ? 'serial' : 'unnumbered';
+          const excl = p.exclusivity ? ` [${p.exclusivity}]` : '';
+          console.log(`  ${p.name} — ${pr}${excl}`);
+        });
+        if (parallels.length > 5) console.log(`  ... and ${parallels.length - 5} more`);
+      }
+
+      if (inserts.length > 0) {
+        console.log('\nInsert sets:');
+        inserts.slice(0, 5).forEach(ins => {
+          const pCount = ins.parallels.length;
+          const odds = ins.odds ? ` (${ins.odds})` : '';
+          const excl = ins.exclusivity ? ` [${ins.exclusivity}]` : '';
+          console.log(`  ${ins.name} — ${pCount} parallel(s)${odds}${excl}`);
+        });
+        if (inserts.length > 5) console.log(`  ... and ${inserts.length - 5} more`);
+      }
+    }
   }
+
+  return { parallels: parallels.length, inserts: inserts.length };
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+
+async function main() {
+  const args = process.argv.slice(2);
+
+  // Check for --batch mode
+  const batchIdx = args.indexOf('--batch');
+  if (batchIdx !== -1) {
+    const batchFile = args[batchIdx + 1];
+    if (!batchFile) {
+      console.error('Usage: node scripts/scrape-checklist.mjs --batch <url-list-file>');
+      process.exit(1);
+    }
+
+    const batchPath = resolve(process.cwd(), batchFile);
+    if (!existsSync(batchPath)) {
+      console.error(`Batch file not found: ${batchPath}`);
+      process.exit(1);
+    }
+
+    const lines = readFileSync(batchPath, 'utf-8')
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l && !l.startsWith('#'));
+
+    console.log(`Batch mode: ${lines.length} URL(s) to process\n`);
+
+    const failedUrls = [];
+    let successCount = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      const url = lines[i];
+
+      // Rate limit: 5-second delay between requests (skip for first)
+      if (i > 0) {
+        console.log('Waiting 5s between requests...');
+        await new Promise(r => setTimeout(r, 5000));
+      }
+
+      try {
+        await processUrl(url, i + 1, lines.length);
+        successCount++;
+      } catch (err) {
+        console.error(`[${i + 1}/${lines.length}] FAILED: ${url}`);
+        console.error(`  Error: ${err.message}`);
+        failedUrls.push(url);
+      }
+    }
+
+    console.log(`\nBatch complete: ${successCount}/${lines.length} succeeded`);
+
+    if (failedUrls.length > 0) {
+      const failedPath = batchPath.replace(/(\.\w+)?$/, '-failed.txt');
+      writeFileSync(failedPath, failedUrls.join('\n') + '\n', 'utf-8');
+      console.log(`${failedUrls.length} failed URL(s) written to: ${failedPath}`);
+    }
+
+    return;
+  }
+
+  // Single URL mode
+  const url = args[0];
+  if (!url) {
+    console.error('Usage: node scripts/scrape-checklist.mjs <cardboardconnection-url>');
+    console.error('       node scripts/scrape-checklist.mjs --batch <url-list-file>');
+    process.exit(1);
+  }
+
+  // ── Rate limit: pause 1.5s before fetching (polite crawl) ──
+  console.log('Waiting 1.5s before fetching (rate limiting)...');
+  await new Promise(r => setTimeout(r, 1500));
+
+  await processUrl(url, 1, 1);
 }
 
 main().catch(err => {

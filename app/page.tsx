@@ -6,6 +6,12 @@ import DropCalendar from './components/drops/DropCalendar';
 
 const tools = [
   {
+    href: '/xray',
+    title: 'Card X-Ray',
+    description: 'Paste any eBay link to see exactly what you\'re looking at',
+    icon: '🔬',
+  },
+  {
     href: '/decoder',
     title: 'What Did I Pull?',
     description: 'Identify any card by matching its color and pattern',
@@ -22,12 +28,6 @@ const tools = [
     title: 'Glossary',
     description: 'Every term a collector needs to know, from A to Z',
     icon: '📚',
-  },
-  {
-    href: '/xray',
-    title: 'Card X-Ray',
-    description: 'Paste any eBay link to see exactly what you\'re looking at',
-    icon: '🔬',
   },
 ];
 

@@ -46,7 +46,7 @@ export function RarityRainbow({ rainbow, product }: Props) {
           fontFamily: "'IBM Plex Sans', sans-serif",
         }}>
           {product.productName} {product.year} — {totalParallels} parallels
-          {currentIdx >= 0 && ` — this card is #${currentIdx + 1} of ${totalParallels}`}
+          {currentIdx >= 0 && ` — this card is #${rainbow[currentIdx].rarityRank} of ${totalParallels} in rarity`}
         </p>
       )}
 

@@ -87,7 +87,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
         {[
           { label: 'Print Run', value: formatPrintRun(parallel.printRun) },
-          { label: 'Rarity', value: parallel.rarityRank === 1 ? `Most common of ${parallel.totalParallels}` : `${ordinal(parallel.totalParallels - parallel.rarityRank + 1)} rarest of ${parallel.totalParallels}` },
+          { label: 'Rarity', value: parallel.rarityRank === parallel.totalParallels ? `Most common of ${parallel.totalParallels}` : `${ordinal(parallel.rarityRank)} rarest of ${parallel.totalParallels}` },
           { label: 'Serial Numbered', value: parallel.serialNumbered ? 'Yes' : 'No' },
           { label: 'Found In', value: parallel.boxExclusivity?.includes('All') ? 'All box types' : parallel.boxExclusivity?.join(', ') || 'Unknown' },
         ].map((stat) => (
@@ -107,7 +107,7 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
         <div style={{ height: 8, background: colors.surface, borderRadius: 4, border: `1px solid ${colors.border}`, position: 'relative', overflow: 'visible' }}>
           <div style={{
             position: 'absolute',
-            left: `${(parallel.rarityRank / parallel.totalParallels) * 100}%`,
+            left: `${((parallel.totalParallels - parallel.rarityRank) / (parallel.totalParallels - 1 || 1)) * 100}%`,
             top: -2, width: 12, height: 12, borderRadius: '50%',
             background: colors.green, transform: 'translateX(-50%)',
           }} />
@@ -213,8 +213,8 @@ export function DecoderResult({ parallel, allParallels, productName, productYear
           {parallel.isOneOfOne
             ? `This is a 1-of-1 card — only one exists in the entire world. It's the rarest type of card you can pull.`
             : parallel.printRun
-              ? `Only ${parallel.printRun} of these cards were printed. ${parallel.serialNumbered ? 'Each one is stamped with a unique number.' : ''} Out of ${parallel.totalParallels} parallel versions, yours is the ${ordinal(parallel.totalParallels - parallel.rarityRank + 1)} rarest.`
-              : `This parallel has an unlimited print run — there's no set number that were made. Out of ${parallel.totalParallels} parallels for this product, yours is the ${parallel.rarityRank === 1 ? 'most common' : ordinal(parallel.totalParallels - parallel.rarityRank + 1) + ' rarest'}.`
+              ? `Only ${parallel.printRun} of these cards were printed. ${parallel.serialNumbered ? 'Each one is stamped with a unique number.' : ''} Out of ${parallel.totalParallels} parallel versions, yours is the ${ordinal(parallel.rarityRank)} rarest.`
+              : `This parallel has an unlimited print run — there's no set number that were made. Out of ${parallel.totalParallels} parallels for this product, yours is the ${parallel.rarityRank === parallel.totalParallels ? 'most common' : ordinal(parallel.rarityRank) + ' rarest'}.`
           }
         </p>
         {parallel.description && <p style={{ marginTop: 8 }}>{parallel.description}</p>}

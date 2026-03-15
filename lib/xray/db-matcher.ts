@@ -98,7 +98,7 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
     .from('parallels')
     .select('id, name, color_hex, print_run, serial_numbered, rarity_rank, is_one_of_one, description, box_exclusivity')
     .eq('product_id', p.id)
-    .order('rarity_rank', { ascending: true });
+    .order('rarity_rank', { ascending: false });
 
   if (parError || !parallels) {
     return { product: matchedProduct, parallel: null, rainbow: [] };

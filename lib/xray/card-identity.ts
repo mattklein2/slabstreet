@@ -30,12 +30,22 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
   // Pass 2: Fill gaps from title
   const fromTitle = parseTitleFallback(title);
 
+  // If specs parallel matches the set name, it's likely the set name not a real parallel
+  // (e.g. Parallel/Variety: "Prizm" for a Prizm card — eBay sellers do this constantly)
+  const specsParallel = fromSpecs.parallel;
+  const resolvedSet = fromSpecs.set || fromTitle.set;
+  const parallelMatchesSet = specsParallel && resolvedSet &&
+    specsParallel.toLowerCase() === resolvedSet.toLowerCase();
+  const resolvedParallel = parallelMatchesSet
+    ? (fromTitle.parallel || specsParallel)  // prefer title parse when specs parallel = set name
+    : (specsParallel || fromTitle.parallel);
+
   const identity: CardIdentity = {
     player: fromSpecs.player || fromTitle.player,
     year: fromSpecs.year || fromTitle.year,
     brand: fromSpecs.brand || fromTitle.brand,
-    set: fromSpecs.set || fromTitle.set,
-    parallel: fromSpecs.parallel || fromTitle.parallel,
+    set: resolvedSet,
+    parallel: resolvedParallel,
     cardNumber: fromSpecs.cardNumber || fromTitle.cardNumber,
     sport: fromSpecs.sport || fromTitle.sport,
     isRookie: fromSpecs.isRookie || fromTitle.isRookie || false,

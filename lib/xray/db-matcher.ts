@@ -59,10 +59,19 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
     // Set name match (most important)
     if (identity.set) {
       const setLower = identity.set.toLowerCase();
-      if (pNameLower.includes(setLower)) score += 10;
-      // Handle "Donruss Optic" → product named "Optic"
-      else if (setLower === 'optic' && pNameLower.includes('optic')) score += 10;
-      else if (setLower === 'chrome' && pNameLower.includes('chrome')) score += 10;
+      // Clean the eBay set name: strip brand/year prefixes
+      // e.g. "Panini 2024 Panini Select" → "select", "Topps 2024 Chrome" → "chrome"
+      const cleanedSet = setLower
+        .replace(/\b(panini|topps|upper\s*deck|bowman|donruss|leaf|fleer|score)\b/gi, '')
+        .replace(/\b20\d{2}(?:-\d{2})?\b/g, '')
+        .trim()
+        .replace(/\s+/g, ' ');
+
+      if (pNameLower === cleanedSet) score += 12;           // exact match after cleaning
+      else if (pNameLower.includes(setLower)) score += 10;  // product contains full eBay set
+      else if (setLower.includes(pNameLower)) score += 8;   // eBay set contains product name
+      else if (cleanedSet.includes(pNameLower)) score += 8; // cleaned set contains product name
+      else if (pNameLower.includes(cleanedSet)) score += 8; // product contains cleaned set
     }
 
     // Brand match

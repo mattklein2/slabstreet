@@ -16,8 +16,10 @@ export function RarityRainbow({ rainbow, product }: Props) {
 
   if (rainbow.length === 0) return null;
 
-  const totalParallels = rainbow.length;
-  const currentIdx = rainbow.findIndex(r => r.isCurrentCard);
+  // Show rarest at top (rank 1 = rarest)
+  const sorted = [...rainbow].sort((a, b) => a.rarityRank - b.rarityRank);
+  const totalParallels = sorted.length;
+  const currentIdx = sorted.findIndex(r => r.isCurrentCard);
 
   return (
     <section style={{
@@ -40,18 +42,33 @@ export function RarityRainbow({ rainbow, product }: Props) {
 
       {product && (
         <p style={{
-          margin: '0 0 16px',
-          fontSize: 13,
-          color: colors.muted,
+          margin: '0 0 20px',
+          fontSize: 14,
+          color: colors.secondary,
           fontFamily: "'IBM Plex Sans', sans-serif",
         }}>
           {product.productName} {product.year} — {totalParallels} parallels
-          {currentIdx >= 0 && ` — this card is #${rainbow[currentIdx].rarityRank} of ${totalParallels} in rarity`}
+          {currentIdx >= 0 && (
+            <span style={{
+              display: 'inline-block',
+              marginLeft: 8,
+              padding: '3px 10px',
+              borderRadius: 999,
+              fontSize: 12,
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontWeight: 700,
+              color: colors.green,
+              background: `${colors.green}18`,
+              border: `1px solid ${colors.green}40`,
+            }}>
+              #{sorted[currentIdx].rarityRank} of {totalParallels} in rarity
+            </span>
+          )}
         </p>
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {rainbow.map((entry, i) => {
+        {sorted.map((entry, i) => {
           const level = getRarityLevel(entry.rarityRank, totalParallels, entry.isOneOfOne);
           const colorKey = getRarityColorKey(level) as keyof typeof colors;
           const rarityColor = colors[colorKey];
@@ -135,7 +152,7 @@ export function RarityRainbow({ rainbow, product }: Props) {
       </div>
 
       {/* Box exclusivity note */}
-      {rainbow.some(r => r.isCurrentCard && r.boxExclusivity?.length) && (
+      {sorted.some(r => r.isCurrentCard && r.boxExclusivity?.length) && (
         <p style={{
           marginTop: 12,
           fontSize: 13,
@@ -144,7 +161,7 @@ export function RarityRainbow({ rainbow, product }: Props) {
           fontStyle: 'italic',
         }}>
           This parallel is exclusive to: {
-            rainbow.find(r => r.isCurrentCard)?.boxExclusivity?.join(', ')
+            sorted.find(r => r.isCurrentCard)?.boxExclusivity?.join(', ')
           }
         </p>
       )}

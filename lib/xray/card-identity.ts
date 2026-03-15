@@ -36,9 +36,19 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
   const resolvedSet = fromSpecs.set || fromTitle.set;
   const parallelMatchesSet = specsParallel && resolvedSet &&
     specsParallel.toLowerCase() === resolvedSet.toLowerCase();
+
+  // Cross-check specs parallel against title. Sellers often copy-paste wrong item specifics
+  // but get the title right (buyers see the title, so sellers care about it being accurate).
+  // If the distinctive words from specs parallel don't appear in the title, prefer title.
+  const specsParallelConfirmed = specsParallel && !parallelMatchesSet
+    ? parallelConfirmedByTitle(specsParallel, title)
+    : false;
+
   const resolvedParallel = parallelMatchesSet
-    ? (fromTitle.parallel || specsParallel)  // prefer title parse when specs parallel = set name
-    : (specsParallel || fromTitle.parallel);
+    ? (fromTitle.parallel || specsParallel || null)  // prefer title parse when specs parallel = set name
+    : specsParallelConfirmed
+      ? (specsParallel || null)                       // specs parallel confirmed by title
+      : (fromTitle.parallel || specsParallel || null); // prefer title when specs not in title
 
   const identity: CardIdentity = {
     player: fromSpecs.player || fromTitle.player,
@@ -73,6 +83,29 @@ function normalizeSport(raw: string | null): string | null {
   if (lower.includes('soccer')) return 'Soccer';
   if (lower.includes('hockey')) return 'NHL';
   return raw;
+}
+
+// ── Parallel cross-check ────────────────────────────────────
+// Generic terms that don't help distinguish one parallel from another
+const GENERIC_PARALLEL_TERMS = new Set([
+  'prizm', 'refractor', 'xfractor', 'holo', 'parallel', 'variation',
+  'variant', 'die', 'cut', 'die-cut',
+]);
+
+/**
+ * Check whether the specs parallel is confirmed by the listing title.
+ * Extracts distinctive words (colors, variant names) from the specs parallel
+ * and checks if at least one appears in the title.
+ */
+function parallelConfirmedByTitle(specsParallel: string, title: string): boolean {
+  const titleLower = title.toLowerCase();
+  // Full substring match
+  if (titleLower.includes(specsParallel.toLowerCase())) return true;
+  // Check distinctive words (skip generic terms like "Prizm", "Refractor")
+  const words = specsParallel.toLowerCase().split(/[\s/&,]+/).filter(w =>
+    w.length > 2 && !GENERIC_PARALLEL_TERMS.has(w)
+  );
+  return words.length > 0 && words.some(w => titleLower.includes(w));
 }
 
 // ── Title parser ─────────────────────────────────────────────
@@ -177,10 +210,15 @@ function parseTitleFallback(title: string): TitleParsed {
     }
   }
 
-  // Parallel
+  // Parallel — find color/variant keyword and capture compound name (e.g. "Pink Prizm")
+  const cleanLower = clean.toLowerCase();
   for (const par of PARALLELS) {
-    if (clean.toLowerCase().includes(par.toLowerCase())) {
-      result.parallel = par;
+    const idx = cleanLower.indexOf(par.toLowerCase());
+    if (idx !== -1) {
+      // Try to capture a compound parallel (e.g. "Pink Prizm", "Neon Green Scope")
+      // by grabbing the matched word plus surrounding parallel-adjacent words
+      const after = clean.substring(idx + par.length).match(/^\s+(Prizm|Refractor|Xfractor|Holo|Scope|Shimmer|Disco|Wave|Ice)\b/i);
+      result.parallel = after ? `${par} ${after[1]}` : par;
       break;
     }
   }

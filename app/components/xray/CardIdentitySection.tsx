@@ -17,6 +17,7 @@ export function CardIdentitySection({ identity, listing }: Props) {
     { label: 'Year', value: identity.year },
     { label: 'Set', value: [identity.brand, identity.set].filter(Boolean).join(' ') || null },
     { label: 'Parallel', value: identity.parallel || 'Base' },
+    { label: 'Insert', value: identity.insert || null },
     { label: 'Card #', value: identity.cardNumber ? `#${identity.cardNumber}` : null },
     { label: 'Rookie', value: identity.isRookie ? 'Yes' : null },
     {

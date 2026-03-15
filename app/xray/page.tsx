@@ -146,7 +146,12 @@ export default function XRayPage() {
             <CardIdentitySection identity={result.identity} listing={result.listing} />
 
             {/* Section 2: Rarity Rainbow */}
-            <RarityRainbow rainbow={result.rainbow} product={result.product} />
+            <RarityRainbow
+              rainbow={result.rainbow}
+              product={result.product}
+              cardSetName={result.matchedCardSet?.cardSetName}
+              cardSetType={result.matchedCardSet?.type}
+            />
 
             {/* Section 4: Price Context */}
             <PriceContext priceComps={result.priceComps} />

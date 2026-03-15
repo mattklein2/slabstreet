@@ -9,9 +9,11 @@ import type { RainbowEntry, MatchedProduct } from '../../../lib/xray/types';
 interface Props {
   rainbow: RainbowEntry[];
   product: MatchedProduct | null;
+  cardSetName?: string;
+  cardSetType?: string;
 }
 
-export function RarityRainbow({ rainbow, product }: Props) {
+export function RarityRainbow({ rainbow, product, cardSetName, cardSetType }: Props) {
   const { colors } = useTheme();
 
   if (rainbow.length === 0) return null;
@@ -47,7 +49,7 @@ export function RarityRainbow({ rainbow, product }: Props) {
           color: colors.secondary,
           fontFamily: "'IBM Plex Sans', sans-serif",
         }}>
-          {product.productName} {product.year} — {totalParallels} parallels
+          {product.productName} {product.year} — {cardSetName && cardSetType !== 'base' ? `${cardSetName} Insert — ` : ''}{totalParallels} parallels
           {currentIdx >= 0 && (
             <span style={{
               display: 'inline-block',

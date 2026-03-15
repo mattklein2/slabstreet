@@ -8,6 +8,7 @@ interface Props {
     setDescription: string | null;
     parallelDescription: string | null;
     flagshipContext: string | null;
+    insertDescription: string | null;
   };
   productName: string | null;
 }
@@ -15,7 +16,7 @@ interface Props {
 export function SetEducation({ education, productName }: Props) {
   const { colors } = useTheme();
 
-  const hasContent = education.setDescription || education.parallelDescription || education.flagshipContext;
+  const hasContent = education.setDescription || education.parallelDescription || education.flagshipContext || education.insertDescription;
   if (!hasContent) return null;
 
   return (
@@ -54,6 +55,11 @@ export function SetEducation({ education, productName }: Props) {
         {education.setDescription && (
           <p style={{ margin: 0 }}>
             {education.setDescription}
+          </p>
+        )}
+        {education.insertDescription && (
+          <p style={{ margin: 0, color: colors.amber, fontWeight: 500 }}>
+            {education.insertDescription}
           </p>
         )}
         {education.parallelDescription && (

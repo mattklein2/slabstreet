@@ -87,6 +87,9 @@ export async function POST(request: NextRequest) {
       flagshipContext: match.product?.isFlagship
         ? `${match.product.productName} is a flagship product — one of the most collected and recognized sets in the hobby.`
         : null,
+      insertDescription: match.cardSet?.type === 'insert'
+        ? match.cardSet.description || `${match.cardSet.cardSetName} is an insert set${match.cardSet.odds ? ` found at ${match.cardSet.odds}` : ''}.`
+        : null,
     };
 
     // Determine match status
@@ -100,6 +103,7 @@ export async function POST(request: NextRequest) {
       identity,
       product: match.product,
       matchedParallel: match.parallel,
+      matchedCardSet: match.cardSet,
       rainbow: match.rainbow,
       priceComps,
       education,

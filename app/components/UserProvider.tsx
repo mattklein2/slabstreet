@@ -42,13 +42,22 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  async function fetchProfile(userId: string) {
-    const { data } = await supabase
+  async function fetchProfile(userId: string, retries = 3): Promise<void> {
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single();
-    setProfile(data as Profile | null);
+
+    if (error && retries > 0) {
+      // Retry after a short delay — handles lock race with middleware
+      await new Promise(r => setTimeout(r, 300));
+      return fetchProfile(userId, retries - 1);
+    }
+
+    if (data) {
+      setProfile(data as Profile);
+    }
   }
 
   async function refreshProfile() {
@@ -64,14 +73,16 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
-      setUser(currentUser);
-      if (currentUser) {
-        fetchProfile(currentUser.id);
-      }
-      setLoading(false);
-    });
+    // Small delay lets middleware finish refreshing the session first
+    const timer = setTimeout(() => {
+      supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
+        setUser(currentUser);
+        if (currentUser) {
+          fetchProfile(currentUser.id);
+        }
+        setLoading(false);
+      });
+    }, 100);
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -87,7 +98,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

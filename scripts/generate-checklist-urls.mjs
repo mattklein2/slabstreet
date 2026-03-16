@@ -103,10 +103,13 @@ function slugify(str) {
  */
 function formatYear(year, sport) {
   if (sport === 'NBA' || sport === 'NFL') {
+    // If already in split-year format (e.g., "2025-26"), return as-is
+    if (/^\d{4}-\d{2}$/.test(year)) return year;
     // Split year: 2024 → "2024-25"
-    const nextYear = (parseInt(year, 10) + 1) % 100;
+    const base = parseInt(year, 10);
+    const nextYear = (base + 1) % 100;
     const nextStr = nextYear.toString().padStart(2, '0');
-    return `${year}-${nextStr}`;
+    return `${base}-${nextStr}`;
   }
   return year;
 }

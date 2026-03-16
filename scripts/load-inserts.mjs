@@ -60,6 +60,77 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // ── Constants ───────────────────────────────────────────────────────────────
 
 const SPORTS = ['nba', 'nfl', 'mlb', 'wnba', 'f1'];
+
+/**
+ * Skip insert names that are actually page junk scraped by mistake.
+ * These patterns catch review sections, box break stats, autograph headers, etc.
+ */
+const JUNK_INSERT_PATTERNS = [
+  /box\s*break\s*average/i,
+  /break\s*average/i,
+  /white\s*sparkle\s*packs?/i,
+  /autographs?\s*$/i,            // "2024 Prizm Basketball Autographs" (section header, not insert)
+  /autographs?\s*&\s*memorabilia/i,
+  /review\s*and\s*analysis/i,
+  /strengths.*value.*collector/i,
+  /\bcons\b$/i,                  // "Cons" section from reviews
+  /\bpros\b$/i,                  // "Pros" section from reviews
+  /overall\s*rating/i,
+  /value\s*breakdown/i,
+  /memorabilia\s*and\s*relics/i,
+  /patches.*swatches.*dual/i,
+  /collector\s*appeal/i,
+  /set\s*review/i,
+  /where\s*to\s*buy/i,
+  /release\s*date/i,
+  /price\s*guide/i,
+  /checklist\s*info/i,
+  /what\s*to\s*expect/i,
+  /\bconfiguration\b/i,
+  /\bfinal\s*verdict\b/i,
+  /box\s*and\s*case\s*breakdown/i,
+  /card\s*gallery/i,
+  /\bchecklist\b$/i,
+  /printing\s*plates/i,
+  /hobby\s*box/i,
+  /retail\s*box/i,
+  /blaster\s*box/i,
+  /fotl\s*box/i,
+  /fast\s*break\s*box/i,
+  /mega\s*box/i,
+  /cello\s*box/i,
+  /hanger\s*box/i,
+  /pack\s*odds/i,
+  /variations?\s*guide/i,
+  /error\s*cards?/i,
+  /short\s*prints?\s*guide/i,
+  /autographs?\s*\/?\s*relics?/i,
+  /autograph\s*sets?$/i,
+  /base\s*parallels?(\s*breakdown)?$/i,
+  /base\s*set\s*subsets?/i,
+  /key\s*numbered\s*card/i,
+  /multi-?pack\s*break/i,
+  /cello.*break/i,
+  /numbered\s*card\s*notes/i,
+  /product\s*breakdown/i,
+  /parallel\s*(breakdown|overview|guide)/i,
+  /insert\s*(breakdown|overview|guide|checklist)/i,
+];
+
+/** Single words that are parallel colors/finishes, not insert set names */
+const PARALLEL_NOT_INSERT = new Set([
+  'green', 'pink', 'blue', 'red', 'gold', 'silver', 'purple', 'orange',
+  'black', 'white', 'yellow', 'teal', 'bronze', 'neon', 'ice', 'disco',
+  'shimmer', 'wave', 'holo', 'scope', 'mojo',
+]);
+
+function isJunkInsertName(name) {
+  if (JUNK_INSERT_PATTERNS.some(pat => pat.test(name))) return true;
+  // Single-word color names are parallels, not inserts
+  const trimmed = name.trim().toLowerCase();
+  if (PARALLEL_NOT_INSERT.has(trimmed)) return true;
+  return false;
+}
 const CHECKLIST_DIR = resolve(ROOT, 'data', 'checklists');
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -192,8 +263,15 @@ async function main() {
         continue;
       }
 
-      // Score by name similarity
-      const searchName = [data.brand, data.product].filter(Boolean).join(' ');
+      // Score by name similarity — strip review/checklist suffixes from search name
+      let searchName = [data.brand, data.product].filter(Boolean).join(' ');
+      searchName = searchName
+        .replace(/\s*(set\s+)?review\s+and\s+checklist\s*$/i, '')
+        .replace(/\s*checklist\s+and\s+review\s*$/i, '')
+        .replace(/\s*trading\s+card\s+(box\s+)?set\s*$/i, '')
+        .replace(/\s*nba\s+trading\s+card\s*$/i, '')
+        .replace(/\s*cards?\s*$/i, '')
+        .trim();
       const scored = products.map(p => ({
         ...p,
         score: nameSimilarity(searchName, p.name),
@@ -214,6 +292,12 @@ async function main() {
       for (const insert of data.inserts) {
         const insertName = insert.name;
         if (!insertName) continue;
+
+        // Filter out junk scraped from review/analysis sections
+        if (isJunkInsertName(insertName)) {
+          if (dryRun) console.log(`    [SKIP JUNK] "${insertName}"`);
+          continue;
+        }
 
         // Build card_set row
         const cardSetRow = {
@@ -260,7 +344,6 @@ async function main() {
 
             const parallelRows = insert.parallels.map((p, i) => ({
               card_set_id: cardSetId,
-              product_id: bestMatch.id,
               name: p.name || 'Base',
               print_run: p.printRun ?? null,
               serial_numbered: p.serialNumbered ?? false,

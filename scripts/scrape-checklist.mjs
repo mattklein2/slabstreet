@@ -552,6 +552,13 @@ async function processUrl(url, index, total) {
   const htmlPath = resolve(outDir, `${stem}.html`);
   const jsonPath = resolve(outDir, `${stem}.json`);
 
+  // Skip if already scraped
+  if (existsSync(jsonPath)) {
+    const label = stem.length > 40 ? stem.slice(0, 40) + '...' : stem;
+    if (total > 1) console.log(`[${index}/${total}] SKIP (already exists): ${label}`);
+    return;
+  }
+
   // Fetch HTML
   const html = await fetchWithRetry(url);
 

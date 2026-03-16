@@ -39,8 +39,7 @@ export async function getCachedComps(cacheKey: string): Promise<PriceComps | nul
     .select('*')
     .eq('cache_key', cacheKey)
     .gt('fetched_at', cutoff)
-    .limit(1)
-    .single();
+    .maybeSingle();
 
   if (error || !data) return null;
 
@@ -65,7 +64,7 @@ export async function getCachedComps(cacheKey: string): Promise<PriceComps | nul
     source: data.source as 'sold' | 'active',
     raw: rawStats,
     graded: gradedStats,
-    primarySegment: rawStats ? 'raw' : 'graded',
+    primarySegment: 'raw',  // placeholder — caller recomputes based on identity.isGraded
     listingPrice: 0,   // recomputed by caller with current listing price
     vsMedian: null,     // recomputed by caller
     totalCount: data.total_count,

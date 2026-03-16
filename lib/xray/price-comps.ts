@@ -35,7 +35,8 @@ export async function getPriceComps(
     cacheKey = buildCacheKey(parallelId || null, identity.player, ebayItemId);
     const cached = await getCachedComps(cacheKey);
     if (cached) {
-      // Recompute vsMedian against THIS listing's price (may differ from original)
+      // Recompute listing-dependent fields for THIS specific listing
+      cached.primarySegment = identity.isGraded ? 'graded' : 'raw';
       const primaryStats = cached.primarySegment === 'raw' ? cached.raw : cached.graded;
       if (primaryStats && primaryStats.median > 0) {
         cached.vsMedian = Math.round(((listingPrice - primaryStats.median) / primaryStats.median) * 100);

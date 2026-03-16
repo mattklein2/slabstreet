@@ -1,6 +1,7 @@
 // app/api/xray/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
+import { nanoid } from 'nanoid';
 import { supabase } from '../../../lib/supabase';
 import { parseLink, looksLikeUrl } from '../../../lib/xray/link-parser';
 import { getItem } from '../../../lib/xray/ebay-client';
@@ -114,6 +115,26 @@ export async function POST(request: NextRequest) {
       education,
     };
 
+    // Save result for shareable URL
+    const { data: existing } = await supabase
+      .from('xray_results')
+      .select('id')
+      .eq('ebay_item_id', parsed.itemId)
+      .maybeSingle();
+
+    const resultId = existing?.id || nanoid(12);
+
+    await supabase.from('xray_results').upsert({
+      id: resultId,
+      ebay_item_id: parsed.itemId,
+      match_status: status,
+      result_data: result,
+      player_name: identity.player,
+      year: identity.year,
+      product_name: match.product?.productName || null,
+      sport: identity.sport,
+    }, { onConflict: 'ebay_item_id' });
+
     // Log lookup for analytics (fire-and-forget, don't block response)
     supabase.from('card_lookups').insert({
       url,
@@ -126,7 +147,7 @@ export async function POST(request: NextRequest) {
       if (logErr) console.error('card_lookups insert error:', logErr.message);
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json({ ...result, resultId });
   } catch (err: any) {
     console.error('X-Ray error:', err);
     return NextResponse.json(

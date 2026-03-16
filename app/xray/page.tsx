@@ -5,10 +5,7 @@ import { useState } from 'react';
 import { Header } from '../components/shared/Header';
 import { useTheme } from '../components/ThemeProvider';
 import { XRayInput } from '../components/xray/XRayInput';
-import { CardIdentitySection } from '../components/xray/CardIdentitySection';
-import { RarityRainbow } from '../components/xray/RarityRainbow';
-import { PriceContext } from '../components/xray/PriceContext';
-import { SetEducation } from '../components/xray/SetEducation';
+import { XRayResultDisplay } from '../components/xray/XRayResultDisplay';
 import type { XRayResult, XRayError } from '../../lib/xray/types';
 
 export default function XRayPage() {
@@ -36,7 +33,13 @@ export default function XRayPage() {
         return;
       }
 
-      setResult(data as XRayResult);
+      const xrayResult = data as XRayResult;
+      setResult(xrayResult);
+
+      // Update URL to shareable result page without full navigation
+      if (xrayResult.resultId) {
+        window.history.replaceState(null, '', `/xray/result/${xrayResult.resultId}`);
+      }
     } catch {
       setError('Network error. Please check your connection and try again.');
     } finally {
@@ -109,80 +112,7 @@ export default function XRayPage() {
         )}
 
         {/* Results */}
-        {result && (
-          <>
-            {/* Match status banner */}
-            {result.status === 'unmatched' && (
-              <div style={{
-                padding: '12px 16px',
-                borderRadius: 10,
-                background: `${colors.amber}15`,
-                border: `1px solid ${colors.amber}40`,
-                color: colors.amber,
-                fontSize: 13,
-                fontFamily: "'IBM Plex Sans', sans-serif",
-                marginBottom: 16,
-              }}>
-                We couldn't match this card in our database yet. Showing what we could extract from the listing.
-              </div>
-            )}
-
-            {result.status === 'partial' && (
-              <div style={{
-                padding: '12px 16px',
-                borderRadius: 10,
-                background: `${colors.amber}15`,
-                border: `1px solid ${colors.amber}40`,
-                color: colors.amber,
-                fontSize: 13,
-                fontFamily: "'IBM Plex Sans', sans-serif",
-                marginBottom: 16,
-              }}>
-                We found the set but couldn't match the specific parallel. The rainbow below shows all parallels in this set.
-              </div>
-            )}
-
-            {/* Section 1: Card Identity */}
-            <CardIdentitySection identity={result.identity} listing={result.listing} />
-
-            {/* Section 2: Rarity Rainbow */}
-            <RarityRainbow
-              rainbow={result.rainbow}
-              product={result.product}
-              cardSetName={result.matchedCardSet?.cardSetName}
-              cardSetType={result.matchedCardSet?.type}
-            />
-
-            {/* Section 4: Price Context */}
-            <PriceContext priceComps={result.priceComps} />
-
-            {/* Section 5: Set Education */}
-            <SetEducation
-              education={result.education}
-              productName={result.product?.productName || null}
-            />
-
-            {/* Source link */}
-            <div style={{
-              textAlign: 'center',
-              marginTop: 24,
-            }}>
-              <a
-                href={result.listing.itemUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  fontSize: 13,
-                  fontFamily: "'IBM Plex Mono', monospace",
-                  color: colors.cyan,
-                  textDecoration: 'none',
-                }}
-              >
-                View original listing on eBay
-              </a>
-            </div>
-          </>
-        )}
+        {result && <XRayResultDisplay result={result} />}
       </main>
     </div>
   );

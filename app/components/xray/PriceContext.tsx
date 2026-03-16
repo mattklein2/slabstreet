@@ -7,11 +7,26 @@ import type { PriceComps, SegmentStats, CompListing } from '../../../lib/xray/ty
 
 interface Props {
   priceComps: PriceComps | null;
+  loading?: boolean;
 }
 
-export function PriceContext({ priceComps }: Props) {
+export function PriceContext({ priceComps, loading }: Props) {
   const { colors } = useTheme();
   const [showSecondary, setShowSecondary] = useState(false);
+
+  // ── Loading state ──
+  if (loading) {
+    return (
+      <section style={{ background: colors.surface, borderRadius: 14, padding: 24, marginBottom: 16 }}>
+        <h2 style={{ margin: 0, fontSize: 14, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600, letterSpacing: 1, color: colors.green, textTransform: 'uppercase' }}>
+          Price Context
+        </h2>
+        <p style={{ marginTop: 12, fontSize: 14, color: colors.muted, fontFamily: "'IBM Plex Mono', monospace" }}>
+          Fetching price data...
+        </p>
+      </section>
+    );
+  }
 
   // ── No data state ──
   if (!priceComps) {

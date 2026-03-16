@@ -30,7 +30,9 @@ export function ParallelSwatch({ name, colorHex, size, borderRadius }: ParallelS
         backgroundSize: pattern.backgroundSize,
         backgroundBlendMode: pattern.backgroundBlendMode as React.CSSProperties['backgroundBlendMode'],
         boxShadow: pattern.boxShadow,
-        border: pattern.border || `1px solid ${colors.border}`,
+        border: pattern.hasDistinctBorder
+          ? `2px solid ${pattern.borderColor}`
+          : `1px solid ${colors.border}`,
         flexShrink: 0,
       }}
     />

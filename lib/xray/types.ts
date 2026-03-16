@@ -71,6 +71,7 @@ export interface MatchedParallel {
 
 /** Full parallel rainbow for the product */
 export interface RainbowEntry {
+  parallelId: string;
   name: string;
   colorHex: string;
   printRun: number | null;
@@ -78,6 +79,7 @@ export interface RainbowEntry {
   rarityRank: number;
   isOneOfOne: boolean;
   isCurrentCard: boolean;  // true for the matched parallel
+  description: string | null;
   boxExclusivity: string[] | null;
 }
 
@@ -140,6 +142,7 @@ export interface XRayResult {
     flagshipContext: string | null;
     insertDescription: string | null;
   };
+  resultId?: string;  // present after save, used for shareable URL
 }
 
 /** Error response */

@@ -174,11 +174,26 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
   };
 
   // Step 3: Fetch parallels for this card_set
-  const { data: parallels, error: parError } = await supabase
+  let { data: parallels, error: parError } = await supabase
     .from('parallels')
     .select('id, name, color_hex, print_run, serial_numbered, rarity_rank, is_one_of_one, description, box_exclusivity')
     .eq('card_set_id', matchedCardSetRow.id)
     .order('rarity_rank', { ascending: false });
+
+  // Fallback: if insert/subset has no parallels, use base set's parallels for rainbow context
+  if ((!parallels || parallels.length === 0) && matchedCardSetRow.type !== 'base') {
+    const baseSet = cardSets.find((cs: any) => cs.name === 'Base Set') || cardSets.find((cs: any) => cs.type === 'base');
+    if (baseSet) {
+      const { data: basePars } = await supabase
+        .from('parallels')
+        .select('id, name, color_hex, print_run, serial_numbered, rarity_rank, is_one_of_one, description, box_exclusivity')
+        .eq('card_set_id', baseSet.id)
+        .order('rarity_rank', { ascending: false });
+      if (basePars && basePars.length > 0) {
+        parallels = basePars;
+      }
+    }
+  }
 
   if (parError || !parallels) {
     return { product: matchedProduct, cardSet: matchedCardSet, parallel: null, rainbow: [] };
@@ -227,6 +242,7 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
   }
 
   const rainbow: RainbowEntry[] = parallels.map((par: any) => ({
+    parallelId: par.id,
     name: par.name,
     colorHex: par.color_hex,
     printRun: par.print_run,
@@ -234,6 +250,7 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
     rarityRank: par.rarity_rank,
     isOneOfOne: par.is_one_of_one,
     isCurrentCard: matchedParallel ? par.id === matchedParallel.parallelId : false,
+    description: par.description || null,
     boxExclusivity: par.box_exclusivity,
   }));
 

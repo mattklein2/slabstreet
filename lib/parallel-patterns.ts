@@ -1,15 +1,24 @@
 /**
  * CSS-based visual patterns for parallel card swatches.
- * Maps parallel name keywords to background CSS properties
- * that simulate the real-world look of each parallel type.
+ *
+ * Renders each parallel as a mini card with TWO layers:
+ *   - Border color (the card's frame: black, gold, red, blue, etc.)
+ *   - Interior pattern (the card's surface: refractor, shimmer, ice, etc.)
+ *
+ * Compound names like "Black Refractor" → black border + rainbow refractor fill
+ * Simple names like "Silver" → silver prizm pattern with matching border
  */
 
 export interface SwatchStyle {
+  /** CSS background for the inner pattern area */
   background: string;
   backgroundSize?: string;
   backgroundBlendMode?: string;
   boxShadow?: string;
-  border?: string;
+  /** Border color for the card frame (extracted from name) */
+  borderColor: string;
+  /** Whether this has a distinct border vs interior (compound name) */
+  hasDistinctBorder: boolean;
 }
 
 /** Adjust a hex color's brightness. factor > 1 = lighter, < 1 = darker */
@@ -30,20 +39,105 @@ function withAlpha(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-// ── Pattern generators ──────────────────────────────────────
+// ── Color name → hex mapping ─────────────────────────────────
+
+const BORDER_COLORS: Record<string, string> = {
+  black: '#1a1a1a',
+  white: '#f0f0f0',
+  gold: '#FFD700',
+  silver: '#C0C0C0',
+  red: '#CC0000',
+  blue: '#0055A4',
+  green: '#228B22',
+  purple: '#6A0DAD',
+  orange: '#FF6600',
+  pink: '#FF69B4',
+  yellow: '#FFD700',
+  teal: '#008080',
+  bronze: '#CD7F32',
+  copper: '#B87333',
+  crimson: '#DC143C',
+  navy: '#000080',
+  royal: '#4169E1',
+  sky: '#87CEEB',
+  midnight: '#191970',
+  neon: '#39FF14',
+  jade: '#00A86B',
+  plum: '#DDA0DD',
+  ruby: '#E0115F',
+  emerald: '#50C878',
+  sapphire: '#0F52BA',
+  aqua: '#00CED1',
+  magenta: '#FF00FF',
+  cherry: '#FFB7C5',
+  lucky: '#CC0000',
+  dragon: '#CC0000',
+  multi: '#FF00FF',
+};
+
+/**
+ * Extract border color from ANYWHERE in a parallel name.
+ * Handles: "Black Refractor", "Press Proof Gold Die-Cut", "Red Ice", etc.
+ * Returns the color hex and the remaining text (for pattern matching).
+ */
+function extractBorderColor(name: string): { borderHex: string | null; colorWord: string | null } {
+  const lower = name.toLowerCase().trim();
+  const words = lower.split(/\s+/);
+
+  // Check each word (and two-word combos) against color map
+  // Prefer longer matches and later positions (color is usually after prefix like "Press Proof")
+  let bestMatch: { hex: string; word: string; idx: number } | null = null;
+
+  for (let i = 0; i < words.length; i++) {
+    // Two-word combo: "neon green", "sky blue"
+    if (i < words.length - 1) {
+      const twoWord = words[i] + ' ' + words[i + 1];
+      if (BORDER_COLORS[twoWord]) {
+        bestMatch = { hex: BORDER_COLORS[twoWord], word: twoWord, idx: i };
+      }
+    }
+    // Single word
+    if (BORDER_COLORS[words[i]]) {
+      // Don't override a two-word match at same position
+      if (!bestMatch || bestMatch.idx !== i) {
+        bestMatch = { hex: BORDER_COLORS[words[i]], word: words[i], idx: i };
+      }
+    }
+  }
+
+  if (!bestMatch) return { borderHex: null, colorWord: null };
+
+  // Only treat as a distinct border if there's also a pattern keyword in the name
+  if (hasPatternKeyword(lower)) {
+    return { borderHex: bestMatch.hex, colorWord: bestMatch.word };
+  }
+
+  return { borderHex: null, colorWord: null };
+}
+
+/** Check if text contains a finish/pattern keyword */
+function hasPatternKeyword(text: string): boolean {
+  return /refractor|xfractor|prizm|prism|shimmer|ice|wave|pulsar|disco|scope|holo|mojo|sparkle|lazer|laser|seismic|power|tiger|snakeskin|nebula|lava|marble|camo|peacock|mosaic|fractal|cracked|superfractor|stardust|vapor|die.?cut|logofractor|patch|sapphire|checker|fluorescent|neon|stained|tie.?dye|cherry|lotus|flower|speckle|zebra|leopard|chrome/i.test(text);
+}
+
+// ── Interior pattern generators ──────────────────────────────
 
 function refractorPattern(hex: string): SwatchStyle {
   return {
     background: `
+      repeating-linear-gradient(60deg,
+        transparent 0px, transparent 3px,
+        rgba(255,255,255,0.08) 3px, rgba(255,255,255,0.08) 4px),
+      repeating-linear-gradient(120deg,
+        transparent 0px, transparent 3px,
+        rgba(255,255,255,0.06) 3px, rgba(255,255,255,0.06) 4px),
       linear-gradient(135deg,
-        ${hex} 0%,
-        ${adjustBrightness(hex, 1.6)} 20%,
-        rgba(255,255,255,0.7) 35%,
-        ${adjustBrightness(hex, 1.3)} 50%,
-        ${hex} 65%,
-        ${adjustBrightness(hex, 1.5)} 80%,
-        rgba(255,255,255,0.5) 100%)
+        #ff6b6b 0%, #ffd93d 14%, #6bcb77 28%,
+        #4d96ff 42%, #9b59b6 56%, #ff6b6b 70%,
+        #ffd93d 84%, #6bcb77 100%)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -55,18 +149,25 @@ function prizmPattern(_hex: string): SwatchStyle {
         #4d96ff 45%, #9b59b6 60%, #ff6b6b 75%,
         #ffd93d 90%, #6bcb77 100%)
     `.trim(),
+    borderColor: '#C0C0C0',
+    hasDistinctBorder: false,
   };
 }
 
 function superFractorPattern(_hex: string): SwatchStyle {
   return {
     background: `
+      repeating-linear-gradient(60deg,
+        transparent 0px, transparent 2px,
+        rgba(255,255,255,0.12) 2px, rgba(255,255,255,0.12) 3px),
       linear-gradient(135deg,
         #FFD700 0%, #FFF8DC 15%, #DAA520 30%,
         #FFFFFF 45%, #FFD700 55%, #FFF8DC 70%,
         #DAA520 85%, #FFD700 100%)
     `.trim(),
-    boxShadow: 'inset 0 0 8px rgba(255,215,0,0.5)',
+    boxShadow: 'inset 0 0 6px rgba(255,215,0,0.5)',
+    borderColor: '#FFD700',
+    hasDistinctBorder: false,
   };
 }
 
@@ -80,6 +181,8 @@ function crackedIcePattern(hex: string): SwatchStyle {
       linear-gradient(80deg, transparent 60%, rgba(255,255,255,0.15) 65%, transparent 70%),
       linear-gradient(135deg, ${adjustBrightness(hex, 0.8)}, ${hex}, ${adjustBrightness(hex, 1.3)})
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -93,20 +196,24 @@ function mosaicPattern(hex: string): SwatchStyle {
       ${hex}
     `.trim(),
     backgroundSize: '8px 8px',
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
 function shimmerPattern(hex: string): SwatchStyle {
   return {
     background: `
-      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.5) 0%, transparent 3%),
-      radial-gradient(circle at 70% 60%, rgba(255,255,255,0.4) 0%, transparent 2.5%),
-      radial-gradient(circle at 40% 80%, rgba(255,255,255,0.45) 0%, transparent 2%),
-      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.35) 0%, transparent 3%),
-      radial-gradient(circle at 55% 45%, rgba(255,255,255,0.3) 0%, transparent 2%),
-      radial-gradient(circle at 15% 70%, rgba(255,255,255,0.4) 0%, transparent 2.5%),
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.6) 0%, transparent 3%),
+      radial-gradient(circle at 55% 45%, rgba(255,255,255,0.5) 0%, transparent 2.5%),
+      radial-gradient(circle at 85% 25%, rgba(255,255,255,0.55) 0%, transparent 2%),
+      radial-gradient(circle at 35% 70%, rgba(255,255,255,0.45) 0%, transparent 3%),
+      radial-gradient(circle at 70% 80%, rgba(255,255,255,0.5) 0%, transparent 2%),
+      radial-gradient(circle at 25% 90%, rgba(255,255,255,0.4) 0%, transparent 2.5%),
       linear-gradient(135deg, ${adjustBrightness(hex, 0.9)}, ${hex}, ${adjustBrightness(hex, 1.2)})
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -120,6 +227,8 @@ function lavaPattern(hex: string): SwatchStyle {
       radial-gradient(ellipse at 50% 50%, ${hex} 0%, transparent 60%),
       linear-gradient(180deg, ${dark}, ${hex}, ${dark})
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -127,28 +236,22 @@ function tigerPattern(hex: string): SwatchStyle {
   const stripe = adjustBrightness(hex, 0.4);
   return {
     background: `
-      repeating-linear-gradient(
-        -45deg,
-        ${hex},
-        ${hex} 4px,
-        ${stripe} 4px,
-        ${stripe} 7px
-      )
+      repeating-linear-gradient(-45deg,
+        ${hex}, ${hex} 3px, ${stripe} 3px, ${stripe} 6px)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
 function zebraPattern(hex: string): SwatchStyle {
   return {
     background: `
-      repeating-linear-gradient(
-        -45deg,
-        ${hex},
-        ${hex} 3px,
-        #1a1a1a 3px,
-        #1a1a1a 6px
-      )
+      repeating-linear-gradient(-45deg,
+        ${hex}, ${hex} 3px, #1a1a1a 3px, #1a1a1a 6px)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -164,6 +267,8 @@ function checkerPattern(hex: string): SwatchStyle {
     `.trim(),
     backgroundSize: '6px 6px',
     backgroundBlendMode: 'normal',
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -171,16 +276,13 @@ function wavePattern(hex: string): SwatchStyle {
   const light = adjustBrightness(hex, 1.5);
   return {
     background: `
-      repeating-linear-gradient(
-        0deg,
-        ${hex} 0px,
-        ${light} 3px,
-        ${hex} 6px,
-        ${adjustBrightness(hex, 0.7)} 9px,
-        ${hex} 12px
-      )
+      repeating-linear-gradient(0deg,
+        ${hex} 0px, ${light} 3px, ${hex} 6px,
+        ${adjustBrightness(hex, 0.7)} 9px, ${hex} 12px)
     `.trim(),
     backgroundSize: '100% 12px',
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -192,6 +294,8 @@ function vaporPattern(hex: string): SwatchStyle {
       radial-gradient(ellipse at 80% 50%, ${adjustBrightness(hex, 1.3)} 0%, transparent 70%),
       linear-gradient(135deg, ${dark}, #1a1a1a)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -203,6 +307,8 @@ function sapphirePattern(_hex: string): SwatchStyle {
         #b3d9ff 50%, #4da6ff 60%, #1a3a6c 80%, #0a1628 100%)
     `.trim(),
     boxShadow: 'inset 0 0 6px rgba(77,166,255,0.4)',
+    borderColor: '#0F52BA',
+    hasDistinctBorder: false,
   };
 }
 
@@ -215,6 +321,8 @@ function metallicPattern(hex: string): SwatchStyle {
         ${dark} 0%, ${hex} 25%, ${light} 45%,
         ${hex} 55%, ${dark} 75%, ${hex} 100%)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -226,6 +334,8 @@ function logofractorPattern(hex: string): SwatchStyle {
       repeating-linear-gradient(90deg, ${alt} 0px, ${alt} 1px, transparent 1px, transparent 4px),
       linear-gradient(135deg, ${adjustBrightness(hex, 0.8)}, ${hex}, ${adjustBrightness(hex, 1.3)})
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -237,6 +347,8 @@ function patchPattern(hex: string): SwatchStyle {
       repeating-linear-gradient(90deg, ${thread} 0px, ${thread} 1px, transparent 1px, transparent 3px),
       ${hex}
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -244,12 +356,11 @@ function pulsarPattern(hex: string): SwatchStyle {
   return {
     background: `
       radial-gradient(circle at 50% 50%,
-        rgba(255,255,255,0.6) 0%,
-        ${adjustBrightness(hex, 1.4)} 15%,
-        ${hex} 40%,
-        ${adjustBrightness(hex, 0.7)} 70%,
-        ${hex} 100%)
+        rgba(255,255,255,0.6) 0%, ${adjustBrightness(hex, 1.4)} 15%,
+        ${hex} 40%, ${adjustBrightness(hex, 0.7)} 70%, ${hex} 100%)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -266,33 +377,207 @@ function stardustPattern(hex: string): SwatchStyle {
       radial-gradient(circle at 90% 85%, #fff 0%, transparent 1%),
       linear-gradient(135deg, ${adjustBrightness(hex, 0.85)}, ${hex}, ${adjustBrightness(hex, 1.1)})
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
 function laserPattern(hex: string): SwatchStyle {
   return {
     background: `
-      repeating-linear-gradient(
-        90deg,
-        transparent 0px,
-        transparent 2px,
-        rgba(255,255,255,0.15) 2px,
-        rgba(255,255,255,0.15) 3px
-      ),
+      repeating-linear-gradient(90deg,
+        transparent 0px, transparent 2px,
+        rgba(255,255,255,0.15) 2px, rgba(255,255,255,0.15) 3px),
       linear-gradient(180deg,
-        ${adjustBrightness(hex, 1.4)} 0%,
-        ${hex} 30%,
-        ${adjustBrightness(hex, 0.6)} 60%,
-        ${hex} 100%)
+        ${adjustBrightness(hex, 1.4)} 0%, ${hex} 30%,
+        ${adjustBrightness(hex, 0.6)} 60%, ${hex} 100%)
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function icePattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      linear-gradient(135deg,
+        rgba(220,240,255,0.9) 0%, ${withAlpha(hex, 0.4)} 25%,
+        rgba(255,255,255,0.7) 45%, ${withAlpha(hex, 0.5)} 65%,
+        rgba(200,230,255,0.8) 85%, rgba(255,255,255,0.6) 100%)
+    `.trim(),
+    boxShadow: 'inset 0 0 6px rgba(255,255,255,0.5)',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function discoPattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      radial-gradient(circle at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 2%),
+      radial-gradient(circle at 30% 55%, rgba(255,255,255,0.5) 0%, transparent 2%),
+      radial-gradient(circle at 50% 20%, rgba(255,255,255,0.55) 0%, transparent 1.5%),
+      radial-gradient(circle at 70% 75%, rgba(255,255,255,0.5) 0%, transparent 2%),
+      radial-gradient(circle at 90% 35%, rgba(255,255,255,0.6) 0%, transparent 1.5%),
+      radial-gradient(circle at 15% 85%, rgba(255,255,255,0.45) 0%, transparent 2%),
+      radial-gradient(circle at 45% 65%, rgba(255,255,255,0.5) 0%, transparent 1.5%),
+      radial-gradient(circle at 80% 90%, rgba(255,255,255,0.55) 0%, transparent 2%),
+      radial-gradient(circle at 60% 40%, rgba(255,255,255,0.4) 0%, transparent 1.5%),
+      radial-gradient(circle at 25% 30%, rgba(255,255,255,0.5) 0%, transparent 2%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.9)}, ${hex}, ${adjustBrightness(hex, 1.3)})
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function snakeskinPattern(hex: string): SwatchStyle {
+  const dark = adjustBrightness(hex, 0.5);
+  return {
+    background: `
+      linear-gradient(0deg, ${withAlpha(dark, 0.4)} 1px, transparent 1px),
+      linear-gradient(60deg, ${withAlpha(dark, 0.4)} 1px, transparent 1px),
+      linear-gradient(120deg, ${withAlpha(dark, 0.4)} 1px, transparent 1px),
+      ${hex}
+    `.trim(),
+    backgroundSize: '6px 10px',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function nebulaPattern(_hex: string): SwatchStyle {
+  return {
+    background: `
+      radial-gradient(ellipse at 25% 40%, rgba(147,51,234,0.7) 0%, transparent 50%),
+      radial-gradient(ellipse at 75% 60%, rgba(59,130,246,0.6) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 30%, rgba(236,72,153,0.5) 0%, transparent 40%),
+      radial-gradient(circle at 15% 80%, rgba(255,255,255,0.3) 0%, transparent 8%),
+      radial-gradient(circle at 85% 20%, rgba(255,255,255,0.25) 0%, transparent 6%),
+      linear-gradient(135deg, #0a0020, #1a0040, #0a0030)
+    `.trim(),
+    borderColor: '#4B0082',
+    hasDistinctBorder: false,
+  };
+}
+
+function mojoPattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      conic-gradient(from 0deg at 50% 50%,
+        #ff6b6b, #ffd93d, #6bcb77, #4d96ff,
+        #9b59b6, #ff6b6b, #ffd93d, #6bcb77)
+    `.trim(),
+    boxShadow: `inset 0 0 6px ${withAlpha(hex, 0.4)}`,
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function fluorescentPattern(hex: string): SwatchStyle {
+  const bright = adjustBrightness(hex, 1.8);
+  return {
+    background: `
+      linear-gradient(135deg,
+        ${bright} 0%, ${hex} 40%, ${bright} 60%, ${hex} 100%)
+    `.trim(),
+    boxShadow: `inset 0 0 8px ${withAlpha(hex, 0.6)}, 0 0 4px ${withAlpha(hex, 0.3)}`,
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function marblePattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      linear-gradient(25deg, transparent 30%, rgba(255,255,255,0.15) 32%, transparent 34%),
+      linear-gradient(155deg, transparent 45%, rgba(255,255,255,0.12) 47%, transparent 49%),
+      linear-gradient(70deg, transparent 55%, rgba(255,255,255,0.1) 57%, transparent 59%),
+      linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.08) 22%, transparent 24%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.85)}, ${hex}, ${adjustBrightness(hex, 1.1)})
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function camoPattern(hex: string): SwatchStyle {
+  const dark = adjustBrightness(hex, 0.4);
+  const mid = adjustBrightness(hex, 0.7);
+  const light = adjustBrightness(hex, 1.2);
+  return {
+    background: `
+      radial-gradient(ellipse at 20% 30%, ${dark} 0%, transparent 40%),
+      radial-gradient(ellipse at 70% 70%, ${light} 0%, transparent 35%),
+      radial-gradient(ellipse at 50% 10%, ${mid} 0%, transparent 45%),
+      radial-gradient(ellipse at 80% 30%, ${dark} 0%, transparent 30%),
+      radial-gradient(ellipse at 30% 80%, ${mid} 0%, transparent 40%),
+      ${hex}
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function peacockPattern(_hex: string): SwatchStyle {
+  return {
+    background: `
+      linear-gradient(135deg,
+        #004d40 0%, #00897b 20%, #26c6da 40%,
+        #b2ebf2 50%, #26c6da 60%, #00897b 80%, #004d40 100%)
+    `.trim(),
+    boxShadow: 'inset 0 0 5px rgba(38,198,218,0.4)',
+    borderColor: '#00897b',
+    hasDistinctBorder: false,
+  };
+}
+
+function stainedGlassPattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      linear-gradient(0deg, rgba(0,0,0,0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px),
+      linear-gradient(45deg,
+        ${hex} 0%, ${adjustBrightness(hex, 1.4)} 25%,
+        #4d96ff 50%, ${adjustBrightness(hex, 0.8)} 75%, ${hex} 100%)
+    `.trim(),
+    backgroundSize: '8px 8px, 8px 8px, 100% 100%',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function scopePattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      radial-gradient(circle at 50% 50%,
+        transparent 30%, rgba(255,255,255,0.1) 35%, transparent 40%),
+      radial-gradient(circle at 50% 50%,
+        transparent 55%, rgba(255,255,255,0.08) 60%, transparent 65%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.8)}, ${hex}, ${adjustBrightness(hex, 1.3)})
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function holoPattern(_hex: string): SwatchStyle {
+  return {
+    background: `
+      linear-gradient(135deg,
+        #ff6b6b 0%, #ffd93d 12%, #6bcb77 24%,
+        #4d96ff 36%, #9b59b6 48%, #ff6b6b 60%,
+        #ffd93d 72%, #6bcb77 84%, #4d96ff 100%)
+    `.trim(),
+    boxShadow: 'inset 0 0 4px rgba(255,255,255,0.3)',
+    borderColor: '#C0C0C0',
+    hasDistinctBorder: false,
   };
 }
 
 function dieCutPattern(hex: string): SwatchStyle {
-  return {
-    ...refractorPattern(hex),
-    border: '2px dashed rgba(255,255,255,0.4)',
-  };
+  const base = refractorPattern(hex);
+  return { ...base, borderColor: hex, hasDistinctBorder: false };
 }
 
 function flowerPattern(hex: string): SwatchStyle {
@@ -305,6 +590,8 @@ function flowerPattern(hex: string): SwatchStyle {
       radial-gradient(circle at 25% 75%, rgba(255,255,255,0.15) 0%, transparent 20%),
       ${hex}
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -320,6 +607,8 @@ function specklePattern(hex: string): SwatchStyle {
       radial-gradient(circle at 80% 90%, ${adjustBrightness(hex, 1.7)} 0%, transparent 3%),
       ${hex}
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
@@ -332,60 +621,148 @@ function tiePattern(hex: string): SwatchStyle {
       radial-gradient(circle at 20% 80%, ${adjustBrightness(hex, 0.5)} 0%, transparent 25%),
       linear-gradient(135deg, ${hex}, ${adjustBrightness(hex, 1.2)}, ${adjustBrightness(hex, 0.7)}, ${hex})
     `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function seismicPattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      repeating-linear-gradient(135deg,
+        transparent 0px, transparent 4px,
+        rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 5px),
+      repeating-linear-gradient(45deg,
+        transparent 0px, transparent 6px,
+        rgba(255,255,255,0.08) 6px, rgba(255,255,255,0.08) 7px),
+      linear-gradient(135deg,
+        ${adjustBrightness(hex, 0.7)} 0%, ${hex} 30%,
+        ${adjustBrightness(hex, 1.3)} 50%, ${hex} 70%,
+        ${adjustBrightness(hex, 0.8)} 100%)
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function sparklePattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      radial-gradient(circle at 20% 25%, rgba(255,255,255,0.7) 0%, transparent 2%),
+      radial-gradient(circle at 60% 15%, rgba(255,255,255,0.6) 0%, transparent 1.5%),
+      radial-gradient(circle at 80% 45%, rgba(255,255,255,0.65) 0%, transparent 2%),
+      radial-gradient(circle at 40% 70%, rgba(255,255,255,0.55) 0%, transparent 1.5%),
+      radial-gradient(circle at 15% 80%, rgba(255,255,255,0.6) 0%, transparent 2%),
+      radial-gradient(circle at 75% 85%, rgba(255,255,255,0.5) 0%, transparent 1.5%),
+      radial-gradient(circle at 50% 45%, rgba(255,255,255,0.45) 0%, transparent 2%),
+      radial-gradient(circle at 90% 70%, rgba(255,255,255,0.55) 0%, transparent 1.5%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.85)}, ${hex}, ${adjustBrightness(hex, 1.15)})
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
   };
 }
 
 // ── Main matcher ────────────────────────────────────────────
 
-/** Match rules — first match wins, so order matters (specific → general) */
-const PATTERN_RULES: Array<{ test: (name: string) => boolean; fn: (hex: string) => SwatchStyle }> = [
-  // Very specific names first
+/** Interior pattern rules — matches against the remainder after border color is extracted */
+const INTERIOR_RULES: Array<{ test: (name: string) => boolean; fn: (hex: string) => SwatchStyle }> = [
+  // Very specific compound patterns first
   { test: n => /superfractor/i.test(n), fn: superFractorPattern },
   { test: n => /cracked\s*ice/i.test(n), fn: crackedIcePattern },
+  { test: n => /stained\s*glass/i.test(n), fn: stainedGlassPattern },
   { test: n => /die[\s-]*cut/i.test(n), fn: dieCutPattern },
   { test: n => /tie[\s-]*dye/i.test(n), fn: tiePattern },
   { test: n => /logofractor/i.test(n), fn: logofractorPattern },
   { test: n => /stardust/i.test(n), fn: stardustPattern },
   { test: n => /pulsar/i.test(n), fn: pulsarPattern },
+  { test: n => /seismic/i.test(n), fn: seismicPattern },
+  { test: n => /sparkle/i.test(n), fn: sparklePattern },
   { test: n => /ray\s*wave/i.test(n), fn: wavePattern },
   { test: n => /checker|checkerboard/i.test(n), fn: checkerPattern },
   { test: n => /cracked|speckle/i.test(n), fn: specklePattern },
   { test: n => /lotus|cherry\s*blossom|flower/i.test(n), fn: flowerPattern },
+  { test: n => /nebula/i.test(n), fn: nebulaPattern },
+  { test: n => /peacock/i.test(n), fn: peacockPattern },
+  { test: n => /fluorescent/i.test(n), fn: fluorescentPattern },
+  { test: n => /marble/i.test(n), fn: marblePattern },
+  { test: n => /camo|camouflage/i.test(n), fn: camoPattern },
 
   // Pattern families
+  { test: n => /snakeskin/i.test(n), fn: snakeskinPattern },
   { test: n => /mosaic/i.test(n), fn: mosaicPattern },
-  { test: n => /tiger/i.test(n), fn: tigerPattern },
+  { test: n => /tiger|leopard/i.test(n), fn: tigerPattern },
   { test: n => /zebra/i.test(n), fn: zebraPattern },
   { test: n => /lava/i.test(n), fn: lavaPattern },
-  { test: n => /laser/i.test(n), fn: laserPattern },
+  { test: n => /la[sz]er/i.test(n), fn: laserPattern },
+  { test: n => /disco/i.test(n), fn: discoPattern },
   { test: n => /shimmer/i.test(n), fn: shimmerPattern },
   { test: n => /vapor/i.test(n), fn: vaporPattern },
+  { test: n => /\bice\b/i.test(n), fn: icePattern },
   { test: n => /wave/i.test(n), fn: wavePattern },
+  { test: n => /\bscope\b/i.test(n), fn: scopePattern },
+  { test: n => /\bholo\b/i.test(n), fn: holoPattern },
+  { test: n => /\bmojo\b/i.test(n), fn: mojoPattern },
   { test: n => /patch\s*auto|patch/i.test(n), fn: patchPattern },
   { test: n => /sapphire|padparadscha/i.test(n), fn: sapphirePattern },
 
-  // Refractor variants (after specific ones)
-  { test: n => /prizm|prism|silver\b/i.test(n), fn: prizmPattern },
-  { test: n => /refractor|chrome/i.test(n), fn: refractorPattern },
+  // Broad refractor/prizm patterns
+  { test: n => /prizm|prism/i.test(n), fn: prizmPattern },
+  { test: n => /refractor|xfractor|chrome/i.test(n), fn: refractorPattern },
 
-  // Metallic colors
+  // Metallic
   { test: n => /\bgold\b|rose\s*gold/i.test(n), fn: metallicPattern },
-  { test: n => /\bbronze\b/i.test(n), fn: metallicPattern },
+  { test: n => /\bbronze\b|\bcopper\b|\bplatinum\b/i.test(n), fn: metallicPattern },
+  { test: n => /\bsilver\b/i.test(n), fn: prizmPattern },
 ];
 
 /**
  * Get CSS styles for a parallel swatch based on its name and base color.
- * Returns pattern styles if a keyword matches, otherwise falls back to flat color.
+ *
+ * Handles compound names like "Black Refractor" or "Press Proof Gold Die-Cut" by:
+ *   1. Matching the interior pattern from the FULL name (finds "Refractor", "Die-Cut", etc.)
+ *   2. Extracting border color from ANY word in the name ("Black", "Gold", etc.)
+ *   3. If both exist → distinct border + patterned interior (like a real card)
  */
 export function getParallelPattern(name: string, colorHex: string | null, fallback: string): SwatchStyle {
   const hex = colorHex || fallback;
 
-  for (const rule of PATTERN_RULES) {
+  // Step 1: Match interior pattern against full name
+  let pattern: SwatchStyle | null = null;
+  for (const rule of INTERIOR_RULES) {
     if (rule.test(name)) {
-      return rule.fn(hex);
+      pattern = rule.fn(hex);
+      break;
     }
   }
 
-  // Default: flat color (same as current behavior)
-  return { background: hex };
+  // Step 2: Extract border color from name
+  const { borderHex } = extractBorderColor(name);
+
+  if (pattern && borderHex) {
+    // Compound: e.g. "Press Proof Black Die-Cut" → black border + die-cut interior
+    return { ...pattern, borderColor: borderHex, hasDistinctBorder: true };
+  }
+
+  if (pattern) {
+    // Pattern only, no distinct border color: e.g. "Silver Prizm", "Refractor"
+    return pattern;
+  }
+
+  // Color-only names with glow effect
+  if (/^neon\b/i.test(name)) {
+    return fluorescentPattern(hex);
+  }
+
+  // Default: if name contains a known color word, give it a metallic sheen
+  // (extractBorderColor requires pattern keywords — do a simple color scan here)
+  const lower = name.toLowerCase();
+  const words = lower.split(/\s+/);
+  for (const w of words) {
+    if (BORDER_COLORS[w]) {
+      return metallicPattern(BORDER_COLORS[w]);
+    }
+  }
+
+  return { background: hex, borderColor: hex, hasDistinctBorder: false };
 }

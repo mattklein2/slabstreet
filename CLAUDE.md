@@ -41,6 +41,13 @@ Sports card collector education platform. Next.js 16 App Router, React 19, TypeS
 - `/learn` — Glossary (100+ terms)
 - `/admin/dashboard` — user analytics (admin only)
 
+## Session Handoff
+When I say "update memory":
+1. Update relevant memory files with decisions/status that can't be derived from code
+2. Update CLAUDE.md if routes, key files, or conventions changed
+3. Give me a 1-2 sentence prompt I can paste into the next session to pick up where we left off
+- Don't write a full session brief — just the memory updates + prompt
+
 ## Important
 - Don't over-filter sold comps data — capture all sales, even rare cards with only 2 sales
 - Supabase Auth with profiles table, RLS policies in place

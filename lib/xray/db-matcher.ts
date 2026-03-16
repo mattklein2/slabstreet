@@ -23,8 +23,8 @@ export interface MatchResult {
 }
 
 function scoreNameMatch(dbName: string, identityName: string): number {
-  const dbLower = dbName.toLowerCase();
-  const idLower = identityName.toLowerCase();
+  const dbLower = dbName.toLowerCase().replace(/[!?.']/g, '').trim();
+  const idLower = identityName.toLowerCase().replace(/[!?.']/g, '').trim();
 
   // Exact match
   if (dbLower === idLower) return 10;
@@ -89,8 +89,10 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
       const setLower = identity.set.toLowerCase();
       // Clean the eBay set name: strip brand/year prefixes
       // e.g. "Panini 2024 Panini Select" → "select", "Topps 2024 Chrome" → "chrome"
+      // Note: "Donruss", "Bowman" etc. are both brands AND product names, so we do a
+      // two-pass approach: fully cleaned and partially cleaned (keep product-brand names)
       const cleanedSet = setLower
-        .replace(/\b(panini|topps|upper\s*deck|bowman|donruss|leaf|fleer|score)\b/gi, '')
+        .replace(/\b(panini|topps|upper\s*deck|leaf|fleer|score)\b/gi, '')
         .replace(/\b20\d{2}(?:-\d{2})?\b/g, '')
         .trim()
         .replace(/\s+/g, ' ');

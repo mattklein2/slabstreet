@@ -58,6 +58,19 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
       ? (specsParallel || null)                       // specs parallel confirmed by title
       : (fromTitle.parallel || specsParallel || null); // prefer title when specs not in title
 
+  // If the resolved parallel is actually a known insert name, move it to insert
+  // e.g. eBay Parallel/Variety: "Downtown" should be insert, not parallel
+  let finalParallel = resolvedParallel;
+  let finalInsert = specsInsert || (fromTitle.insert && playerName && fromTitle.insert.toLowerCase() === playerName ? null : fromTitle.insert) || null;
+  if (finalParallel && !finalInsert) {
+    const parLower = finalParallel.toLowerCase();
+    const isInsertName = INSERTS.some(ins => parLower === ins.toLowerCase() || parLower.includes(ins.toLowerCase()));
+    if (isInsertName) {
+      finalInsert = finalParallel;
+      finalParallel = null;
+    }
+  }
+
   // Sport override: WNBA cards have Sport="Basketball" on eBay but we track them as WNBA
   let resolvedSport = fromSpecs.sport || fromTitle.sport;
   const league = (specs['League'] || '').toLowerCase();
@@ -71,8 +84,8 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     year: fromSpecs.year || fromTitle.year,
     brand: fromSpecs.brand || fromTitle.brand,
     set: resolvedSet,
-    parallel: resolvedParallel,
-    insert: specsInsert || (fromTitle.insert && playerName && fromTitle.insert.toLowerCase() === playerName ? null : fromTitle.insert) || null,
+    parallel: finalParallel,
+    insert: finalInsert,
     cardNumber: fromSpecs.cardNumber || fromTitle.cardNumber,
     sport: resolvedSport,
     isRookie: fromSpecs.isRookie || fromTitle.isRookie || false,

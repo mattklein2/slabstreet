@@ -1,0 +1,32 @@
+# SlabStreet — Smart Collecting Starts Here
+
+> Sports card intelligence tools for collectors. Free tools to identify cards, check prices, find shows, and learn the hobby.
+
+SlabStreet helps sports card collectors make smarter decisions. Our tools cover identification, pricing, and education for NBA, NFL, MLB, F1, and WNBA cards.
+
+## Tools
+
+### Card X-Ray (/xray)
+Paste any eBay listing URL to instantly identify a sports card. Returns the card's full identity (player, year, set, parallel), where it ranks in the rarity rainbow, and recent sold prices from completed eBay listings. Works with any sport.
+
+### What Did I Pull? (/decoder)
+Identify any sports card by selecting its sport, product, and matching the color/pattern to known parallels. Useful when you pull a card from a pack and don't know what version it is.
+
+### Card Show Finder (/shows)
+Find upcoming sports card shows and conventions near any US zip code. Covers major shows, local shows, and conventions across the country.
+
+### eBay Card Search Builder (/ebay-search)
+Build optimized eBay searches for sports cards with smart filters. Supports all eBay advanced search operators, category filtering, grading company filters, and price ranges. Generates a direct eBay URL.
+
+### Collector Glossary (/learn)
+100+ sports card collecting terms defined in plain language. Covers grading (PSA, BGS, SGC), card types (base, parallel, insert, auto, relic), market terms (comps, pop report, print run), and hobby slang.
+
+## Data Coverage
+- Sports: NBA, NFL, MLB, F1, WNBA
+- Years: 2018-present
+- Brands: Topps, Panini, Bowman, Upper Deck
+- 445+ products, 28,000+ parallel variations with rarity data
+- Historical sold prices from eBay completed listings
+
+## Contact
+Website: https://slabstreet.com

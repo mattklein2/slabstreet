@@ -78,7 +78,12 @@ export async function POST(request: NextRequest) {
     const match = await matchCard(identity);
 
     // Get price comps
-    const priceComps = await getPriceComps(identity, listing.price);
+    const priceComps = await getPriceComps(
+      identity,
+      listing.price,
+      match.parallel?.parallelId || null,
+      parsed.itemId,
+    );
 
     // Build education blurbs
     const education = {

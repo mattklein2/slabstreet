@@ -127,15 +127,31 @@ function refractorPattern(hex: string): SwatchStyle {
     background: `
       repeating-linear-gradient(60deg,
         transparent 0px, transparent 3px,
-        rgba(255,255,255,0.08) 3px, rgba(255,255,255,0.08) 4px),
+        rgba(255,255,255,0.1) 3px, rgba(255,255,255,0.1) 4px),
       repeating-linear-gradient(120deg,
         transparent 0px, transparent 3px,
-        rgba(255,255,255,0.06) 3px, rgba(255,255,255,0.06) 4px),
+        rgba(255,255,255,0.08) 3px, rgba(255,255,255,0.08) 4px),
       linear-gradient(135deg,
-        #ff6b6b 0%, #ffd93d 14%, #6bcb77 28%,
-        #4d96ff 42%, #9b59b6 56%, #ff6b6b 70%,
-        #ffd93d 84%, #6bcb77 100%)
+        #ff4040 0%, #ffcc00 14%, #44dd66 28%,
+        #2288ff 42%, #aa44ee 56%, #ff4040 70%,
+        #ffcc00 84%, #44dd66 100%)
     `.trim(),
+    boxShadow: 'inset 0 0 3px rgba(255,255,255,0.2)',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function chromePattern(hex: string): SwatchStyle {
+  const light = adjustBrightness(hex, 1.6);
+  const dark = adjustBrightness(hex, 0.7);
+  return {
+    background: `
+      linear-gradient(160deg,
+        ${dark} 0%, ${hex} 15%, ${light} 35%,
+        #f8f8f8 45%, ${light} 55%, ${hex} 75%, ${dark} 100%)
+    `.trim(),
+    boxShadow: 'inset 0 0 3px rgba(255,255,255,0.2)',
     borderColor: hex,
     hasDistinctBorder: false,
   };
@@ -157,15 +173,22 @@ function prizmPattern(_hex: string): SwatchStyle {
 function superFractorPattern(_hex: string): SwatchStyle {
   return {
     background: `
-      repeating-linear-gradient(60deg,
-        transparent 0px, transparent 2px,
-        rgba(255,255,255,0.12) 2px, rgba(255,255,255,0.12) 3px),
+      conic-gradient(from 0deg at 50% 50%,
+        rgba(255,215,0,0.3) 0deg, transparent 30deg,
+        rgba(255,215,0,0.25) 60deg, transparent 90deg,
+        rgba(255,215,0,0.3) 120deg, transparent 150deg,
+        rgba(255,215,0,0.25) 180deg, transparent 210deg,
+        rgba(255,215,0,0.3) 240deg, transparent 270deg,
+        rgba(255,215,0,0.25) 300deg, transparent 330deg,
+        rgba(255,215,0,0.3) 360deg),
+      repeating-radial-gradient(circle at 50% 50%,
+        transparent 0px, transparent 3px,
+        rgba(255,248,220,0.15) 3.5px, transparent 4px),
       linear-gradient(135deg,
-        #FFD700 0%, #FFF8DC 15%, #DAA520 30%,
-        #FFFFFF 45%, #FFD700 55%, #FFF8DC 70%,
-        #DAA520 85%, #FFD700 100%)
+        #B8860B 0%, #FFD700 20%, #FFF8DC 40%,
+        #FFD700 55%, #DAA520 70%, #FFF8DC 85%, #FFD700 100%)
     `.trim(),
-    boxShadow: 'inset 0 0 6px rgba(255,215,0,0.5)',
+    boxShadow: 'inset 0 0 8px rgba(255,215,0,0.6)',
     borderColor: '#FFD700',
     hasDistinctBorder: false,
   };
@@ -174,13 +197,19 @@ function superFractorPattern(_hex: string): SwatchStyle {
 function crackedIcePattern(hex: string): SwatchStyle {
   return {
     background: `
-      linear-gradient(60deg, transparent 40%, rgba(255,255,255,0.3) 45%, transparent 50%),
-      linear-gradient(120deg, transparent 40%, rgba(255,255,255,0.25) 45%, transparent 50%),
-      linear-gradient(30deg, transparent 55%, rgba(255,255,255,0.2) 60%, transparent 65%),
-      linear-gradient(150deg, transparent 30%, rgba(255,255,255,0.2) 35%, transparent 40%),
-      linear-gradient(80deg, transparent 60%, rgba(255,255,255,0.15) 65%, transparent 70%),
-      linear-gradient(135deg, ${adjustBrightness(hex, 0.8)}, ${hex}, ${adjustBrightness(hex, 1.3)})
+      linear-gradient(55deg, transparent 42%, rgba(255,255,255,0.45) 42.5%, transparent 43%),
+      linear-gradient(125deg, transparent 35%, rgba(255,255,255,0.4) 35.5%, transparent 36%),
+      linear-gradient(20deg, transparent 55%, rgba(255,255,255,0.35) 55.5%, transparent 56%),
+      linear-gradient(160deg, transparent 25%, rgba(255,255,255,0.35) 25.5%, transparent 26%),
+      linear-gradient(85deg, transparent 62%, rgba(255,255,255,0.3) 62.5%, transparent 63%),
+      linear-gradient(105deg, transparent 48%, rgba(255,255,255,0.3) 48.5%, transparent 49%),
+      linear-gradient(40deg, transparent 70%, rgba(255,255,255,0.25) 70.5%, transparent 71%),
+      linear-gradient(135deg,
+        #ff6b6b 0%, #ffd93d 14%, #6bcb77 28%,
+        #4d96ff 42%, #9b59b6 56%, #ff6b6b 70%,
+        #ffd93d 84%, #6bcb77 100%)
     `.trim(),
+    boxShadow: 'inset 0 0 4px rgba(255,255,255,0.3)',
     borderColor: hex,
     hasDistinctBorder: false,
   };
@@ -189,13 +218,17 @@ function crackedIcePattern(hex: string): SwatchStyle {
 function mosaicPattern(hex: string): SwatchStyle {
   return {
     background: `
-      linear-gradient(45deg, ${withAlpha(hex, 0.8)} 25%, transparent 25%),
-      linear-gradient(-45deg, ${withAlpha(hex, 0.8)} 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, ${withAlpha(hex, 0.6)} 75%),
-      linear-gradient(-45deg, transparent 75%, ${withAlpha(hex, 0.6)} 75%),
-      ${hex}
+      linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.15) 42%, transparent 44%),
+      linear-gradient(150deg, transparent 40%, rgba(255,255,255,0.12) 42%, transparent 44%),
+      linear-gradient(90deg, transparent 45%, rgba(255,255,255,0.1) 47%, transparent 49%),
+      linear-gradient(60deg, ${withAlpha(hex, 0.7)} 25%, transparent 25%),
+      linear-gradient(-60deg, ${withAlpha(hex, 0.7)} 25%, transparent 25%),
+      linear-gradient(60deg, transparent 75%, ${withAlpha(hex, 0.5)} 75%),
+      linear-gradient(-60deg, transparent 75%, ${withAlpha(hex, 0.5)} 75%),
+      linear-gradient(135deg,
+        #ff6b6b 0%, #ffd93d 25%, #6bcb77 50%, #4d96ff 75%, #9b59b6 100%)
     `.trim(),
-    backgroundSize: '8px 8px',
+    backgroundSize: '6px 10px, 6px 10px, 6px 10px, 6px 10px, 6px 10px, 6px 10px, 6px 10px, 100% 100%',
     borderColor: hex,
     hasDistinctBorder: false,
   };
@@ -414,18 +447,10 @@ function icePattern(hex: string): SwatchStyle {
 function discoPattern(hex: string): SwatchStyle {
   return {
     background: `
-      radial-gradient(circle at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 2%),
-      radial-gradient(circle at 30% 55%, rgba(255,255,255,0.5) 0%, transparent 2%),
-      radial-gradient(circle at 50% 20%, rgba(255,255,255,0.55) 0%, transparent 1.5%),
-      radial-gradient(circle at 70% 75%, rgba(255,255,255,0.5) 0%, transparent 2%),
-      radial-gradient(circle at 90% 35%, rgba(255,255,255,0.6) 0%, transparent 1.5%),
-      radial-gradient(circle at 15% 85%, rgba(255,255,255,0.45) 0%, transparent 2%),
-      radial-gradient(circle at 45% 65%, rgba(255,255,255,0.5) 0%, transparent 1.5%),
-      radial-gradient(circle at 80% 90%, rgba(255,255,255,0.55) 0%, transparent 2%),
-      radial-gradient(circle at 60% 40%, rgba(255,255,255,0.4) 0%, transparent 1.5%),
-      radial-gradient(circle at 25% 30%, rgba(255,255,255,0.5) 0%, transparent 2%),
-      linear-gradient(135deg, ${adjustBrightness(hex, 0.9)}, ${hex}, ${adjustBrightness(hex, 1.3)})
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0.5) 30%, transparent 35%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.85)}, ${hex}, ${adjustBrightness(hex, 1.2)})
     `.trim(),
+    backgroundSize: '5px 5px, 100% 100%',
     borderColor: hex,
     hasDistinctBorder: false,
   };
@@ -464,9 +489,16 @@ function nebulaPattern(_hex: string): SwatchStyle {
 function mojoPattern(hex: string): SwatchStyle {
   return {
     background: `
-      conic-gradient(from 0deg at 50% 50%,
-        #ff6b6b, #ffd93d, #6bcb77, #4d96ff,
-        #9b59b6, #ff6b6b, #ffd93d, #6bcb77)
+      repeating-radial-gradient(circle at 50% 50%,
+        transparent 0px, transparent 2px,
+        rgba(255,255,255,0.12) 2.5px, transparent 3px),
+      repeating-radial-gradient(circle at 50% 50%,
+        transparent 0px, transparent 4px,
+        rgba(255,255,255,0.08) 4.5px, transparent 5px),
+      linear-gradient(135deg,
+        #ff6b6b 0%, #ffd93d 14%, #6bcb77 28%,
+        #4d96ff 42%, #9b59b6 56%, #ff6b6b 70%,
+        #ffd93d 84%, #6bcb77 100%)
     `.trim(),
     boxShadow: `inset 0 0 6px ${withAlpha(hex, 0.4)}`,
     borderColor: hex,
@@ -522,9 +554,14 @@ function camoPattern(hex: string): SwatchStyle {
 function peacockPattern(_hex: string): SwatchStyle {
   return {
     background: `
+      radial-gradient(ellipse at 25% 30%, #004d40 0%, rgba(0,137,123,0.6) 20%, transparent 35%),
+      radial-gradient(ellipse at 75% 70%, #004d40 0%, rgba(0,137,123,0.6) 20%, transparent 35%),
+      radial-gradient(ellipse at 50% 50%, rgba(255,215,0,0.3) 0%, transparent 15%),
+      radial-gradient(ellipse at 25% 30%, rgba(38,198,218,0.5) 10%, transparent 25%),
+      radial-gradient(ellipse at 75% 70%, rgba(38,198,218,0.5) 10%, transparent 25%),
       linear-gradient(135deg,
-        #004d40 0%, #00897b 20%, #26c6da 40%,
-        #b2ebf2 50%, #26c6da 60%, #00897b 80%, #004d40 100%)
+        #002620 0%, #004d40 20%, #00897b 40%,
+        #26c6da 55%, #00897b 70%, #004d40 85%, #002620 100%)
     `.trim(),
     boxShadow: 'inset 0 0 5px rgba(38,198,218,0.4)',
     borderColor: '#00897b',
@@ -550,10 +587,14 @@ function stainedGlassPattern(hex: string): SwatchStyle {
 function scopePattern(hex: string): SwatchStyle {
   return {
     background: `
+      linear-gradient(0deg, transparent 48%, rgba(255,255,255,0.2) 49%, rgba(255,255,255,0.2) 51%, transparent 52%),
+      linear-gradient(90deg, transparent 48%, rgba(255,255,255,0.2) 49%, rgba(255,255,255,0.2) 51%, transparent 52%),
       radial-gradient(circle at 50% 50%,
-        transparent 30%, rgba(255,255,255,0.1) 35%, transparent 40%),
+        transparent 15%, rgba(255,255,255,0.15) 16%, transparent 18%),
       radial-gradient(circle at 50% 50%,
-        transparent 55%, rgba(255,255,255,0.08) 60%, transparent 65%),
+        transparent 30%, rgba(255,255,255,0.12) 31%, transparent 33%),
+      radial-gradient(circle at 50% 50%,
+        transparent 44%, rgba(255,255,255,0.1) 45%, transparent 47%),
       linear-gradient(135deg, ${adjustBrightness(hex, 0.8)}, ${hex}, ${adjustBrightness(hex, 1.3)})
     `.trim(),
     borderColor: hex,
@@ -564,12 +605,14 @@ function scopePattern(hex: string): SwatchStyle {
 function holoPattern(_hex: string): SwatchStyle {
   return {
     background: `
+      radial-gradient(ellipse at 40% 40%,
+        rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.15) 25%, transparent 50%),
       linear-gradient(135deg,
         #ff6b6b 0%, #ffd93d 12%, #6bcb77 24%,
         #4d96ff 36%, #9b59b6 48%, #ff6b6b 60%,
         #ffd93d 72%, #6bcb77 84%, #4d96ff 100%)
     `.trim(),
-    boxShadow: 'inset 0 0 4px rgba(255,255,255,0.3)',
+    boxShadow: 'inset 0 0 6px rgba(255,255,255,0.4)',
     borderColor: '#C0C0C0',
     hasDistinctBorder: false,
   };
@@ -598,33 +641,26 @@ function flowerPattern(hex: string): SwatchStyle {
 function sandglitterPattern(hex: string): SwatchStyle {
   return {
     background: `
-      radial-gradient(circle at 12% 18%, rgba(255,223,150,0.7) 0%, transparent 2%),
-      radial-gradient(circle at 35% 42%, rgba(255,210,120,0.6) 0%, transparent 1.5%),
-      radial-gradient(circle at 58% 12%, rgba(255,230,170,0.65) 0%, transparent 2%),
-      radial-gradient(circle at 78% 55%, rgba(255,215,130,0.55) 0%, transparent 1.5%),
-      radial-gradient(circle at 22% 72%, rgba(255,220,140,0.6) 0%, transparent 2%),
-      radial-gradient(circle at 65% 82%, rgba(255,225,160,0.5) 0%, transparent 1.5%),
-      radial-gradient(circle at 90% 30%, rgba(255,210,110,0.65) 0%, transparent 2%),
-      radial-gradient(circle at 45% 90%, rgba(255,230,150,0.55) 0%, transparent 1.5%),
-      linear-gradient(135deg, ${adjustBrightness(hex, 0.85)}, ${hex}, ${adjustBrightness(hex, 1.1)})
+      radial-gradient(circle at 50% 50%, rgba(255,240,200,0.3) 20%, transparent 25%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.9)}, ${hex}, ${adjustBrightness(hex, 1.08)})
     `.trim(),
+    backgroundSize: '3px 3px, 100% 100%',
     borderColor: hex,
     hasDistinctBorder: false,
   };
 }
 
 function diamantePattern(hex: string): SwatchStyle {
-  const facet = 'rgba(255,255,255,0.2)';
+  const facet = 'rgba(255,255,255,0.18)';
   return {
     background: `
-      linear-gradient(0deg, ${facet} 1px, transparent 1px),
-      linear-gradient(60deg, ${facet} 1px, transparent 1px),
-      linear-gradient(120deg, ${facet} 1px, transparent 1px),
+      linear-gradient(45deg, ${facet} 25%, transparent 25%, transparent 75%, ${facet} 75%),
+      linear-gradient(-45deg, ${facet} 25%, transparent 25%, transparent 75%, ${facet} 75%),
       linear-gradient(135deg,
         ${adjustBrightness(hex, 0.7)} 0%, ${adjustBrightness(hex, 1.4)} 25%,
         ${hex} 50%, ${adjustBrightness(hex, 1.5)} 75%, ${adjustBrightness(hex, 0.8)} 100%)
     `.trim(),
-    backgroundSize: '5px 8px, 5px 8px, 5px 8px, 100% 100%',
+    backgroundSize: '5px 5px, 5px 5px, 100% 100%',
     boxShadow: 'inset 0 0 4px rgba(255,255,255,0.3)',
     borderColor: hex,
     hasDistinctBorder: false,
@@ -813,7 +849,8 @@ const INTERIOR_RULES: Array<{ test: (name: string) => boolean; fn: (hex: string)
 
   // Broad refractor/prizm/foil patterns
   { test: n => /prizm|prism/i.test(n), fn: prizmPattern },
-  { test: n => /refractor|xfractor|chrome/i.test(n), fn: refractorPattern },
+  { test: n => /refractor|xfractor/i.test(n), fn: refractorPattern },
+  { test: n => /\bchrome\b/i.test(n), fn: chromePattern },
   { test: n => /\bfoil\b/i.test(n), fn: foilPattern },
 
   // Metallic

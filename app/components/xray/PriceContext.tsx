@@ -70,7 +70,7 @@ export function PriceContext({ priceComps }: Props) {
       {/* Primary segment */}
       {primary && (
         <StatsBlock
-          stats={primary} label={`${primaryLabel} Sales`}
+          stats={primary} label={`${primaryLabel} ${source === 'sold' ? 'Sales' : 'Listings'}`}
           listingPrice={listingPrice} vsMedian={vsMedian}
           vsColor={vsColor} vsLabel={vsLabel}
           colors={colors} isPrimary
@@ -89,11 +89,11 @@ export function PriceContext({ priceComps }: Props) {
               textTransform: 'uppercase', letterSpacing: 0.5,
             }}
           >
-            {showSecondary ? '▾' : '▸'} {secondaryLabel} Sales ({secondary.count})
+            {showSecondary ? '▾' : '▸'} {secondaryLabel} {source === 'sold' ? 'Sales' : 'Listings'} ({secondary.count})
           </button>
           {showSecondary && (
             <StatsBlock
-              stats={secondary} label={`${secondaryLabel} Sales`}
+              stats={secondary} label={`${secondaryLabel} ${source === 'sold' ? 'Sales' : 'Listings'}`}
               listingPrice={listingPrice} vsMedian={null}
               vsColor={colors.muted} vsLabel=""
               colors={colors} isPrimary={false}
@@ -129,7 +129,7 @@ function StatsBlock({ stats, label, listingPrice, vsMedian, vsColor, vsLabel, co
     return (
       <div style={{ marginBottom: 16 }}>
         <p style={{ fontSize: 14 * textScale, fontFamily: "'IBM Plex Sans', sans-serif", color: colors.secondary, margin: '0 0 8px' }}>
-          Last sold for{' '}
+          {source === 'sale' ? 'Last sold for' : 'Listed at'}{' '}
           <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600, color: colors.text }}>
             ${sale.price.toFixed(2)}
           </span>
@@ -169,7 +169,7 @@ function StatsBlock({ stats, label, listingPrice, vsMedian, vsColor, vsLabel, co
       <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', marginBottom: 12 }}>
         {[
           { label: 'This Listing', value: `$${listingPrice.toFixed(2)}`, color: colors.text },
-          { label: 'Sold Median', value: `$${stats.median.toFixed(2)}`, color: colors.cyan },
+          { label: source === 'sale' ? 'Sold Median' : 'Asking Median', value: `$${stats.median.toFixed(2)}`, color: colors.cyan },
           { label: 'Low', value: `$${stats.low.toFixed(2)}`, color: colors.green },
           { label: 'High', value: `$${stats.high.toFixed(2)}`, color: colors.red },
         ].map(stat => (
@@ -190,7 +190,7 @@ function StatsBlock({ stats, label, listingPrice, vsMedian, vsColor, vsLabel, co
 
       {/* Recent sales list */}
       <h3 style={{ fontSize: 12, fontFamily: "'IBM Plex Mono', monospace", color: colors.muted, textTransform: 'uppercase', letterSpacing: 0.5, margin: '12px 0 8px' }}>
-        Recent Sales ({stats.count})
+        {source === 'sale' ? 'Recent Sales' : 'Active Listings'} ({stats.count})
       </h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {stats.listings.slice(0, 8).map((sale, i) => (

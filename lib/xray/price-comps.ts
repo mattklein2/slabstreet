@@ -25,7 +25,27 @@ function computeStats(listings: CompListing[]): SegmentStats | null {
 export async function getPriceComps(
   identity: CardIdentity,
   listingPrice: number,
+  parallelId?: string | null,
+  ebayItemId?: string,
 ): Promise<PriceComps | null> {
+  // --- Cache check ---
+  let cacheKey: string | null = null;
+  if (ebayItemId) {
+    const { buildCacheKey, getCachedComps } = await import('./price-cache');
+    cacheKey = buildCacheKey(parallelId || null, identity.player, ebayItemId);
+    const cached = await getCachedComps(cacheKey);
+    if (cached) {
+      // Recompute vsMedian against THIS listing's price (may differ from original)
+      const primaryStats = cached.primarySegment === 'raw' ? cached.raw : cached.graded;
+      if (primaryStats && primaryStats.median > 0) {
+        cached.vsMedian = Math.round(((listingPrice - primaryStats.median) / primaryStats.median) * 100);
+      }
+      cached.listingPrice = listingPrice;
+      console.log(`[price-comps] CACHE HIT for ${cacheKey}`);
+      return cached;
+    }
+  }
+
   const query = buildSoldQuery(identity);
   if (!query) return null;
 
@@ -62,7 +82,7 @@ export async function getPriceComps(
       vsMedian = Math.round(((listingPrice - primaryStats.median) / primaryStats.median) * 100);
     }
 
-    return {
+    const result: PriceComps = {
       source: 'sold',
       raw: rawStats,
       graded: gradedStats,
@@ -71,6 +91,15 @@ export async function getPriceComps(
       vsMedian,
       totalCount: soldItems.length,
     };
+
+    // Cache the result (fire-and-forget)
+    if (cacheKey) {
+      import('./price-cache').then(({ setCachedComps }) => {
+        setCachedComps(cacheKey!, result, identity.player, identity.parallel);
+      });
+    }
+
+    return result;
   }
 
   // Fallback: active listings from Browse API
@@ -108,7 +137,7 @@ export async function getPriceComps(
       vsMedian = Math.round(((listingPrice - stats.median) / stats.median) * 100);
     }
 
-    return {
+    const result: PriceComps = {
       source: 'active',
       raw: stats,
       graded: null,
@@ -117,6 +146,15 @@ export async function getPriceComps(
       vsMedian,
       totalCount: allComps.length,
     };
+
+    // Cache the result (fire-and-forget)
+    if (cacheKey) {
+      import('./price-cache').then(({ setCachedComps }) => {
+        setCachedComps(cacheKey!, result, identity.player, identity.parallel);
+      });
+    }
+
+    return result;
   } catch (err) {
     console.error('Price comps fallback error:', err);
     return null;

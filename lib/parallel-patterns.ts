@@ -117,7 +117,7 @@ function extractBorderColor(name: string): { borderHex: string | null; colorWord
 
 /** Check if text contains a finish/pattern keyword */
 function hasPatternKeyword(text: string): boolean {
-  return /refractor|xfractor|prizm|prism|shimmer|ice|wave|pulsar|disco|scope|holo|mojo|sparkle|lazer|laser|seismic|power|tiger|snakeskin|nebula|lava|marble|camo|peacock|mosaic|fractal|cracked|superfractor|stardust|vapor|die.?cut|logofractor|patch|sapphire|checker|fluorescent|neon|stained|tie.?dye|cherry|lotus|flower|speckle|zebra|leopard|chrome/i.test(text);
+  return /refractor|xfractor|prizm|prism|shimmer|ice|wave|pulsar|disco|scope|holo|mojo|sparkle|lazer|laser|seismic|power|tiger|snakeskin|nebula|lava|marble|camo|peacock|mosaic|fractal|cracked|superfractor|stardust|vapor|die.?cut|logofractor|patch|sapphire|checker|fluorescent|neon|stained|tie.?dye|cherry|lotus|flower|speckle|zebra|leopard|chrome|sandglitter|diamante|rainbow\s*foil|canvas|foil|spring\s*training|training/i.test(text);
 }
 
 // ── Interior pattern generators ──────────────────────────────
@@ -595,6 +595,106 @@ function flowerPattern(hex: string): SwatchStyle {
   };
 }
 
+function sandglitterPattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      radial-gradient(circle at 12% 18%, rgba(255,223,150,0.7) 0%, transparent 2%),
+      radial-gradient(circle at 35% 42%, rgba(255,210,120,0.6) 0%, transparent 1.5%),
+      radial-gradient(circle at 58% 12%, rgba(255,230,170,0.65) 0%, transparent 2%),
+      radial-gradient(circle at 78% 55%, rgba(255,215,130,0.55) 0%, transparent 1.5%),
+      radial-gradient(circle at 22% 72%, rgba(255,220,140,0.6) 0%, transparent 2%),
+      radial-gradient(circle at 65% 82%, rgba(255,225,160,0.5) 0%, transparent 1.5%),
+      radial-gradient(circle at 90% 30%, rgba(255,210,110,0.65) 0%, transparent 2%),
+      radial-gradient(circle at 45% 90%, rgba(255,230,150,0.55) 0%, transparent 1.5%),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.85)}, ${hex}, ${adjustBrightness(hex, 1.1)})
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function diamantePattern(hex: string): SwatchStyle {
+  const facet = 'rgba(255,255,255,0.2)';
+  return {
+    background: `
+      linear-gradient(0deg, ${facet} 1px, transparent 1px),
+      linear-gradient(60deg, ${facet} 1px, transparent 1px),
+      linear-gradient(120deg, ${facet} 1px, transparent 1px),
+      linear-gradient(135deg,
+        ${adjustBrightness(hex, 0.7)} 0%, ${adjustBrightness(hex, 1.4)} 25%,
+        ${hex} 50%, ${adjustBrightness(hex, 1.5)} 75%, ${adjustBrightness(hex, 0.8)} 100%)
+    `.trim(),
+    backgroundSize: '5px 8px, 5px 8px, 5px 8px, 100% 100%',
+    boxShadow: 'inset 0 0 4px rgba(255,255,255,0.3)',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function rainbowFoilPattern(_hex: string): SwatchStyle {
+  return {
+    background: `
+      repeating-linear-gradient(135deg,
+        transparent 0px, transparent 2px,
+        rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 3px),
+      linear-gradient(135deg,
+        #ff6b6b 0%, #ffa94d 14%, #ffd93d 28%,
+        #6bcb77 42%, #4d96ff 56%, #9b59b6 70%,
+        #ff6b6b 84%, #ffa94d 100%)
+    `.trim(),
+    boxShadow: 'inset 0 0 4px rgba(255,255,255,0.25)',
+    borderColor: '#C0C0C0',
+    hasDistinctBorder: false,
+  };
+}
+
+function canvasPattern(hex: string): SwatchStyle {
+  const thread = withAlpha('#ffffff', 0.1);
+  return {
+    background: `
+      repeating-linear-gradient(0deg, ${thread} 0px, ${thread} 1px, transparent 1px, transparent 2px),
+      repeating-linear-gradient(90deg, ${thread} 0px, ${thread} 1px, transparent 1px, transparent 2px),
+      linear-gradient(135deg, ${adjustBrightness(hex, 0.9)}, ${hex}, ${adjustBrightness(hex, 1.05)})
+    `.trim(),
+    backgroundSize: '2px 2px, 2px 2px, 100% 100%',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function springTrainingPattern(hex: string): SwatchStyle {
+  return {
+    background: `
+      radial-gradient(ellipse at 30% 70%, rgba(34,139,34,0.35) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 30%, rgba(60,179,60,0.3) 0%, transparent 45%),
+      linear-gradient(135deg,
+        ${adjustBrightness(hex, 0.85)} 0%, ${hex} 30%,
+        rgba(34,139,34,0.2) 50%, ${hex} 70%,
+        ${adjustBrightness(hex, 1.1)} 100%)
+    `.trim(),
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
+function foilPattern(hex: string): SwatchStyle {
+  const light = adjustBrightness(hex, 1.6);
+  const dark = adjustBrightness(hex, 0.7);
+  return {
+    background: `
+      repeating-linear-gradient(60deg,
+        transparent 0px, transparent 3px,
+        rgba(255,255,255,0.08) 3px, rgba(255,255,255,0.08) 4px),
+      linear-gradient(160deg,
+        ${dark} 0%, ${hex} 20%, ${light} 40%,
+        ${hex} 50%, ${dark} 65%, ${light} 80%, ${hex} 100%)
+    `.trim(),
+    boxShadow: 'inset 0 0 4px rgba(255,255,255,0.2)',
+    borderColor: hex,
+    hasDistinctBorder: false,
+  };
+}
+
 function specklePattern(hex: string): SwatchStyle {
   return {
     background: `
@@ -670,7 +770,9 @@ const INTERIOR_RULES: Array<{ test: (name: string) => boolean; fn: (hex: string)
   // Very specific compound patterns first
   { test: n => /superfractor/i.test(n), fn: superFractorPattern },
   { test: n => /cracked\s*ice/i.test(n), fn: crackedIcePattern },
+  { test: n => /rainbow\s*foil/i.test(n), fn: rainbowFoilPattern },
   { test: n => /stained\s*glass/i.test(n), fn: stainedGlassPattern },
+  { test: n => /spring\s*training/i.test(n), fn: springTrainingPattern },
   { test: n => /die[\s-]*cut/i.test(n), fn: dieCutPattern },
   { test: n => /tie[\s-]*dye/i.test(n), fn: tiePattern },
   { test: n => /logofractor/i.test(n), fn: logofractorPattern },
@@ -685,6 +787,9 @@ const INTERIOR_RULES: Array<{ test: (name: string) => boolean; fn: (hex: string)
   { test: n => /nebula/i.test(n), fn: nebulaPattern },
   { test: n => /peacock/i.test(n), fn: peacockPattern },
   { test: n => /fluorescent/i.test(n), fn: fluorescentPattern },
+  { test: n => /sandglitter/i.test(n), fn: sandglitterPattern },
+  { test: n => /diamante/i.test(n), fn: diamantePattern },
+  { test: n => /canvas/i.test(n), fn: canvasPattern },
   { test: n => /marble/i.test(n), fn: marblePattern },
   { test: n => /camo|camouflage/i.test(n), fn: camoPattern },
 
@@ -706,9 +811,10 @@ const INTERIOR_RULES: Array<{ test: (name: string) => boolean; fn: (hex: string)
   { test: n => /patch\s*auto|patch/i.test(n), fn: patchPattern },
   { test: n => /sapphire|padparadscha/i.test(n), fn: sapphirePattern },
 
-  // Broad refractor/prizm patterns
+  // Broad refractor/prizm/foil patterns
   { test: n => /prizm|prism/i.test(n), fn: prizmPattern },
   { test: n => /refractor|xfractor|chrome/i.test(n), fn: refractorPattern },
+  { test: n => /\bfoil\b/i.test(n), fn: foilPattern },
 
   // Metallic
   { test: n => /\bgold\b|rose\s*gold/i.test(n), fn: metallicPattern },

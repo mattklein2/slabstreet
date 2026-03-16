@@ -28,7 +28,12 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
   };
 
   // Check Item Specifics for insert name
-  const specsInsert = specs['Insert'] || specs['Card Name'] || specs['Subset'] || null;
+  const rawSpecsInsert = specs['Insert Set'] || specs['Insert'] || specs['Card Name'] || specs['Subset'] || null;
+  // Guard: if the "insert" value is actually the player name, ignore it
+  const playerName = (fromSpecs.player || '').toLowerCase();
+  const specsInsert = rawSpecsInsert && playerName && rawSpecsInsert.toLowerCase() === playerName
+    ? null
+    : rawSpecsInsert;
 
   // Pass 2: Fill gaps from title
   const fromTitle = parseTitleFallback(title);
@@ -53,15 +58,23 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
       ? (specsParallel || null)                       // specs parallel confirmed by title
       : (fromTitle.parallel || specsParallel || null); // prefer title when specs not in title
 
+  // Sport override: WNBA cards have Sport="Basketball" on eBay but we track them as WNBA
+  let resolvedSport = fromSpecs.sport || fromTitle.sport;
+  const league = (specs['League'] || '').toLowerCase();
+  const setStr = (resolvedSet || '').toLowerCase();
+  if (league.includes('wnba') || setStr.includes('wnba')) {
+    resolvedSport = 'WNBA';
+  }
+
   const identity: CardIdentity = {
     player: fromSpecs.player || fromTitle.player,
     year: fromSpecs.year || fromTitle.year,
     brand: fromSpecs.brand || fromTitle.brand,
     set: resolvedSet,
     parallel: resolvedParallel,
-    insert: specsInsert || fromTitle.insert || null,
+    insert: specsInsert || (fromTitle.insert && playerName && fromTitle.insert.toLowerCase() === playerName ? null : fromTitle.insert) || null,
     cardNumber: fromSpecs.cardNumber || fromTitle.cardNumber,
-    sport: fromSpecs.sport || fromTitle.sport,
+    sport: resolvedSport,
     isRookie: fromSpecs.isRookie || fromTitle.isRookie || false,
     isGraded: fromSpecs.isGraded || fromTitle.isGraded || false,
     grader: fromSpecs.grader || fromTitle.grader,
@@ -79,6 +92,7 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
 function normalizeSport(raw: string | null): string | null {
   if (!raw) return null;
   const lower = raw.toLowerCase();
+  if (lower.includes('wnba')) return 'WNBA';
   if (lower.includes('basketball')) return 'NBA';
   if (lower.includes('football') && !lower.includes('soccer')) return 'NFL';
   if (lower.includes('baseball')) return 'MLB';

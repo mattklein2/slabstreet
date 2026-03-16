@@ -100,6 +100,14 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
       else if (setLower.includes(pNameLower)) score += 8;   // eBay set contains product name
       else if (cleanedSet.includes(pNameLower)) score += 8; // cleaned set contains product name
       else if (pNameLower.includes(cleanedSet)) score += 8; // product contains cleaned set
+      else {
+        // Word-based: all DB product name words appear in the cleaned set
+        // e.g. DB "Prizm WNBA" → words ["prizm", "wnba"] all in "prizm monopoly wnba"
+        const pWords = pNameLower.split(/\s+/).filter((w: string) => w.length > 1);
+        const setWords = cleanedSet.split(/\s+/).filter((w: string) => w.length > 1);
+        const allPWordsInSet = pWords.length > 0 && pWords.every((pw: string) => setWords.some((sw: string) => sw.includes(pw)));
+        if (allPWordsInSet) score += 6;
+      }
     }
 
     // Brand match

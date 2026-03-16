@@ -1,0 +1,50 @@
+name: CardLadder Sales Scrape
+
+on:
+  schedule:
+    # Every 6 hours — captures top 50/league with sales
+    - cron: '0 */6 * * *'
+    # Daily full import at 3 AM UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: true
+        default: 'standard'
+        type: choice
+        options:
+          - standard
+          - import
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run CardLadder scraper
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          CARDLADDER_EMAIL: ${{ secrets.CARDLADDER_EMAIL }}
+          CARDLADDER_PASSWORD: ${{ secrets.CARDLADDER_PASSWORD }}
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+        run: |
+          # Determine run mode
+          if [ "${{ github.event.schedule }}" = "0 3 * * *" ] || [ "${{ inputs.mode }}" = "import" ]; then
+            echo "Running FULL IMPORT mode..."
+            node scripts/scrape-cardladder.mjs --import --all-cards --sales
+          else
+            echo "Running STANDARD mode (top 50/league with sales)..."
+            node scripts/scrape-cardladder.mjs --limit=50 --all-cards --sales
+          fi

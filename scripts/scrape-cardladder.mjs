@@ -33,13 +33,17 @@ import { generateCardSlug } from './lib/card-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ── Load .env.local ──────────────────────────────────────────
+// ── Load .env.local (falls back to process.env for CI) ───────
 const envPath = resolve(__dirname, '..', '.env.local');
-const envLines = readFileSync(envPath, 'utf-8').split('\n');
 const env = {};
-for (const line of envLines) {
-  const m = line.match(/^([^#=][^=]*)=(.*)/);
-  if (m) env[m[1].trim()] = m[2].trim();
+try {
+  const envLines = readFileSync(envPath, 'utf-8').split('\n');
+  for (const line of envLines) {
+    const m = line.match(/^([^#=][^=]*)=(.*)/);
+    if (m) env[m[1].trim()] = m[2].trim();
+  }
+} catch {
+  Object.assign(env, process.env);
 }
 
 const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
@@ -849,7 +853,44 @@ async function runImport(token) {
 }
 
 // ── STANDARD MODE ────────────────────────────────────────────
-async function runStandard(token) {
+async function runStandard(initialToken) {
+  let token = initialToken;
+  let tokenRefreshedAt = Date.now();
+
+  async function refreshedToken() {
+    if (Date.now() - tokenRefreshedAt > 45 * 60 * 1000) {
+      console.log('\n  [token refresh]');
+      token = await firebaseSignIn();
+      tokenRefreshedAt = Date.now();
+    }
+    return token;
+  }
+
+  async function safePlayerCards(name, limit) {
+    try {
+      return await fetchPlayerCards(await refreshedToken(), name, limit);
+    } catch (e) {
+      if (e.message.includes('Unauthorized')) {
+        token = await firebaseSignIn();
+        tokenRefreshedAt = Date.now();
+        return await fetchPlayerCards(token, name, limit);
+      }
+      throw e;
+    }
+  }
+
+  async function safeCardSales(id) {
+    try {
+      return await fetchCardSales(await refreshedToken(), id);
+    } catch (e) {
+      if (e.message.includes('Unauthorized')) {
+        token = await firebaseSignIn();
+        tokenRefreshedAt = Date.now();
+        return await fetchCardSales(token, id);
+      }
+      throw e;
+    }
+  }
   // 1. Get target players from Supabase
   console.log('Fetching target players from Supabase...');
   let players = [];
@@ -890,34 +931,18 @@ async function runStandard(token) {
 
     console.log(`  ${topCL.length} CardLadder players selected (sorted by daily sales volume)\n`);
 
-    // Fetch all Supabase players for matching
-    const allSupabase = [];
-    let page = 0;
-    while (true) {
-      const { data } = await supabase
-        .from('players')
-        .select('slug, name, league, team')
-        .eq('active', true)
-        .range(page * 1000, (page + 1) * 1000 - 1);
-      if (!data || data.length === 0) break;
-      allSupabase.push(...data);
-      page++;
-    }
-
-    // Build Supabase lookup
-    const spByName = new Map();
-    const spByNormalized = new Map();
-    for (const sp of allSupabase) {
-      spByName.set(sp.name, sp);
-      spByNormalized.set(normalizeName(sp.name), sp);
-    }
-
-    // Match CardLadder → Supabase
+    // Build players directly from CardLadder data (no Supabase player table needed)
     for (const cl of topCL) {
-      const sp = spByName.get(cl.player) || spByNormalized.get(normalizeName(cl.player));
-      if (sp) {
-        players.push({ ...sp, _clDoc: cl, _clName: cl.player });
-      }
+      if (!cl.player) continue;
+      const league = CATEGORY_TO_LEAGUE[cl.category] || 'OTHER';
+      players.push({
+        slug: slugify(cl.player),
+        name: cl.player,
+        league,
+        team: '',
+        _clDoc: cl,
+        _clName: cl.player,
+      });
     }
 
     console.log(`  ${players.length} matched to Supabase players\n`);
@@ -972,51 +997,39 @@ async function runStandard(token) {
 
       // Fetch cards (still requires per-player Firestore query)
       const cardLimit = ALL_CARDS ? 9999 : (SCRAPE_CARDS ? 50 : 100);
-      const cards = await fetchPlayerCards(token, clName, cardLimit);
+      const cards = await safePlayerCards(clName, cardLimit);
 
-      const cardladderData = buildCardLadderData(clDoc, cards);
-
-      const { error } = await supabase
-        .from('players')
-        .update({ cardladder: cardladderData })
-        .eq('slug', player.slug);
-
-      if (error) {
-        console.log(`ERROR: ${error.message}`);
-        fail++;
-      } else {
-        let salesMsg = '';
-        // Fetch and store sales per card if --sales flag is set
-        if (FETCH_SALES && cards.length > 0) {
-          let totalSalesWritten = 0;
-          for (const card of cards) {
-            const cardId = card._id;
-            if (!cardId) continue;
-            const sales = await fetchCardSales(token, cardId);
-            if (sales.length > 0) {
-              const written = await writeCardSalesToDB(sales, card, player.slug, player.league);
-              totalSalesWritten += written;
-            }
-            await sleep(50); // small delay between card sales fetches
+      let salesMsg = '';
+      // Fetch and store sales per card if --sales flag is set
+      if (FETCH_SALES && cards.length > 0) {
+        let totalSalesWritten = 0;
+        for (const card of cards) {
+          const cardId = card._id;
+          if (!cardId) continue;
+          const sales = await safeCardSales(cardId);
+          if (sales.length > 0) {
+            const written = await writeCardSalesToDB(sales, card, player.slug, player.league);
+            totalSalesWritten += written;
           }
-          salesMsg = `, ${totalSalesWritten} sales`;
+          await sleep(50); // small delay between card sales fetches
         }
-
-        // Write cards to cards table (for --all-cards, --cards, or default mode)
-        let cardsMsg = '';
-        if (cards.length > 0) {
-          let newCards = 0;
-          for (const card of cards) {
-            const isNew = await ensureCardInDB(card, player.slug, player.league);
-            if (isNew) newCards++;
-          }
-          if (newCards > 0) cardsMsg = `, ${newCards} new cards added`;
-        }
-
-        const mktCap = formatMoney(clDoc.totalMarketCap) || 'N/A';
-        console.log(`${cards.length} cards${salesMsg}${cardsMsg}, mktcap=${mktCap} — saved`);
-        ok++;
+        salesMsg = `, ${totalSalesWritten} sales`;
       }
+
+      // Write cards to cards table
+      let cardsMsg = '';
+      if (cards.length > 0) {
+        let newCards = 0;
+        for (const card of cards) {
+          const isNew = await ensureCardInDB(card, player.slug, player.league);
+          if (isNew) newCards++;
+        }
+        if (newCards > 0) cardsMsg = `, ${newCards} new cards added`;
+      }
+
+      const mktCap = formatMoney(clDoc.totalMarketCap) || 'N/A';
+      console.log(`${cards.length} cards${salesMsg}${cardsMsg}, mktcap=${mktCap} — saved`);
+      ok++;
     } catch (err) {
       console.log(`FAIL: ${err.message}`);
       fail++;

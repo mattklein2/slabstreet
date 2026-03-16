@@ -21,13 +21,17 @@ import { generateCardSlug } from './lib/card-slug.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ── Load .env.local ──────────────────────────────────────────
+// ── Load .env.local (falls back to process.env for CI) ───────
 const envPath = resolve(__dirname, '..', '.env.local');
-const envLines = readFileSync(envPath, 'utf-8').split('\n');
 const env = {};
-for (const line of envLines) {
-  const m = line.match(/^([^#=][^=]*)=(.*)/);
-  if (m) env[m[1].trim()] = m[2].trim();
+try {
+  const envLines = readFileSync(envPath, 'utf-8').split('\n');
+  for (const line of envLines) {
+    const m = line.match(/^([^#=][^=]*)=(.*)/);
+    if (m) env[m[1].trim()] = m[2].trim();
+  }
+} catch {
+  Object.assign(env, process.env);
 }
 
 const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY);

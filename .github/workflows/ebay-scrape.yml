@@ -1,0 +1,49 @@
+name: eBay Sales Scrape
+
+on:
+  schedule:
+    # Daily at 9 AM UTC (offset from CardLadder)
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      league:
+        description: 'League filter (blank for all)'
+        required: false
+        type: string
+      limit:
+        description: 'Players per league'
+        required: false
+        default: '30'
+        type: string
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run eBay scraper
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          LEAGUE="${{ inputs.league }}"
+          LIMIT="${{ inputs.limit || '30' }}"
+          CMD="node scripts/scrape-ebay-sales.mjs --limit=$LIMIT"
+          if [ -n "$LEAGUE" ]; then
+            CMD="$CMD --league=$LEAGUE"
+          fi
+          echo "Running: $CMD"
+          $CMD

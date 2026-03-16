@@ -87,6 +87,12 @@ export interface GradeInfo {
   grade: string;   // "10", "9.5", etc.
 }
 
+/** Cache metadata for price comps */
+export interface CacheInfo {
+  cached: boolean;
+  fetchedAt: string;  // ISO timestamp of when data was scraped
+}
+
 /** A single sold or active comp listing */
 export interface CompListing {
   title: string;
@@ -115,6 +121,7 @@ export interface PriceComps {
   listingPrice: number;             // current listing price
   vsMedian: number | null;          // % above/below primary segment median
   totalCount: number;               // total sales across both segments
+  cacheInfo?: CacheInfo;  // present when served from cache
 }
 
 /** Full X-Ray API response */

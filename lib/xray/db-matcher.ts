@@ -42,9 +42,15 @@ function scoreNameMatch(dbName: string, identityName: string): number {
   const dbInId = dbWords.every(w => idWords.some(iw => iw.includes(w)));
   if (idInDb && dbInId) return 5;
 
+  // One-directional: all identity words appear in DB name (but DB has extras like "Mosaic")
+  if (idInDb) return 4;
+
   // Partial: at least half of identity words appear in DB name
+  // Return score proportional to match fraction to prefer better partial matches
   const matchCount = idWords.filter(w => dbWords.some(dw => dw.includes(w))).length;
-  if (matchCount >= Math.ceil(idWords.length / 2)) return 2;
+  if (matchCount >= Math.ceil(idWords.length / 2)) {
+    return 1 + (matchCount / idWords.length);
+  }
 
   return 0;
 }

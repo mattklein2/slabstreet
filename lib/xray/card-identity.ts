@@ -134,8 +134,22 @@ function parallelConfirmedByTitle(specsParallel: string, title: string): boolean
   const titleLower = title.toLowerCase();
   // Full substring match
   if (titleLower.includes(specsParallel.toLowerCase())) return true;
+
+  // If specs contain a color word, that color MUST appear in the title.
+  // This catches sellers who enter "No Huddle Blue" when the card is actually Gold.
+  const COLOR_WORDS = new Set([
+    'red', 'blue', 'green', 'gold', 'silver', 'black', 'orange', 'purple',
+    'pink', 'yellow', 'white', 'teal', 'bronze', 'ruby', 'sapphire',
+    'emerald', 'neon', 'camo', 'aqua', 'magenta', 'crimson', 'navy',
+  ]);
+  const specWords = specsParallel.toLowerCase().split(/[\s/&,]+/);
+  const specColors = specWords.filter(w => COLOR_WORDS.has(w));
+  if (specColors.length > 0 && !specColors.some(c => titleLower.includes(c))) {
+    return false;
+  }
+
   // Check distinctive words (skip generic terms like "Prizm", "Refractor")
-  const words = specsParallel.toLowerCase().split(/[\s/&,]+/).filter(w =>
+  const words = specWords.filter(w =>
     w.length > 2 && !GENERIC_PARALLEL_TERMS.has(w)
   );
   return words.length > 0 && words.some(w => titleLower.includes(w));

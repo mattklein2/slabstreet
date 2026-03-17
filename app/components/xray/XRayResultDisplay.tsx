@@ -4,18 +4,14 @@ import { useState, useRef, useCallback } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { CardIdentitySection } from './CardIdentitySection';
 import { RarityRainbow } from './RarityRainbow';
-import { PriceContext } from './PriceContext';
-import { SetEducation } from './SetEducation';
+import { CardInsights } from './CardInsights';
 import { ShareButton } from './ShareButton';
-import type { XRayResult, PriceComps } from '../../../lib/xray/types';
+import type { XRayResult } from '../../../lib/xray/types';
 
 export function XRayResultDisplay({ result }: { result: XRayResult }) {
   const { colors } = useTheme();
   const [selectedParallelId, setSelectedParallelId] = useState<string | null>(null);
-  const [overridePriceComps, setOverridePriceComps] = useState<PriceComps | null>(null);
   const [overrideParallelDesc, setOverrideParallelDesc] = useState<string | null>(null);
-  const [compsLoading, setCompsLoading] = useState(false);
-  const abortRef = useRef<AbortController | null>(null);
 
   // Derive active rainbow with updated isCurrentCard
   const activeRainbow = selectedParallelId
@@ -30,52 +26,37 @@ export function XRayResultDisplay({ result }: { result: XRayResult }) {
     ? { ...result.education, parallelDescription: overrideParallelDesc }
     : result.education;
 
-  // Derive active price comps
-  const activePriceComps = overridePriceComps !== undefined && selectedParallelId
-    ? overridePriceComps
-    : result.priceComps;
+  // Derive active matched parallel when user clicks a different one in the rainbow
+  const activeParallel = selectedParallelId
+    ? (() => {
+        const entry = result.rainbow.find(r => r.parallelId === selectedParallelId);
+        if (!entry) return result.matchedParallel;
+        return {
+          parallelId: entry.parallelId,
+          parallelName: entry.name,
+          colorHex: entry.colorHex,
+          printRun: entry.printRun,
+          serialNumbered: entry.serialNumbered,
+          rarityRank: entry.rarityRank,
+          isOneOfOne: entry.isOneOfOne,
+          description: entry.description || '',
+          boxExclusivity: entry.boxExclusivity,
+        };
+      })()
+    : result.matchedParallel;
 
   const canSelectParallel = result.rainbow.length > 0 && result.status !== 'unmatched';
   const isInsert = result.matchedCardSet?.type === 'insert' || result.matchedCardSet?.type === 'subset';
   const isInsertFallback = isInsert && result.rainbow.length > 0 && !result.rainbow.some(r => r.isCurrentCard);
 
   const handleParallelSelect = useCallback((parallelId: string) => {
-    // Skip if already selected
     const currentEntry = result.rainbow.find(r => r.isCurrentCard);
     if (currentEntry?.parallelId === parallelId && !selectedParallelId) return;
     if (selectedParallelId === parallelId) return;
 
-    // Instant UI update
     setSelectedParallelId(parallelId);
     const selectedEntry = result.rainbow.find(r => r.parallelId === parallelId);
     setOverrideParallelDesc(selectedEntry?.description ?? null);
-
-    // Abort previous fetch
-    if (abortRef.current) abortRef.current.abort();
-
-    // Only fetch comps if we have a resultId
-    if (!result.resultId) return;
-
-    const controller = new AbortController();
-    abortRef.current = controller;
-    setCompsLoading(true);
-    setOverridePriceComps(null);
-
-    fetch(`/api/xray/comps?resultId=${result.resultId}&parallelId=${parallelId}`, {
-      signal: controller.signal,
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (!controller.signal.aborted) {
-          setOverridePriceComps(data.priceComps ?? null);
-          setCompsLoading(false);
-        }
-      })
-      .catch(err => {
-        if (err.name !== 'AbortError') {
-          setCompsLoading(false);
-        }
-      });
   }, [result, selectedParallelId]);
 
   return (
@@ -126,13 +107,14 @@ export function XRayResultDisplay({ result }: { result: XRayResult }) {
         onParallelSelect={canSelectParallel && !isInsertFallback ? handleParallelSelect : undefined}
       />
 
-      {/* Section 3: Price Context */}
-      <PriceContext priceComps={activePriceComps} loading={compsLoading} />
-
-      {/* Section 4: Set Education */}
-      <SetEducation
+      {/* Section 3: Card Insights */}
+      <CardInsights
+        identity={result.identity}
+        product={result.product}
+        matchedParallel={activeParallel}
+        matchedCardSet={result.matchedCardSet}
+        rainbow={activeRainbow}
         education={activeEducation}
-        productName={result.product?.productName || null}
       />
 
       {/* Disclaimer */}

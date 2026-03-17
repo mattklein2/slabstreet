@@ -11,6 +11,7 @@ export interface CardIdentity {
   cardNumber: string | null;
   sport: string | null;
   isRookie: boolean;
+  isAutographed: boolean;
   isGraded: boolean;
   grader: string | null;    // PSA, BGS, SGC, CGC
   grade: string | null;     // "10", "9.5", etc.

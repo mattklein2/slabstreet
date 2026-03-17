@@ -22,6 +22,7 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     cardNumber: specs['Card Number'] || null,
     sport: normalizeSport(specs['Sport'] || null),
     isRookie: /rookie/i.test(specs['Features'] || '') || /rookie/i.test(specs['Card Attributes'] || ''),
+    isAutographed: /yes/i.test(specs['Autographed'] || '') || /auto/i.test(specs['Features'] || '') || /auto/i.test(specs['Card Attributes'] || ''),
     isGraded: (specs['Professional Grader'] || specs['Graded'] || '') !== '',
     grader: specs['Professional Grader'] || null,
     grade: specs['Grade'] || null,
@@ -89,6 +90,7 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     cardNumber: fromSpecs.cardNumber || fromTitle.cardNumber,
     sport: resolvedSport,
     isRookie: fromSpecs.isRookie || fromTitle.isRookie || false,
+    isAutographed: fromSpecs.isAutographed || fromTitle.isAutographed || false,
     isGraded: fromSpecs.isGraded || fromTitle.isGraded || false,
     grader: fromSpecs.grader || fromTitle.grader,
     grade: fromSpecs.grade || fromTitle.grade,
@@ -212,6 +214,7 @@ interface TitleParsed {
   cardNumber: string | null;
   sport: string | null;
   isRookie: boolean;
+  isAutographed: boolean;
   isGraded: boolean;
   grader: string | null;
   grade: string | null;
@@ -221,7 +224,7 @@ function parseTitleFallback(title: string): TitleParsed {
   const result: TitleParsed = {
     player: null, year: null, brand: null, set: null, parallel: null,
     insert: null, cardNumber: null, sport: null, isRookie: false,
-    isGraded: false, grader: null, grade: null,
+    isAutographed: false, isGraded: false, grader: null, grade: null,
   };
 
   // Clean junk words
@@ -287,6 +290,9 @@ function parseTitleFallback(title: string): TitleParsed {
 
   // Rookie
   result.isRookie = /\b(RC|Rookie)\b/i.test(clean);
+
+  // Autograph
+  result.isAutographed = /\b(auto|autograph|autographed|signed|on[- ]?card\s*auto|RPA)\b/i.test(clean);
 
   // Sport (from title — less reliable)
   if (/\b(basketball|NBA)\b/i.test(clean)) result.sport = 'NBA';

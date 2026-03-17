@@ -127,25 +127,6 @@ export function XRayResultDisplay({ result }: { result: XRayResult }) {
         onParallelSelect={canSelectParallel && !isInsertFallback ? handleParallelSelect : undefined}
       />
 
-      {/* Disclaimer */}
-      <div style={{
-        padding: '12px 16px',
-        borderRadius: 10,
-        background: `${colors.border}30`,
-        border: `1px solid ${colors.border}`,
-        marginTop: 20,
-      }}>
-        <p style={{
-          margin: 0,
-          fontSize: 12,
-          fontFamily: "'IBM Plex Sans', sans-serif",
-          color: colors.muted,
-          lineHeight: 1.5,
-        }}>
-          Our analysis is only as good as the seller&apos;s listing. If the title, item specifics, or photos are inaccurate, our results may be too. That said, based on what the seller has provided, this is the best identification and pricing data available.
-        </p>
-      </div>
-
       {/* Share + Source link */}
       <div style={{
         display: 'flex',

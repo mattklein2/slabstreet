@@ -21,7 +21,7 @@ export default function XRayResultPage({ result, id }: { result: XRayResult; id:
       <Header showBack />
 
       <main style={{
-        maxWidth: 720,
+        maxWidth: 960,
         margin: '0 auto',
         padding: '24px 16px 80px',
       }}>

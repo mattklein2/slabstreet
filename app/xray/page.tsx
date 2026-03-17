@@ -56,7 +56,7 @@ export default function XRayPage() {
       <Header showBack />
 
       <main style={{
-        maxWidth: 720,
+        maxWidth: 960,
         margin: '0 auto',
         padding: '24px 16px 80px',
       }}>
@@ -81,6 +81,17 @@ export default function XRayPage() {
 
         {/* Input */}
         <XRayInput onSubmit={handleSubmit} loading={loading} />
+
+        {/* Disclaimer */}
+        <p style={{
+          fontSize: 13,
+          fontFamily: "'IBM Plex Sans', sans-serif",
+          color: colors.muted,
+          margin: '8px 0 0',
+          lineHeight: 1.4,
+        }}>
+          <strong style={{ color: colors.secondary }}>Note:</strong> Our results are only as good as the seller&apos;s listing. If the title, photos, or item specifics are inaccurate, our analysis may be too.
+        </p>
 
         {/* Loading state */}
         {loading && (

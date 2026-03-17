@@ -36,7 +36,8 @@ export function CardInsights({ identity, product, matchedParallel, matchedCardSe
       background: colors.surface,
       borderRadius: 14,
       padding: 24,
-      marginBottom: 16,
+      height: '100%',
+      boxSizing: 'border-box' as const,
     }}>
       <h2 style={{
         margin: '0 0 16px',

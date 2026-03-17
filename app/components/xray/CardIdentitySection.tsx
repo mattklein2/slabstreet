@@ -33,7 +33,8 @@ export function CardIdentitySection({ identity, listing }: Props) {
       background: colors.surface,
       borderRadius: 14,
       padding: 24,
-      marginBottom: 16,
+      height: '100%',
+      boxSizing: 'border-box' as const,
     }}>
       <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', flexWrap: 'wrap' }}>
         {/* Card image */}

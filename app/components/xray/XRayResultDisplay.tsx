@@ -92,8 +92,28 @@ export function XRayResultDisplay({ result }: { result: XRayResult }) {
         </div>
       )}
 
-      {/* Section 1: Card Identity */}
-      <CardIdentitySection identity={result.identity} listing={result.listing} />
+      {/* Top row: Card Identity (left) + Card Insights (right) */}
+      <div style={{
+        display: 'flex',
+        gap: 16,
+        marginBottom: 16,
+        alignItems: 'stretch',
+        flexWrap: 'wrap',
+      }}>
+        <div style={{ flex: '1 1 340px', minWidth: 0 }}>
+          <CardIdentitySection identity={result.identity} listing={result.listing} />
+        </div>
+        <div style={{ flex: '1 1 300px', minWidth: 0 }}>
+          <CardInsights
+            identity={result.identity}
+            product={result.product}
+            matchedParallel={activeParallel}
+            matchedCardSet={result.matchedCardSet}
+            rainbow={activeRainbow}
+            education={activeEducation}
+          />
+        </div>
+      </div>
 
       {/* Section 2: Rarity Rainbow */}
       <RarityRainbow
@@ -105,16 +125,6 @@ export function XRayResultDisplay({ result }: { result: XRayResult }) {
         cardSetDescription={result.matchedCardSet?.description}
         isInsertFallback={isInsertFallback}
         onParallelSelect={canSelectParallel && !isInsertFallback ? handleParallelSelect : undefined}
-      />
-
-      {/* Section 3: Card Insights */}
-      <CardInsights
-        identity={result.identity}
-        product={result.product}
-        matchedParallel={activeParallel}
-        matchedCardSet={result.matchedCardSet}
-        rainbow={activeRainbow}
-        education={activeEducation}
       />
 
       {/* Disclaimer */}

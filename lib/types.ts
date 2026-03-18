@@ -145,3 +145,38 @@ export const SPORTS = [
 ] as const;
 
 export type SportValue = typeof SPORTS[number]['value'];
+
+// Shelf Scout types
+export interface ScoutProduct {
+  id: string;
+  name: string;
+  year: string;
+  brandName: string;
+  imageUrl: string | null;
+  isFlagship: boolean;
+  configTypes: string[];
+}
+
+export interface ScoutBoxDetail {
+  boxConfig: {
+    configType: string;
+    retailPriceUsd: number | null;
+    packsPerBox: number;
+    cardsPerPack: number;
+    guaranteedHits: string | null;
+    oddsAuto: string | null;
+    oddsRelic: string | null;
+    oddsNumbered: string | null;
+    description: string;
+  };
+  parallels: Array<ParallelItem & { isExclusive: boolean }>;
+  totalParallels: number;
+  inserts: Array<{
+    name: string;
+    type: string;
+    odds: string | null;
+    isAutographed: boolean;
+    isMemorabilia: boolean;
+  }>;
+  bigGameHunting: Array<ParallelItem & { isExclusive: boolean }>;
+}

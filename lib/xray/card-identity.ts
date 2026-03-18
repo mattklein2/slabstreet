@@ -176,16 +176,29 @@ const SETS = [
   'Clearly Donruss', 'Illusions', 'Phoenix', 'Flux',
 ];
 
-// Known parallel keywords
-const PARALLELS = [
+// Named parallels (multi-word, checked FIRST to avoid partial color matches)
+const NAMED_PARALLELS = [
+  'No Huddle', 'Choice', 'Fanatics', 'Asia', 'Fast Break', 'Cracked Ice',
+];
+
+// Color and pattern parallel keywords (checked after named parallels)
+const COLOR_PARALLELS = [
   'Silver', 'Gold', 'Red', 'Blue', 'Green', 'Black', 'Orange', 'Purple',
   'Pink', 'White', 'Yellow', 'Bronze', 'Platinum', 'Emerald', 'Ruby',
-  'Sapphire', 'Diamond', 'Cracked Ice', 'Shimmer', 'Disco', 'Scope',
+  'Sapphire', 'Diamond', 'Shimmer', 'Disco', 'Scope',
   'Camo', 'Lazer', 'Laser', 'Neon', 'Snakeskin', 'Peacock', 'Tiger',
-  'Nebula', 'Wave', 'Mojo', 'Hyper', 'Fast Break', 'Holo',
+  'Nebula', 'Wave', 'Mojo', 'Hyper', 'Holo',
   'Refractor', 'Xfractor', 'Prizm', 'Ice',
-  'No Huddle', 'Choice', 'Fanatics', 'Asia',
 ];
+
+// Combined: named first, then colors
+const PARALLELS = [...NAMED_PARALLELS, ...COLOR_PARALLELS];
+
+// Colors that can modify a named parallel (e.g. "No Huddle Gold", "Choice Blue")
+const COLOR_MODIFIERS = new Set([
+  'gold', 'silver', 'red', 'blue', 'green', 'black', 'orange', 'purple',
+  'pink', 'white', 'yellow', 'bronze', 'neon', 'teal', 'platinum',
+]);
 
 // Known insert set names (not parallels — separate card subsets within a product)
 const INSERTS = [
@@ -274,15 +287,34 @@ function parseTitleFallback(title: string): TitleParsed {
     }
   }
 
-  // Parallel — find color/variant keyword and capture compound name (e.g. "Pink Prizm")
+  // Parallel — find color/variant keyword and capture compound name
   const cleanLower = clean.toLowerCase();
   for (const par of PARALLELS) {
     const idx = cleanLower.indexOf(par.toLowerCase());
     if (idx !== -1) {
-      // Try to capture a compound parallel (e.g. "Pink Prizm", "Neon Green Scope")
-      // by grabbing the matched word plus surrounding parallel-adjacent words
-      const after = clean.substring(idx + par.length).match(/^\s+(Prizm|Refractor|Xfractor|Holo|Scope|Shimmer|Disco|Wave|Ice)\b/i);
-      result.parallel = after ? `${par} ${after[1]}` : par;
+      const remainder = clean.substring(idx + par.length);
+      const isNamed = NAMED_PARALLELS.some(np => np.toLowerCase() === par.toLowerCase());
+
+      if (isNamed) {
+        // Named parallel: capture following color + optional tech suffix
+        // e.g. "No Huddle Gold", "Choice Blue Shimmer", "Fast Break Neon Green"
+        const colorAfter = remainder.match(/^\s+(\w+)/i);
+        if (colorAfter && COLOR_MODIFIERS.has(colorAfter[1].toLowerCase())) {
+          const techAfter = remainder.substring(colorAfter[0].length)
+            .match(/^\s+(Prizm|Refractor|Xfractor|Holo|Scope|Shimmer|Disco|Wave|Ice)\b/i);
+          result.parallel = techAfter
+            ? `${par} ${colorAfter[1]} ${techAfter[1]}`
+            : `${par} ${colorAfter[1]}`;
+        } else {
+          // No color after — check for tech suffix only
+          const techAfter = remainder.match(/^\s+(Prizm|Refractor|Xfractor|Holo|Scope|Shimmer|Disco|Wave|Ice)\b/i);
+          result.parallel = techAfter ? `${par} ${techAfter[1]}` : par;
+        }
+      } else {
+        // Color/pattern parallel: capture tech suffix (e.g. "Pink Prizm", "Neon Green Scope")
+        const after = remainder.match(/^\s+(Prizm|Refractor|Xfractor|Holo|Scope|Shimmer|Disco|Wave|Ice)\b/i);
+        result.parallel = after ? `${par} ${after[1]}` : par;
+      }
       break;
     }
   }

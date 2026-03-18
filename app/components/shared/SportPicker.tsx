@@ -5,10 +5,12 @@ import { SPORTS, type SportValue } from '../../../lib/types';
 
 interface SportPickerProps {
   onSelect: (sport: SportValue) => void;
+  filterSports?: SportValue[];
 }
 
-export function SportPicker({ onSelect }: SportPickerProps) {
+export function SportPicker({ onSelect, filterSports }: SportPickerProps) {
   const { colors } = useTheme();
+  const sports = filterSports ? SPORTS.filter(s => filterSports.includes(s.value)) : SPORTS;
 
   return (
     <div style={{
@@ -20,7 +22,7 @@ export function SportPicker({ onSelect }: SportPickerProps) {
       maxWidth: 480,
       margin: '0 auto',
     }}>
-      {SPORTS.map((sport) => (
+      {sports.map((sport) => (
         <button
           key={sport.value}
           onClick={() => onSelect(sport.value)}

@@ -205,13 +205,33 @@ export async function matchCard(identity: CardIdentity): Promise<MatchResult> {
     return { product: matchedProduct, cardSet: matchedCardSet, parallel: null, rainbow: [] };
   }
 
-  // Step 4: Score each parallel
+  // Step 4: Score each parallel (color-aware)
+  const COLOR_WORDS = new Set([
+    'gold', 'silver', 'red', 'blue', 'green', 'black', 'orange', 'purple',
+    'pink', 'white', 'yellow', 'bronze', 'neon', 'teal', 'platinum',
+    'ruby', 'sapphire', 'emerald', 'aqua', 'magenta', 'crimson', 'navy',
+  ]);
+  const titleLower = (identity.raw?.title || '').toLowerCase();
+
   let matchedParallel: MatchedParallel | null = null;
   if (identity.parallel) {
-    const scored = parallels.map((par: any) => ({
-      par,
-      score: scoreNameMatch(par.name, identity.parallel!),
-    }));
+    const scored = parallels.map((par: any) => {
+      let score = scoreNameMatch(par.name, identity.parallel!);
+
+      // Color-aware: when score is partial (not exact), use the listing title
+      // to boost parallels whose color appears in the title and penalize those that don't.
+      // This prevents "No Huddle Blue" winning over "No Huddle Gold" on rarity tiebreak.
+      if (score > 0 && score < 10) {
+        const parColors = par.name.toLowerCase().split(/\s+/).filter((w: string) => COLOR_WORDS.has(w));
+        if (parColors.length > 0) {
+          const colorInTitle = parColors.some((c: string) => titleLower.includes(c));
+          if (colorInTitle) score += 3;
+          else score -= 2;
+        }
+      }
+
+      return { par, score };
+    });
     scored.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       return b.par.rarity_rank - a.par.rarity_rank;

@@ -24,6 +24,12 @@ const tools = [
     icon: '🗺️',
   },
   {
+    href: '/scout',
+    title: 'Shelf Scout',
+    description: 'At the store? See what\'s inside every box before you buy',
+    icon: '📦',
+  },
+  {
     href: '/ebay-search',
     title: 'Card Search',
     description: 'Build the perfect eBay search with smart filters — no guesswork',

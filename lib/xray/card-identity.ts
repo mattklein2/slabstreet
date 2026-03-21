@@ -80,6 +80,9 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     resolvedSport = 'WNBA';
   }
 
+  // Extract certification number (PSA/BGS cert for pop report lookup)
+  const certNumber = extractCertNumber(specs, title);
+
   const identity: CardIdentity = {
     player: fromSpecs.player || fromTitle.player,
     year: fromSpecs.year || fromTitle.year,
@@ -94,6 +97,7 @@ export function parseCardIdentity(listing: EbayListingData): CardIdentity {
     isGraded: fromSpecs.isGraded || fromTitle.isGraded || false,
     grader: fromSpecs.grader || fromTitle.grader,
     grade: fromSpecs.grade || fromTitle.grade,
+    certNumber,
     raw: {
       title,
       itemSpecifics: specs,
@@ -351,4 +355,32 @@ function parseTitleFallback(title: string): TitleParsed {
   // We don't attempt player extraction from title in Phase 1; it's too error-prone
 
   return result;
+}
+
+// ── Cert number extraction ──────────────────────────────────
+// PSA cert numbers are typically 8-10 digits, sometimes prefixed with #
+const CERT_PATTERN = /\b(?:cert(?:ification)?\.?\s*(?:#|number|num|no\.?)?\s*)?(\d{7,10})\b/i;
+
+function extractCertNumber(specs: Record<string, string>, title: string): string | null {
+  // Item Specifics is the most reliable source
+  const specCert = specs['Certification Number'] || specs['Cert Number'] || specs['PSA Certification Number'] || null;
+  if (specCert) {
+    const cleaned = specCert.replace(/\D/g, '');
+    if (cleaned.length >= 7 && cleaned.length <= 10) return cleaned;
+  }
+
+  // Fallback: title parsing (less reliable, only for graded cards)
+  // Only try if the title mentions a grading company
+  const hasGrader = GRADERS.some(g => title.toUpperCase().includes(g));
+  if (!hasGrader) return null;
+
+  const match = title.match(CERT_PATTERN);
+  if (match) {
+    const num = match[1];
+    // Avoid false positives: cert numbers are 7-10 digits, card numbers are typically 1-4 digits
+    // Also avoid matching years (4 digits)
+    if (num.length >= 7 && num.length <= 10) return num;
+  }
+
+  return null;
 }

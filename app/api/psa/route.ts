@@ -60,16 +60,23 @@ export async function GET(request: Request) {
     }
   }
 
-  // ── POPULATION LOOKUP ────────────────────────────────────
-  // GET /api/psa?subject=Victor+Wembanyama
+  // ── POPULATION LOOKUP by specID ──────────────────────────
+  // GET /api/psa?subject=12345  (specID, not player name)
+  // Note: PSA API has no search-by-name endpoint. Use /api/psa/pop for
+  // the full pop lookup flow (cert → specID → pop data with caching).
   if (subject) {
+    const specId = parseInt(subject, 10);
+    if (isNaN(specId)) {
+      return NextResponse.json(
+        { error: 'subject= must be a numeric specID. Use /api/psa/pop for player-based lookups.' },
+        { status: 400 }
+      );
+    }
+
     try {
-      // PSA pop report — search by subject name
-      // Returns all graded cards matching the subject with grade counts
-      const encoded = encodeURIComponent(subject);
       const res = await fetch(
-        `${PSA_BASE}/pop/GetItemsSummaryBySubject/${encoded}`,
-        { headers, next: { revalidate: 86400 } } // cache 24hrs
+        `${PSA_BASE}/pop/GetPSASpecPopulation/${specId}`,
+        { headers, next: { revalidate: 86400 } }
       );
 
       if (!res.ok) {

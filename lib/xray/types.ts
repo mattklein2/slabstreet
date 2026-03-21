@@ -15,6 +15,7 @@ export interface CardIdentity {
   isGraded: boolean;
   grader: string | null;    // PSA, BGS, SGC, CGC
   grade: string | null;     // "10", "9.5", etc.
+  certNumber: string | null; // PSA/BGS cert number for pop report lookup
   raw: {                    // original source data for debugging
     title: string;
     itemSpecifics: Record<string, string>;

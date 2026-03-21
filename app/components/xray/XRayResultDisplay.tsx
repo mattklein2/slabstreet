@@ -1,17 +1,43 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTheme } from '../ThemeProvider';
 import { CardIdentitySection } from './CardIdentitySection';
 import { RarityRainbow } from './RarityRainbow';
 import { CardInsights } from './CardInsights';
+import { PriceContext } from './PriceContext';
+import { PopReport } from './PopReport';
+import { GradingROI } from './GradingROI';
 import { ShareButton } from './ShareButton';
 import type { XRayResult } from '../../../lib/xray/types';
+import type { PSAPopSummary } from '../../../lib/psa/types';
 
 export function XRayResultDisplay({ result }: { result: XRayResult }) {
   const { colors } = useTheme();
   const [selectedParallelId, setSelectedParallelId] = useState<string | null>(null);
   const [overrideParallelDesc, setOverrideParallelDesc] = useState<string | null>(null);
+  const [popData, setPopData] = useState<PSAPopSummary | null>(null);
+  const [popLoading, setPopLoading] = useState(false);
+
+  // Fetch PSA pop data async (non-blocking, after main result renders)
+  useEffect(() => {
+    const { identity } = result;
+    if (!identity.player || !identity.year || !identity.brand) return;
+
+    setPopLoading(true);
+    const params = new URLSearchParams();
+    if (identity.certNumber) params.set('cert', identity.certNumber);
+    if (identity.player) params.set('player', identity.player);
+    if (identity.year) params.set('year', identity.year);
+    if (identity.brand) params.set('brand', identity.brand);
+    if (identity.set) params.set('set', identity.set);
+
+    fetch(`/api/psa/pop?${params}`)
+      .then(res => res.json())
+      .then(data => setPopData(data.pop || null))
+      .catch(() => setPopData(null))
+      .finally(() => setPopLoading(false));
+  }, [result]);
 
   // Derive active rainbow with updated isCurrentCard
   const activeRainbow = selectedParallelId
@@ -125,6 +151,22 @@ export function XRayResultDisplay({ result }: { result: XRayResult }) {
         cardSetDescription={result.matchedCardSet?.description}
         isInsertFallback={isInsertFallback}
         onParallelSelect={canSelectParallel && !isInsertFallback ? handleParallelSelect : undefined}
+      />
+
+      {/* Section 3: Price Context */}
+      <PriceContext priceComps={result.priceComps} />
+
+      {/* Section 4: PSA Population Report */}
+      <PopReport
+        popData={popData}
+        currentGrade={result.identity.grade}
+        loading={popLoading}
+      />
+
+      {/* Section 5: Grading ROI Calculator */}
+      <GradingROI
+        priceComps={result.priceComps}
+        popData={popData}
       />
 
       {/* Share + Source link */}

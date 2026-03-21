@@ -30,6 +30,12 @@ const tools = [
     icon: '📦',
   },
   {
+    href: '/grade',
+    title: 'Grade Calculator',
+    description: 'See if grading your card is worth it — PSA pop data + ROI math',
+    icon: '📊',
+  },
+  {
     href: '/ebay-search',
     title: 'Card Search',
     description: 'Build the perfect eBay search with smart filters — no guesswork',
